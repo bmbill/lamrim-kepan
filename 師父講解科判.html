@@ -458,7 +458,7 @@ function svgOf(lay,{exp=false,caption=""}={}){
     o.push(`<text font-size="${n.size}" text-anchor="middle" dominant-baseline="central"${n.lv===1?' font-weight="700"':""} style="fill:${base}">`);
     glyphs(n,(ch,x,y,red)=>o.push(`<tspan x="${x.toFixed(1)}" y="${y.toFixed(1)}"${red?` style="fill:${C("zhu")}"`:""}>${esc(ch)}</tspan>`));
     o.push(`</text>`);
-    if(n.time)o.push(`<text x="${(n.ax-10).toFixed(1)}" y="${n.y+n.bh+16}" font-size="13" text-anchor="end" style="fill:${C("ink-3")}" font-family="Noto Sans TC, sans-serif">${esc(n.time)}</text>`);
+    if(n.time&&!exp){const sg=S.lesson.段[n.s];o.push(`<title>第 ${n.s+1} 段・${esc(segRange(sg))}${sg.頁?"・課本 p"+sg.頁:""}</title>`)}
     o.push("</g>");
   });
   o.push("</g>");
@@ -750,7 +750,7 @@ async function toPng(lay,cap){
     if(n.kind==="grp"){ctx.strokeStyle=LIGHT.zhu;ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(n.ax-n.size*.45,n.y-6);ctx.lineTo(n.ax+n.size*.45,n.y-6);ctx.stroke();ctx.strokeStyle=LIGHT.line;ctx.lineWidth=1.5}
     ctx.font=`${n.lv===1?"700 ":""}${n.size}px ${KAI}`;
     glyphs(n,(ch,x,y,red)=>{ctx.fillStyle=red?LIGHT.zhu:(n.kind==="xw"?LIGHT.gold:n.kind==="grp"?LIGHT["ink-2"]:LIGHT.ink);ctx.fillText(ch,x,y)});
-    if(n.time){ctx.font='13px "Noto Sans TC",sans-serif';ctx.fillStyle=LIGHT["ink-3"];ctx.textAlign="right";ctx.fillText(n.time,n.ax-10,n.y+n.bh+12);ctx.textAlign="center"}
+
   });
   ctx.textAlign="left";ctx.font='18px "Noto Sans TC","Microsoft JhengHei",sans-serif';ctx.fillStyle=LIGHT["ink-3"];ctx.fillText(cap,MARGIN,H-34);
   return await new Promise((res,rej)=>cv.toBlob(b=>b?res(b):rej(new Error("圖太大，請改選較小的區段")),"image/png"));
