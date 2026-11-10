@@ -89,8 +89,15 @@ body.resizing iframe,body.resizing svg{pointer-events:none}
 .kp.mine .row{white-space:normal}
 .kp.mine ul{margin:0;padding:0;border:0}
 .kp.mine .row{padding-left:calc(var(--d,0) * 9px + 4px)}
-.kp.mine .row .tw{display:none}
-.kp .lessons{margin:2px 0 8px;padding-left:min(calc(var(--d,0) * 9px + 22px),48px);display:flex;flex-direction:column;gap:4px}
+.kp.mine .row{padding-left:calc(var(--d,0) * 10px + 2px)}
+.kpcrumb{font-size:11.5px;line-height:1.55;color:var(--ink-3);font-family:var(--f-kai);margin:0 2px 6px;padding-bottom:6px;border-bottom:1px dashed var(--rule)}
+.kcnt{flex:none;margin-left:6px;font-family:var(--f-ui);font-size:11px;color:var(--zhu);border:1px solid var(--zhu-wash);background:var(--zhu-wash);border-radius:999px;padding:0 7px;line-height:18px;align-self:center}
+.kp .lpills{display:flex;flex-wrap:wrap;gap:4px}
+.kp .lpill{border:1px solid var(--rule);background:var(--raised);border-radius:999px;padding:1px 9px;font-size:12px;color:var(--ink-2);font-variant-numeric:tabular-nums}
+.kp .lpill:hover{border-color:var(--zhu);color:var(--zhu)}
+.kp .lpill.cur{background:var(--zhu);border-color:var(--zhu);color:#fff}
+.kp .lrange{font-family:var(--f-kai);font-size:14px;font-weight:700;color:var(--ink)}
+.kp .lessons{margin:3px 0 8px;padding-left:min(calc(var(--d,0) * 10px + 20px),56px);display:flex;flex-direction:column;gap:5px}
 .kp .lcard{border:1px solid var(--rule);background:var(--raised);border-radius:8px;padding:5px 9px;display:flex;flex-direction:column;gap:2px}
 .kp .lcard.cur{border-color:var(--zhu);box-shadow:0 0 0 2px var(--zhu-wash)}
 .kp .lcard button{border:0;background:none;padding:0;text-align:left;font-family:var(--f-kai);font-size:14px;color:var(--ink);font-weight:700;white-space:normal;line-height:1.45;font-variant-numeric:tabular-nums}
@@ -601,26 +608,37 @@ function renderOutline(){
 // ───────── 地圖 ─────────
 function renderMap(){
   const has=new Set(S.index.map(x=>x.科判焦點)),path=new Set(kpPath());
-  const keep=new Set();(function go(n,p){const me=p.concat(n),key=`${n.c} ${n.t}`;if(has.has(key)||has.has(n.t))me.forEach(x=>keep.add(x));(n.k||[]).forEach(k=>go(k,me))})(S.kepan.樹,[]);
-  const mine=!S.mapAll;
   const lessonsOf=n=>S.index.filter(x=>x.科判焦點===`${n.c} ${n.t}`||x.科判焦點===n.t);
+  // 已整理的節點、各節點底下有幾堂、所有已整理節點共同的祖先
+  const keep=new Set(),cnt=new Map(),paths=[];
+  (function go(n,p){const me=p.concat(n),k=lessonsOf(n).length;if(k){paths.push(me);me.forEach(x=>{keep.add(x);cnt.set(x,(cnt.get(x)||0)+k)})}(n.k||[]).forEach(c=>go(c,me))})(S.kepan.樹,[]);
+  let common=paths.length?paths[0].slice():[S.kepan.樹];
+  for(const p of paths){let i=0;while(i<common.length&&i<p.length&&common[i]===p[i])i++;common=common.slice(0,i)}
+  if(paths.length===1)common=common.slice(0,Math.max(1,common.length-2));   // 只有一處時留兩層脈絡
+  const mine=!S.mapAll,start=mine?common.at(-1):S.kepan.樹;
+  function lessonBlock(n,depth){
+    const ls=lessonsOf(n);if(!ls.length)return "";
+    const cur=ls.find(x=>S.lesson&&S.lesson.id===x.id);
+    return `<div class="lessons" style="--d:${depth}"><div class="lpills">${ls.map(x=>`<button data-lesson="${esc(x.id)}" class="lpill${cur===x?" cur":""}" title="${esc(x.標題)}　${esc(x.課本範圍)}">第${x.堂數}堂</button>`).join("")}</div>
+      ${cur?`<div class="lcard cur"><div class="lrange">${esc(cur.課本範圍.replace(" ~ ","～"))}</div>
+        ${cur.音檔網址?`<a class="lplay" href="${esc(cur.音檔網址)}" target="_blank" rel="noopener" title="在廣論時時聽播放整堂課">▶ 全堂音檔　${esc(cur.音檔範圍||"")}</a>`:""}</div>`:""}</div>`;
+  }
   function li(n,depth){
     if(mine&&!keep.has(n))return "";
-    const key=`${n.c} ${n.t}`,ls=lessonsOf(n),isHas=ls.length>0,kids=n.k||[];
-    const isOpen=mine||path.has(n)||depth<1;
-    const lessonBtns=isHas?`<div class="lessons" style="--d:${depth}">${ls.map(x=>`<div class="lcard${S.lesson&&S.lesson.id===x.id?" cur":""}">
-        <button data-lesson="${esc(x.id)}" title="${esc(x.標題)}">第${x.堂數}堂　${esc(x.課本範圍.replace(" ~ ","～"))}</button>
-        ${x.音檔網址?`<a class="lplay" href="${esc(x.音檔網址)}" target="_blank" rel="noopener" title="在廣論時時聽播放整堂課">▶ 全堂音檔　${esc(x.音檔範圍||"")}</a>`:""}</div>`).join("")}</div>`:"";
-    return `<li><div class="row${path.has(n)?" path":""}${isHas?" has":""}${isHas&&S.lesson&&lessonsOf(n).some(x=>x.id===S.lesson.id)?" cur":""}" style="--d:${depth}" ${isHas?`data-has="${esc(key)}" tabindex="0"`:""}>
+    const key=`${n.c} ${n.t}`,isHas=lessonsOf(n).length>0,kids=(n.k||[]).filter(k=>!mine||keep.has(k));
+    const isOpen=n===start||path.has(n)||(!mine&&depth<1)||(mine&&S.mapOpen&&S.mapOpen.has(n));
+    const c=cnt.get(n)||0,badge=mine&&!isOpen&&kids.length&&c?`<span class="kcnt">${c} 堂</span>`:"";
+    return `<li><div class="row${path.has(n)?" path":""}${isHas?" has":""}${isHas&&lessonsOf(n).some(x=>S.lesson&&x.id===S.lesson.id)?" cur":""}" style="--d:${depth}" ${isHas?`data-has="${esc(key)}" tabindex="0"`:""}>
       ${kids.length?`<button class="tw" aria-expanded="${isOpen}" aria-label="展開">${isOpen?"▾":"▸"}</button>`:'<span class="tw"></span>'}
-      ${n.c?`<span class="c">${esc(n.c)}</span>`:""}<span class="t">${esc(n.t)}</span></div>${lessonBtns}
+      ${n.c?`<span class="c">${esc(n.c)}</span>`:""}<span class="t">${esc(n.t)}</span>${badge}</div>${lessonBlock(n,depth)}
       ${kids.length?`<ul${isOpen?"":" hidden"}>${kids.map(k=>li(k,depth+1)).join("")}</ul>`:""}</li>`;
   }
   const kp=$("#kp");kp.classList.toggle("mine",mine);
-  kp.innerHTML=`<ul>${li(S.kepan.樹,0)}</ul>`;
+  const crumb=mine&&common.length>1?`<div class="kpcrumb" title="${esc(common.slice(0,-1).map(n=>(n.c?n.c+" ":"")+n.t).join(" › "))}">${common.slice(0,-1).map(n=>esc(n.t)).join(" › ")}</div>`:"";
+  kp.innerHTML=crumb+`<ul>${li(start,0)}</ul>`;
   $("#mapMine").setAttribute("aria-pressed",String(mine));$("#mapAll").setAttribute("aria-pressed",String(!mine));
-  $("#mapNote").textContent=mine?`目前整理了 ${S.index.length} 課。按「全部」看整部廣論科判。`:"朱點＝已整理師父講解的節點；其他節點之後一課一課補上。";
-  const cur=$("#kp .row.cur");if(cur&&!mine)setTimeout(()=>{const m=$(".map");m.scrollTop=cur.offsetTop-m.clientHeight/2;m.scrollLeft=0},50);
+  $("#mapNote").textContent=mine?`目前整理了 ${S.index.length} 堂。只展開目前這堂所在的那一支，其他分支點 ▸ 打開；「全部」看整部廣論科判。`:"朱點＝已整理師父講解的節點；其他節點之後一課一課補上。";
+  const cur=$("#kp .row.cur");if(cur)setTimeout(()=>{const m=$(".map");if(cur.offsetTop>m.scrollTop+m.clientHeight-80||cur.offsetTop<m.scrollTop)m.scrollTop=cur.offsetTop-m.clientHeight/3;m.scrollLeft=0},50);
 }
 
 // ───────── 選取 ─────────
@@ -845,7 +863,7 @@ function bind(){
   $("#mapAll").onclick=()=>{S.mapAll=true;store("kp.mapAll","1");renderMap()};
   $("#kp").addEventListener("click",e=>{
     const lb=e.target.closest("[data-lesson]");if(lb){loadLesson(lb.dataset.lesson,0);if(isMobile())setM("tree");return}
-    const tw=e.target.closest(".tw");if(tw&&tw.tagName==="BUTTON"){const ul=tw.closest(".row").nextElementSibling;if(ul){ul.hidden=!ul.hidden;tw.textContent=ul.hidden?"▸":"▾";tw.setAttribute("aria-expanded",String(!ul.hidden))}return}
+    const tw=e.target.closest(".tw");if(tw&&tw.tagName==="BUTTON"){let ul=tw.closest(".row").nextElementSibling;if(ul&&ul.classList.contains("lessons"))ul=ul.nextElementSibling;if(ul){ul.hidden=!ul.hidden;tw.textContent=ul.hidden?"▸":"▾";tw.setAttribute("aria-expanded",String(!ul.hidden))}return}
     const r=e.target.closest(".row.has");if(r){const k=r.dataset.has,x=S.index.find(x=>x.科判焦點===k||x.科判焦點===k.split(" ").pop());if(x&&x.id!==S.lesson.id)loadLesson(x.id,0);if(isMobile())setM("tree")}
   });
   $("#dlBtn").onclick=e=>{e.stopPropagation();$("#pop").hidden?openPop():($("#pop").hidden=true)};
