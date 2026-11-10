@@ -229,7 +229,17 @@ details.ts[open] summary::before{transform:rotate(90deg)}
 .pvstage.fakefs{position:fixed;inset:0;z-index:100;background:#000;padding:env(safe-area-inset-top,0px) env(safe-area-inset-right,0px) env(safe-area-inset-bottom,0px) env(safe-area-inset-left,0px)}
 .pvstage:fullscreen .pvexit,.pvstage.fakefs .pvexit{display:block}
 .pvstage:fullscreen .pvcount,.pvstage.fakefs .pvcount{font-size:13px;bottom:12px;right:14px}
-.pvlinks{position:absolute;pointer-events:none}
+.pvlinks{position:absolute;pointer-events:none;z-index:3}
+.pvemb{position:absolute;pointer-events:none;z-index:5}
+.pvemb.on .pvthumb,.pvemb.on .pvframe{pointer-events:auto}
+.pvcover{position:absolute;background:rgba(246,242,232,.97);border-radius:10px}
+.pvthumb{position:absolute;z-index:1;border-radius:6px;box-shadow:0 3px 12px rgba(0,0,0,.35);background-repeat:no-repeat;border:2px solid #fff}
+.pvframe{z-index:1;position:absolute;background:#fff;border-radius:10px;overflow:hidden;box-shadow:0 6px 24px rgba(0,0,0,.35)}
+.pvframe iframe{width:100%;height:100%;border:0;display:block}
+.pvframe.below{position:relative;height:340px;margin-top:8px;border:1px solid var(--rule);box-shadow:none}
+.pvembx{position:absolute;right:6px;top:6px;z-index:2;border:0;border-radius:50%;width:28px;height:28px;background:rgba(0,0,0,.55);color:#fff;font-size:13px;cursor:pointer}
+.pvaud{position:absolute;left:12px;bottom:10px;z-index:4;border:0;border-radius:999px;background:rgba(179,53,43,.92);color:#fff;font-size:12px;padding:5px 12px;box-shadow:0 2px 10px rgba(0,0,0,.3);font-variant-numeric:tabular-nums;max-width:70%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pvstage:fullscreen .pvaud,.pvstage.fakefs .pvaud{font-size:15px;padding:7px 16px;left:16px;bottom:14px}
 .pvyt{position:absolute;inset:0;pointer-events:none;display:grid;place-items:center}
 .pvyt.on{pointer-events:auto;background:#000;z-index:1}
 .pvyt iframe{width:100%;height:100%;border:0}
@@ -237,6 +247,7 @@ details.ts[open] summary::before{transform:rotate(90deg)}
 .pvytbtn span{font-size:12px}
 .pvstage:fullscreen .pvexit,.pvstage.fakefs .pvexit{z-index:3}
 .pvstage .pvnav{z-index:2}
+.pvnav:focus,.pvnav:focus-visible{outline:none}
 .pvhot{position:absolute;pointer-events:auto;border-radius:6px;cursor:pointer;outline:2px dashed transparent;transition:outline-color .15s,background .15s}
 .pvhot:hover,.pvhot:focus-visible{outline-color:var(--zhu);background:rgba(179,53,43,.12)}
 .pvlist{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-top:8px}
@@ -277,6 +288,7 @@ details.ts[open] summary::before{transform:rotate(90deg)}
 .player .bar i{position:absolute;inset:0 auto 0 0;border-radius:3px;background:var(--zhu)}
 .player .loop{border:1px solid var(--rule);background:none;border-radius:7px;width:30px;height:26px;display:grid;place-items:center;color:var(--ink-3);padding:0}
 .player .loop svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.player a.lamrimlink{text-decoration:none;font-size:14px;line-height:24px;text-align:center}
 .player .loop[aria-pressed="true"]{background:var(--zhu);border-color:var(--zhu);color:#fff}
 .player .x{border:0;background:none;color:var(--ink-3);font-size:16px;padding:0 2px}
 .player .src{font-size:11px;color:var(--ink-3)}
@@ -407,6 +419,7 @@ details.ts[open] summary::before{transform:rotate(90deg)}
   <div style="display:flex;gap:6px;align-items:center"><span class="tm" id="plTime"></span>
     <button class="loop" id="plLoop" aria-pressed="false" aria-label="重複播放這一段" title="重複播放這一段（每遍間隔 5 秒）"><svg viewBox="0 0 24 24"><path d="M17 2l4 4-4 4"/><path d="M3 11v-1a4 4 0 0 1 4-4h14"/><path d="M7 22l-4-4 4-4"/><path d="M21 13v1a4 4 0 0 1-4 4H3"/></svg></button>
     <button class="loop" id="plCont" aria-pressed="false" aria-label="播完接下一段" title="播完接著播下一段"><svg viewBox="0 0 24 24"><path d="M5 4l7 8-7 8"/><path d="M13 4l7 8-7 8"/></svg></button>
+    <a class="loop lamrimlink" id="plExt" href="#" target="_blank" rel="noopener" title="在廣論時時聽開啟這一段（Ctrl／⌘＋點可在背景分頁開）">↗</a>
     <button class="x" id="plClose" aria-label="關閉播放列">✕</button></div>
   <div class="bar" id="plBar"><i id="plFill"></i></div>
 </div>
@@ -457,6 +470,7 @@ function playSeg(af,st,et,title){
   else go();
   $("#plLabel").innerHTML=`${esc(rangeTxt(af,st,P.et))}<b>${esc(title||"")}</b>`;
   $("#player").hidden=false;
+  const ext=$("#plExt");if(ext)ext.href=playUrl(af,st,P.et);
   mediaMeta(title?`${title}（${rangeTxt(af,st,P.et)}）`:rangeTxt(af,st,P.et),S.lesson.標題);
 }
 // 連續播放：接著播下一段，畫面跟著選到那一段
@@ -502,6 +516,12 @@ function playNextSeg(){
   selectSeg(i);if(isMobile()&&$("#main").dataset.m==="outline")$("#oc"+i)?.scrollIntoView({behavior:"smooth",block:"start"});
   playSeg(s.af,s.st,s.et,segName(L,i));return true;
 }
+// 投影片上的迷你播放鈕：跟著師父音檔的狀態
+function pvAudUI(){
+  const b=$("#pvAud"),a=$("#aud");if(!b||!a)return;
+  const on=!$("#player").hidden&&a.src;b.hidden=!on;if(!on)return;
+  b.textContent=(a.paused?"▶ ":"❚❚ ")+($("#plLabel")?.innerText||"").replace(/\n/g," ");
+}
 function bindPlayer(){
   const aud=$("#aud");
   aud.addEventListener("error",()=>{ // 本機沒下載就改連線上
@@ -516,6 +536,7 @@ function bindPlayer(){
   });
   const icon=()=>{$("#ppIcon").innerHTML=aud.paused?'<path d="M3 1.5v9l7.5-4.5z"/>':'<path d="M2.5 1.5h2.6v9H2.5zM6.9 1.5h2.6v9H6.9z"/>'};
   aud.addEventListener("play",icon);aud.addEventListener("pause",icon);
+  aud.addEventListener("play",pvAudUI);aud.addEventListener("pause",pvAudUI);
   aud.addEventListener("ended",()=>{if(P.loop)loopAgain();else if(P.cont)playNextSeg()});   // 播到卷尾的段落
   P.loop=store("kp.loop")==="1";$("#plLoop").setAttribute("aria-pressed",String(P.loop));
   P.cont=store("kp.cont")==="1"&&!P.loop;
@@ -681,7 +702,7 @@ function renderDetail(){
   const L=S.lesson,s=L.段[S.seg],side=$("#side");
   if(S.tab==="i"){renderIndex(side);return}
   if(S.tab==="k"){renderKy(side);return}
-  if(S.tab==="p"){renderPpt(side);return}
+  if(S.tab==="p"){if(!($("#pvStage")&&PV.lid===S.lesson.id&&side.contains($("#pvStage"))))renderPpt(side);return}
   const path=kpPath().slice(1);
   const crumb=path.slice(-4).map((n,i,a)=>i===a.length-1?`<b>${esc(n.t)}</b>`:esc(n.t)).join("　›　");
   side.innerHTML=`
@@ -771,9 +792,10 @@ function renderPpt(side){
       <div class="kytools">${pdfs.map(x=>`<a class="iconbtn dl" href="${esc(x.投影片PDF)}" download="${esc(x.標題)}_投影片.pdf" title="下載整份投影片（PDF）">⬇ ${L.isNode?`第${x.堂數}堂`:"下載投影片"}</a>`).join("")}
       <a class="iconbtn dl" id="pvDlOne" href="#" download title="下載目前這一頁（圖片）">⬇ 這一頁</a>
       <button class="iconbtn" id="pvFs" title="全螢幕播放（F）">⛶ 全螢幕</button></div></div>
-    <div class="pvstage" id="pvStage"><img id="pvImg" alt="" decoding="async"><div class="pvlinks" id="pvLinks"></div><div class="pvyt" id="pvYt"></div>
+    <div class="pvstage" id="pvStage"><img id="pvImg" alt="" decoding="async"><div class="pvlinks" id="pvLinks"></div><div class="pvemb" id="pvEmb"></div><div class="pvyt" id="pvYt"></div>
       <button class="pvnav prev" id="pvPrev" aria-label="上一頁">‹</button><button class="pvnav next" id="pvNext" aria-label="下一頁">›</button>
-      <div class="pvcount" id="pvCount"></div><button class="pvexit" id="pvExit" aria-label="離開全螢幕">✕</button></div>
+      <div class="pvcount" id="pvCount"></div><button class="pvaud" id="pvAud" hidden></button><button class="pvexit" id="pvExit" aria-label="離開全螢幕">✕</button></div>
+    <div class="pvembbelow" id="pvEmbBelow"></div>
     <div class="pvlist" id="pvList"></div>
     <div class="pvthumbs" id="pvThumbs">${ps.map((p,k)=>`<button data-pv="${k}" class="${k===PV.i?"cur":""}" aria-label="第 ${k+1} 頁">${L.isNode&&(k===0||ps[k-1].堂!==p.堂)?`<i>${p.堂}堂</i>`:""}<img loading="lazy" decoding="async" src="${esc(p.img)}" alt=""></button>`).join("")}</div>
     <p class="sjnote" style="margin-top:8px">← → 換頁；全螢幕時點畫面左右兩側也可以換頁，Esc 離開。</p>`;
@@ -786,8 +808,9 @@ function pvShow(i){
   img.src=ps[PV.i].img;
   const one=$("#pvDlOne");if(one){one.href=ps[PV.i].img;one.setAttribute("download",`${S.lesson.標題}_投影片第${PV.i+1}頁.webp`)}
   if(ps[PV.i+1]){const n=new Image();n.src=ps[PV.i+1].img}          // 預載下一頁
+  pvEmbedClose();
   pvRenderLinks(ps[PV.i]);
-  pvVideo(ps[PV.i]);
+  pvVideo(ps[PV.i]);pvAudUI();
   $("#pvCount").textContent=`${PV.i+1} / ${ps.length}`+(ps[PV.i].堂?`　第${ps[PV.i].堂}堂`:"");
   document.querySelectorAll("#pvThumbs button").forEach((b,k)=>b.classList.toggle("cur",k===PV.i));
   const t=document.querySelector("#pvThumbs button.cur");if(t)t.scrollIntoView({block:"nearest",inline:"center"});
@@ -803,11 +826,33 @@ function pvRenderLinks(pg){
     return `<a class="pvlb" ${linkAttrs(l,k)}>${m?"▶ ":"↗ "}${esc(l.t||"連結")}${m?`<small>${esc(rangeTxt(m.af,m.st,m.et))}</small>`:""}</a>`}).join(""):"";
   pvLayout();
 }
+// 點投影片上的音檔連結：照片位置換成內嵌的廣論時時聽，師父照片縮到上方角落
+function pvEmbedClose(){const a=$("#pvEmb"),b=$("#pvEmbBelow");if(a){a.innerHTML="";a.className="pvemb"}if(b)b.innerHTML="";PV.emb=null}
+function pvEmbedOpen(pg,url){
+  PV.emb={pg,url};const a0=$("#aud");if(a0&&!a0.paused)a0.pause();const k=$("#kyaud");if(k&&!k.paused)k.pause();
+  const frame=`<iframe src="${esc(url)}" title="廣論時時聽" allow="autoplay; encrypted-media"></iframe>`;
+  const close=`<button class="pvembx" id="pvEmbX" aria-label="關閉內嵌播放器">✕</button>`;
+  if(isPvFull()&&pg.photo){
+    const box=$("#pvLinks"),BW=box.clientWidth,BH=box.clientHeight,[px,py,pw,ph]=pg.photo;
+    // 照片框裡：小照片在右上角，播放器接在下面
+    const pad=Math.round(BH*0.015),tw=Math.round(pw*BW*0.36),th=Math.round(tw*(ph*BH)/(pw*BW)),sc=tw/(pw*BW);
+    const L0=px*BW,T0=py*BH,W0=pw*BW,H0=ph*BH,fTop=T0+th+pad*2;
+    const el=$("#pvEmb");el.className="pvemb on";
+    Object.assign(el.style,{left:box.offsetLeft+"px",top:box.offsetTop+"px",width:BW+"px",height:BH+"px"});
+    el.innerHTML=`<div class="pvcover" style="left:${L0}px;top:${T0}px;width:${W0}px;height:${H0}px"></div>
+      <div class="pvthumb" style="left:${L0+W0-tw-pad}px;top:${T0+pad}px;width:${tw}px;height:${th}px;background-image:url('${esc(pg.img)}');background-size:${BW*sc}px ${BH*sc}px;background-position:${-px*BW*sc}px ${-py*BH*sc}px"></div>
+      <div class="pvframe" style="left:${L0+pad}px;top:${fTop}px;width:${W0-pad*2}px;height:${T0+H0-fTop-pad}px">${frame}${close}</div>`;
+  }else{
+    $("#pvEmbBelow").innerHTML=`<div class="pvframe below">${frame}${close}</div>`;
+  }
+}
 function pvPlayLink(k){
   const pg=slidesOf(S.lesson)[PV.i],l=pg&&pg.links&&pg.links[k];if(!l)return;const m=lamrimLink(l.url);if(!m)return;
   const L=S.lesson;let seg=null;L.段.forEach((s,i)=>{if(s.af===m.af&&s.st<=m.st)seg=i});   // 找最接近的段，連續播放才接得下去
-  P.seg=seg;P.lid=L.id;if(seg!=null&&!isMobile())selectSeg(seg,{scroll:true});
-  playSeg(m.af,m.st,m.et,"投影片・"+(l.t||"音檔"));
+  if(seg!=null){S.seg=seg;paintState()}
+  if(!PV.local){pvEmbedOpen(pg,l.url);return}          // 預設：內嵌廣論時時聽
+  P.seg=seg;P.lid=L.id;if(seg!=null){S.seg=seg;paintState()}
+  playSeg(m.af,m.st,m.et,"投影片・"+(l.t||"音檔"));setTimeout(pvAudUI,50);
 }
 // 圖是等比縮放（全螢幕時會有黑邊），連結層要對齊圖的實際位置
 function pvLayout(){
@@ -1119,6 +1164,8 @@ function bind(){
   $("#side").addEventListener("change",e=>{if(e.target.id==="kyRate"){K.rate=+e.target.value;store("kp.kyRate",String(K.rate));kyAud().playbackRate=K.rate;return}
     if(e.target.id==="kyOrig"){S.kyOrig=e.target.checked;store("kp.kyOrig",S.kyOrig?"1":"0");renderDetail()}});
   $("#side").addEventListener("click",e=>{
+    if(e.target.closest("#pvEmbX")){pvEmbedClose();return}
+    if(e.target.closest("#pvAud")){const a=$("#aud");if(a.paused)a.play().catch(()=>{});else a.pause();return}
     if(e.target.closest("#pvYtBtn")){pvVideo(slidesOf(S.lesson)[PV.i],true);return}
     const pl=e.target.closest("[data-plink]");if(pl){e.preventDefault();pvPlayLink(+pl.dataset.plink);return}
     if(e.target.closest("#pvPrev")){pvShow(PV.i-1);return}
@@ -1163,7 +1210,7 @@ function bind(){
   $("#outline").addEventListener("click",e=>{const oc=e.target.closest(".oc");if(!oc||e.target.closest("a,summary,button"))return;const i=+oc.id.slice(2);if(i!==S.seg){S.seg=i;document.querySelectorAll("#outline .oc").forEach((el,k)=>el.classList.toggle("sel",k===i));paintState()}});
   document.querySelectorAll(".mtabs button").forEach(b=>b.onclick=()=>setM(b.dataset.m));
   addEventListener("resize",()=>{applyScale();updateMini();pvLayout()});
-  document.addEventListener("fullscreenchange",()=>setTimeout(()=>{pvLayout();if(S.tab==="p")pvVideo(slidesOf(S.lesson)[PV.i])},50));
+  document.addEventListener("fullscreenchange",()=>setTimeout(()=>{pvLayout();if(S.tab==="p"){pvVideo(slidesOf(S.lesson)[PV.i]);if(PV.emb){const e=PV.emb;pvEmbedClose();pvEmbedOpen(e.pg,e.url)}}},80));
   addEventListener("hashchange",fromHash);
   // 投影片：方向鍵換頁、F 全螢幕、Esc 離開（假全螢幕）
   document.addEventListener("keydown",e=>{
