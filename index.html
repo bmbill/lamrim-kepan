@@ -188,6 +188,21 @@ details.ts[open] summary::before{transform:rotate(90deg)}
 .tsec .tt button.play-ts{cursor:pointer;border:0;background:none;padding:0;color:var(--zhu);font-size:11px}
 .tsec p{margin:4px 0;font-size:14px;line-height:1.8;color:var(--ink-2)}
 .tsec p.q{font-family:var(--f-kai);font-size:16px;color:var(--ink);border-left:3px solid var(--gold);padding-left:10px}
+.kyhd{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap;margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid var(--rule)}
+.kyt{font-family:var(--f-kai);font-size:18px;font-weight:700}
+.kym{font-size:12px;color:var(--ink-3)}
+.kytools{display:flex;gap:8px;align-items:center}
+.kyorig{font-size:12px;color:var(--ink-2);display:flex;gap:4px;align-items:center;cursor:pointer}
+.kybody{font-family:var(--f-kai);font-size:16.5px;line-height:1.95}
+.kyp{padding:4px 8px;margin:0 -8px;border-radius:7px;cursor:pointer}
+.kyp:hover{background:var(--zhu-wash)}
+.kyp.cur{background:var(--zhu-wash);box-shadow:inset 3px 0 0 var(--zhu)}
+.kyp p{margin:0;text-indent:2em}
+.kybody.orig .kyp{margin-bottom:10px}
+.kybody.orig .kyp p{text-indent:0}
+.kyo{font-size:13.5px;line-height:1.7;color:var(--ink-3);margin-bottom:2px}
+.kpg{font-family:var(--f-ui);font-size:10.5px;color:var(--gold);border:1px solid var(--gold);border-radius:3px;padding:0 3px;margin-right:6px;vertical-align:2px;text-indent:0;display:inline-block}
+.kyles{font-family:var(--f-ui);font-size:12px;font-weight:700;color:var(--zhu);margin:14px 0 4px;letter-spacing:.1em}
 .idx-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
 .idx-item{display:block;width:100%;text-align:left;border:0;border-bottom:1px solid var(--rule);background:none;padding:9px 2px}
 .idx-item:hover{background:var(--zhu-wash)}
@@ -245,8 +260,8 @@ details.ts[open] summary::before{transform:rotate(90deg)}
   .main[data-m="outline"] .outline{display:block}
   .main[data-m="map"] .map{display:block;border:0;padding:12px 0;overflow:visible}
   .main[data-m="tree"] .center{display:grid;height:calc(100vh - 130px);border:0}
-  .main[data-m="index"] .detail{display:flex;border:0}
-  .main[data-m="index"] .detail .tabs{display:none}
+  .main[data-m="index"] .detail,.main[data-m="ky"] .detail{display:flex;border:0}
+  .main[data-m="index"] .detail .tabs,.main[data-m="ky"] .detail .tabs{display:none}
   .side{padding:12px 0 40px}
   .brand .lesson{display:none}
   .search{flex-basis:100%;max-width:none;margin-left:0;order:3}
@@ -274,6 +289,7 @@ details.ts[open] summary::before{transform:rotate(90deg)}
     <button role="tab" data-m="map" aria-selected="true">科判</button>
     <button role="tab" data-m="tree" aria-selected="false">音檔科判</button>
     <button role="tab" data-m="outline" aria-selected="false">大綱</button>
+    <button role="tab" data-m="ky" aria-selected="false">口譯</button>
     <button role="tab" data-m="index" aria-selected="false">索引</button>
   </nav>
 
@@ -322,6 +338,7 @@ details.ts[open] summary::before{transform:rotate(90deg)}
     <aside class="pane detail" aria-label="細看">
       <div class="tabs" role="tablist">
         <button role="tab" id="tabD" aria-selected="true">細看</button>
+        <button role="tab" id="tabK" aria-selected="false">全課口譯</button>
         <button role="tab" id="tabI" aria-selected="false">索引</button>
       </div>
       <div class="side" id="side"></div>
@@ -560,6 +577,7 @@ function kpPath(){ // 根據科判焦點找路徑
 function renderDetail(){
   const L=S.lesson,s=L.段[S.seg],side=$("#side");
   if(S.tab==="i"){renderIndex(side);return}
+  if(S.tab==="k"){renderKy(side);return}
   const path=kpPath().slice(1);
   const crumb=path.slice(-4).map((n,i,a)=>i===a.length-1?`<b>${esc(n.t)}</b>`:esc(n.t)).join("　›　");
   side.innerHTML=`
@@ -600,6 +618,19 @@ function detailBody(s,withTs){
 function mmss2s(m){const[a,b]=m.split(":");return(+a)*60+(+b)}
 
 function allItems(){const out=[];S.lesson.段.forEach((s,i)=>s.延伸.forEach((y,yi)=>groupsOf(y).forEach(g=>g.說.forEach(x=>out.push({s:i,yi,y,x,g:g.題})))));return out}
+// 全課口譯：每段口譯接成一篇（可對照原文），點段落跳到那一段
+function kyAllText(L){let out=[],last=null;L.段.forEach((s,i)=>{if(L.isNode&&s.堂!==last){out.push(`【第${s.堂}堂】`);last=s.堂}if(s.口譯)out.push(s.口譯)});return out.join("\n")}
+function renderKy(side){
+  const L=S.lesson;let last=null;
+  side.innerHTML=`<div class="kyhd"><div><div class="kyt">${esc(L.標題)}　全課口譯</div><div class="kym">第${esc(L.堂數)}堂・${esc(L.課本範圍.replace(" ~ ","～"))}・${L.段.length} 段</div></div>
+      <div class="kytools"><label class="kyorig"><input type="checkbox" id="kyOrig"${S.kyOrig?" checked":""}> 對照原文</label><button class="iconbtn" id="kyCopy">複製全文</button></div></div>
+    <div class="kybody${S.kyOrig?" orig":""}">${L.段.map((s,i)=>{
+      const head=L.isNode&&s.堂!==last?`<div class="kyles">第${s.堂}堂</div>`:"";last=s.堂;
+      return head+`<div class="kyp${i===S.seg?" cur":""}" data-ky="${i}" title="${esc(segName(L,i))}">
+        ${S.kyOrig?`<div class="kyo">${s.頁?`<span class="kpg">p${s.頁}</span>`:""}${redHtml(s.文)}</div>`:""}
+        <p>${!S.kyOrig&&s.頁&&(i===0||L.段[i-1].頁!==s.頁)?`<span class="kpg">p${s.頁}</span>`:""}${esc(s.口譯||"（這段還沒寫口譯）")}</p></div>`}).join("")}</div>`;
+  const cur=side.querySelector(".kyp.cur");if(cur)cur.scrollIntoView({block:"nearest"});
+}
 function renderIndex(side){
   const items=allItems(),f=S.filter;
   const kws=S.lesson.段.flatMap((s,i)=>s.延伸.map((y,yi)=>({s:i,yi,y})));
@@ -832,7 +863,7 @@ function pickClick(i){
 function toast(m){const t=document.createElement("div");t.className="toast";t.textContent=m;document.body.appendChild(t);setTimeout(()=>t.remove(),2600)}
 function setM(m){$("#main").dataset.m=m;document.querySelectorAll(".mtabs button").forEach(b=>b.setAttribute("aria-selected",String(b.dataset.m===m)));
   if(m==="tree"){S.scale=null;requestAnimationFrame(()=>{applyScale();scrollToSeg(S.seg,false);updateMini()})}
-  if(m==="index"){S.tab="i";renderDetail()}else if(S.tab==="i"&&isMobile()){S.tab="d"}
+  if(m==="index"){S.tab="i";renderDetail()}else if(m==="ky"){S.tab="k";renderDetail()}else if((S.tab==="i"||S.tab==="k")&&isMobile()){S.tab="d"}
 }
 
 // ───────── 事件 ─────────
@@ -874,7 +905,12 @@ function bind(){
   $("#tagbar").addEventListener("click",e=>{const b=e.target.closest(".tagbtn");if(!b)return;S.filter=S.filter===b.dataset.k?null:b.dataset.k;paintState();renderDetail();renderOutline()});
   $("#tabD").onclick=()=>{S.tab="d";syncTabs();renderDetail()};
   $("#tabI").onclick=()=>{S.tab="i";syncTabs();renderDetail()};
+  $("#tabK").onclick=()=>{S.tab="k";syncTabs();renderDetail()};
+  $("#side").addEventListener("change",e=>{if(e.target.id==="kyOrig"){S.kyOrig=e.target.checked;store("kp.kyOrig",S.kyOrig?"1":"0");renderDetail()}});
   $("#side").addEventListener("click",e=>{
+    if(e.target.closest("#kyCopy")){const t=kyAllText(S.lesson);
+      navigator.clipboard.writeText(t).then(()=>toast("已複製全課口譯")).catch(()=>{const r=document.createRange();r.selectNodeContents($(".kybody"));const sel=getSelection();sel.removeAllRanges();sel.addRange(r);toast("已選取全文，按 Ctrl+C 複製")});return}
+    const kp=e.target.closest("[data-ky]");if(kp){const i=+kp.dataset.ky;selectSeg(i);if(isMobile()){setM("outline");setTimeout(()=>$("#oc"+i)?.scrollIntoView({block:"start"}),60)}return}
     const f=e.target.closest("[data-f]");if(f){S.filter=f.dataset.f||null;paintState();renderDetail();return}
     const go=e.target.closest("[data-go]");if(go){S.tab="d";syncTabs();if(isMobile())setM("outline");selectSeg(+go.dataset.go,{yan:go.dataset.y!=null?+go.dataset.y:null})}
   });
@@ -929,7 +965,7 @@ function bindSplit(){
 }
 function zoomKeep(){const wrap=$("#treewrap"),fr=(wrap.scrollLeft+wrap.clientWidth/2)/wrap.scrollWidth;applyScale();wrap.scrollLeft=fr*wrap.scrollWidth-wrap.clientWidth/2;updateMini()}
 function syncLayer(){$("#lyBoth").setAttribute("aria-pressed",String(S.xw));$("#lyYan").setAttribute("aria-pressed",String(!S.xw))}
-function syncTabs(){$("#tabD").setAttribute("aria-selected",String(S.tab==="d"));$("#tabI").setAttribute("aria-selected",String(S.tab==="i"))}
+function syncTabs(){$("#tabD").setAttribute("aria-selected",String(S.tab==="d"));$("#tabK").setAttribute("aria-selected",String(S.tab==="k"));$("#tabI").setAttribute("aria-selected",String(S.tab==="i"))}
 function nodeKeyOf(L){return L.科判焦點}
 function lessonsInNode(key){return S.index.filter(x=>x.科判焦點===key).map(x=>S.lessons[x.id]).filter(Boolean)}
 function buildNode(key){
@@ -976,7 +1012,7 @@ async function start(){
   S.lesson=getLesson(hh?hh.id:(last&&getLesson(last)?last:S.index.at(-1).id));
   const L=S.lesson;document.title=`${L.標題}・師父講解科判`;
   $("#lessonInfo").textContent=lessonInfoTxt(L);
-  S.mapAll=store("kp.mapAll")==="1";
+  S.mapAll=store("kp.mapAll")==="1";S.kyOrig=store("kp.kyOrig")==="1";
   const sx=store("kp.xw");if(sx!=null)S.xw=sx==="1";syncLayer();
   const m=hh;if(hh)S.seg=Math.min(L.段.length-1,Math.max(0,hh.seg));else S.seg=0;
   renderMap();renderTree();renderDetail();renderOutline();
