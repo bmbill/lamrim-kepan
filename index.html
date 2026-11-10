@@ -1,0 +1,896 @@
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style></head><body><title>師父講解科判</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=LXGW+WenKai+TC:wght@400;700&family=Noto+Sans+TC:wght@400;500;700&display=swap">
+<style>
+/* 版面：地圖（廣論科判）｜道路＋前導車（直排師父科判）｜細看（消文・延伸・逐字稿）。宣紙、墨、朱砂、泥金。 */
+:root{
+  --paper:#F1EEE6; --panel:#E8E3D7; --raised:#F8F6F0; --ink:#26231E; --ink-2:#5D574C; --ink-3:#8E877A;
+  --line:#6F685C; --rule:#D6CFBF; --zhu:#B3352B; --zhu-wash:rgba(179,53,43,.09); --gold:#92700F;
+  --t-li:#2E6A88; --t-po:#AE3A2E; --t-yin:#7A58A3; --t-yu:#2E7A52; --t-xia:#B4701A; --t-hui:#777064;
+  --f-kai:"LXGW WenKai TC","DFKai-SB","BiauKai","Kaiti TC",serif;
+  --f-ui:"Noto Sans TC","Microsoft JhengHei","PingFang TC",system-ui,sans-serif;
+  --shadow:0 6px 24px rgba(40,30,10,.12);
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --paper:#1B1A17; --panel:#232119; --raised:#2A2820; --ink:#E9E3D4; --ink-2:#BAB2A1; --ink-3:#878070;
+  --line:#958D7E; --rule:#3B382F; --zhu:#E1715F; --zhu-wash:rgba(225,113,95,.14); --gold:#D3AA4F;
+  --t-li:#6FA8C6; --t-po:#E07A6C; --t-yin:#AC90D6; --t-yu:#6DBA8E; --t-xia:#E0A456; --t-hui:#A39C8E;
+  --shadow:0 6px 24px rgba(0,0,0,.4); color-scheme:dark}}
+:root[data-theme="dark"]{
+  --paper:#1B1A17; --panel:#232119; --raised:#2A2820; --ink:#E9E3D4; --ink-2:#BAB2A1; --ink-3:#878070;
+  --line:#958D7E; --rule:#3B382F; --zhu:#E1715F; --zhu-wash:rgba(225,113,95,.14); --gold:#D3AA4F;
+  --t-li:#6FA8C6; --t-po:#E07A6C; --t-yin:#AC90D6; --t-yu:#6DBA8E; --t-xia:#E0A456; --t-hui:#A39C8E;
+  --shadow:0 6px 24px rgba(0,0,0,.4); color-scheme:dark}
+html,body{height:100%}
+body{background:var(--paper);color:var(--ink);font-family:var(--f-ui);font-size:14px;line-height:1.6;overflow:hidden}
+button,input{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--zhu);outline-offset:2px}
+.app{height:100%;display:grid;grid-template-rows:auto 1fr;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+
+/* 頁首 */
+header{display:flex;align-items:center;gap:14px;padding-block:10px;border-bottom:1px solid var(--rule);flex-wrap:wrap}
+.brand{display:flex;align-items:baseline;gap:10px;min-width:0}
+.brand h1{font-family:var(--f-kai);font-weight:700;font-size:22px;margin:0;letter-spacing:.08em;white-space:nowrap}
+.brand .lesson{color:var(--ink-2);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.search{position:relative;flex:1 1 320px;max-width:560px;margin-left:auto}
+.search input{width:100%;box-sizing:border-box;padding:8px 12px 8px 34px;border:1px solid var(--rule);border-radius:8px;background:var(--raised)}
+.search input::placeholder{color:var(--ink-3)}
+.search svg{position:absolute;left:10px;top:50%;transform:translateY(-50%);width:16px;height:16px;stroke:var(--ink-3);fill:none}
+.results{position:absolute;z-index:30;top:calc(100% + 6px);left:0;right:0;max-height:min(70vh,560px);overflow:auto;background:var(--raised);border:1px solid var(--rule);border-radius:10px;box-shadow:var(--shadow);padding:6px}
+.results .grp{font-size:11px;letter-spacing:.12em;color:var(--ink-3);padding:8px 10px 4px}
+.results button{display:block;width:100%;text-align:left;border:0;background:none;padding:7px 10px;border-radius:6px}
+.results button:hover,.results button.act{background:var(--zhu-wash)}
+.results .meta{font-size:12px;color:var(--ink-3)}
+.results mark{background:none;color:var(--zhu);font-weight:700}
+.results .empty{padding:12px;color:var(--ink-2)}
+.tools{display:flex;gap:6px;align-items:center}
+.chip{border:1px solid var(--rule);background:var(--raised);border-radius:999px;padding:4px 11px;font-size:13px;white-space:nowrap}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.chip.zhu[aria-pressed="true"]{background:var(--zhu);border-color:var(--zhu);color:#fff}
+
+/* 三欄 */
+.main{--mapw:270px;--detw:380px;display:grid;grid-template-columns:var(--mapw) 9px minmax(0,1fr) 9px var(--detw);min-height:0;gap:0}
+.gut{position:relative;cursor:col-resize;touch-action:none;z-index:4}
+.gut::before{content:"";position:absolute;top:0;bottom:0;left:4px;width:1px;background:var(--rule)}
+.gut::after{content:"";position:absolute;top:50%;left:2px;width:5px;height:36px;transform:translateY(-50%);border-radius:3px;background:var(--rule);opacity:0;transition:opacity .15s}
+.gut:hover::before,.gut.on::before{background:var(--zhu);width:2px;left:3.5px}
+.gut:hover::after,.gut.on::after{opacity:1;background:var(--zhu)}
+body.resizing{cursor:col-resize;user-select:none}
+body.resizing iframe,body.resizing svg{pointer-events:none}
+.pane{min-height:0;overflow:auto}
+.map{position:relative;padding:12px 8px 24px 0;min-width:0}
+.detail{min-width:0;display:flex;flex-direction:column;min-height:0;overflow:hidden}
+.center{display:grid;grid-template-rows:auto 1fr auto;min-height:0;min-width:0}
+
+/* 地圖 */
+.map h2,.side h2{font-size:11px;letter-spacing:.18em;color:var(--ink-3);font-weight:500;margin:4px 0 8px}
+.kp ul{list-style:none;margin:0 0 0 5px;padding-left:3px;border-left:1px dotted var(--rule)}
+.kp>ul{padding-left:0;border:0}
+.kp li{margin:1px 0}
+.kp{width:max-content;min-width:100%}
+.kp .row{white-space:nowrap;display:flex;align-items:flex-start;gap:4px;padding:2px 4px;border-radius:5px;font-size:13px;line-height:1.45;color:var(--ink-3)}
+.kp .row .tw{flex:none;width:14px;border:0;background:none;padding:0;color:var(--ink-3);font-size:10px;line-height:19px}
+.kp .row .c{flex:none;font-family:var(--f-kai);color:var(--ink-3)}
+.kp .row .t{font-family:var(--f-kai);font-size:14px}
+.kp .row.path .t{color:var(--ink)}
+.kp .row.has{color:var(--ink);cursor:pointer}
+.kp .row.has .t{color:var(--zhu);font-weight:700}
+.kp .row.has::after{content:"";flex:none;width:7px;height:7px;margin-top:6px;border-radius:50%;background:var(--zhu)}
+.kp .row.has:hover,.kp .row.cur{background:var(--zhu-wash)}
+.kp .row.flash{animation:flash 1.2s}
+@keyframes flash{0%,40%{background:var(--zhu-wash);box-shadow:0 0 0 2px var(--zhu)}100%{box-shadow:none}}
+.maphd{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px}
+.maphd h2{margin:0}
+.maphd .seg button{padding:1px 8px;font-size:12px}
+.kp.mine{width:auto}
+.kp.mine .row{white-space:normal}
+.kp.mine ul{margin:0;padding:0;border:0}
+.kp.mine .row{padding-left:calc(var(--d,0) * 9px + 4px)}
+.kp.mine .row .tw{display:none}
+.kp .lessons{margin:2px 0 8px;padding-left:calc(var(--d,0) * 9px + 22px);display:flex;flex-direction:column;gap:4px}
+.kp .lessons button{text-align:left;border:1px solid var(--rule);background:var(--raised);border-radius:8px;padding:5px 9px;font-size:12px;color:var(--ink-2);white-space:normal;line-height:1.5}
+.kp .lessons button b{display:block}
+.kp .lessons button b{font-family:var(--f-kai);font-size:14px;color:var(--ink);font-weight:700;margin-right:6px}
+.kp .lessons button.cur{border-color:var(--zhu);box-shadow:0 0 0 2px var(--zhu-wash)}
+.map .note{font-size:12px;color:var(--ink-3);margin:14px 4px 0;line-height:1.6}
+
+/* 主圖 */
+.bar{display:flex;align-items:center;gap:8px;padding:8px 12px;border-bottom:1px solid var(--rule);flex-wrap:wrap}
+.bar .lbl{font-size:12px;color:var(--ink-3);margin-right:2px}
+.seg{display:inline-flex;border:1px solid var(--rule);border-radius:8px;overflow:hidden;background:var(--raised)}
+.seg button{border:0;background:none;padding:3px 10px;font-size:13px}
+.seg button+button{border-left:1px solid var(--rule)}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
+.tagbtn{border:0;border-radius:5px;padding:2px 8px;font-size:12px;color:#fff;opacity:.9}
+.tagbtn[aria-pressed="false"]{background:transparent!important;color:var(--ink-2);box-shadow:inset 0 0 0 1px var(--rule)}
+.spacer{flex:1}
+.iconbtn{border:1px solid var(--rule);background:var(--raised);border-radius:7px;padding:3px 9px;font-size:13px}
+.primary{border:0;background:var(--zhu);color:#fff;border-radius:7px;padding:5px 12px;font-size:13px;font-weight:500}
+.treewrap{overflow:auto;min-height:0;position:relative;background:var(--paper);cursor:grab;touch-action:pan-x pan-y}
+.treewrap.dragging{cursor:grabbing;user-select:none}
+.treewrap.dragging #tree .n{cursor:grabbing}
+#tree{display:block}
+#tree .hit{fill:transparent;rx:6}
+#tree .n{cursor:pointer}
+#tree .n:hover .hit{fill:var(--zhu-wash)}
+#tree .n.sel>.hit{fill:var(--zhu-wash);stroke:var(--zhu);stroke-width:1.4}
+#tree .n.inrange>.hit{fill:var(--zhu-wash);stroke:var(--zhu);stroke-dasharray:5 4;stroke-width:1.4}
+#tree line{stroke:var(--line);stroke-width:1.5}
+#tree line.on{stroke:var(--zhu);stroke-width:2.4}
+#tree.filt .lv5:not(.on),#tree.filt .lv4{opacity:.16}
+#tree.filt .lv5.on>.hit{fill:var(--zhu-wash)}
+.mini{border-top:1px solid var(--rule);padding:6px 12px 8px;background:var(--panel)}
+.mini .track{position:relative;height:64px;cursor:pointer;border-radius:6px;overflow:hidden;background:var(--paper)}
+.mini svg{position:absolute;inset:0;width:100%;height:100%}
+.mini .view{position:absolute;top:0;bottom:0;border:2px solid var(--zhu);border-radius:5px;background:var(--zhu-wash);pointer-events:none}
+.mini .cap{font-size:11px;color:var(--ink-3);margin-top:4px;display:flex;gap:12px;flex-wrap:wrap}
+.pickhint{position:absolute;left:12px;top:12px;z-index:5;background:var(--zhu);color:#fff;border-radius:8px;padding:6px 12px;font-size:13px;box-shadow:var(--shadow)}
+
+/* 細看 */
+.tabs{display:flex;border-bottom:1px solid var(--rule);padding:0 14px}
+.tabs button{border:0;background:none;padding:10px 4px;margin-right:18px;font-size:14px;color:var(--ink-3);border-bottom:2px solid transparent}
+.tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--zhu);font-weight:500}
+.side{overflow:auto;padding:16px 18px 40px;min-height:0;flex:1}
+.crumb{font-size:12px;color:var(--ink-3);font-family:var(--f-kai);line-height:1.5}
+.crumb b{color:var(--zhu);font-weight:700}
+.meta-row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:10px 0 8px;font-size:12px;color:var(--ink-2);font-variant-numeric:tabular-nums}
+.pill{border:1px solid var(--rule);border-radius:999px;padding:1px 9px;background:var(--raised)}
+.play{border:0;cursor:pointer;display:inline-flex;align-items:center;gap:5px;text-decoration:none;color:#fff;background:var(--zhu);border-radius:999px;padding:3px 11px 3px 9px;font-size:12px;font-weight:500}
+.play svg{width:12px;height:12px;fill:currentColor}
+.play.ghost{background:none;color:var(--zhu);box-shadow:inset 0 0 0 1px var(--zhu)}
+.yw{font-family:var(--f-kai);font-size:21px;line-height:1.75;margin:4px 0 14px;text-align:justify}
+.red{color:var(--zhu)}
+.sec{margin-top:18px}
+.sec h3{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700;margin:0 0 8px;letter-spacing:.05em}
+.badge{display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;border-radius:4px;padding:0 6px;line-height:19px;color:#fff;white-space:nowrap}
+.badge.xw{background:none;color:var(--gold);box-shadow:inset 0 0 0 1.4px var(--gold)}
+.badge.ys{background:var(--zhu)}
+.xwlist{margin:0;padding-left:0;list-style:none;counter-reset:x;font-family:var(--f-kai);font-size:16px;line-height:1.7}
+.xwlist li{position:relative;padding-left:24px;margin:4px 0;counter-increment:x}
+.xwlist li::before{content:counter(x);position:absolute;left:0;top:3px;font-family:var(--f-ui);font-size:11px;color:var(--gold);width:17px;height:17px;border-radius:50%;box-shadow:inset 0 0 0 1px var(--gold);text-align:center;line-height:17px}
+.ycard{border:1px solid var(--rule);border-radius:10px;padding:12px 14px;margin:10px 0;background:var(--raised)}
+.ycard.hl{border-color:var(--zhu);box-shadow:0 0 0 2px var(--zhu-wash)}
+.ycard .hd{display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap}
+.ycard .kw{font-family:var(--f-kai);font-size:20px;color:var(--zhu);font-weight:700}
+.ycard ul{list-style:none;margin:0;padding:0}
+.ycard li{display:grid;grid-template-columns:40px 1fr;gap:8px;align-items:start;margin:7px 0;font-family:var(--f-kai);font-size:16px;line-height:1.65}
+.ycard li .badge{margin-top:3px;justify-self:start}
+.ycard li.dim{opacity:.3}
+.ygrp{display:flex;align-items:center;gap:7px;margin:12px 0 2px;font-family:var(--f-kai);font-size:16px;font-weight:700;color:var(--ink-2)}
+.ygrp:first-child{margin-top:2px}
+.ygrp .gno{font-family:var(--f-kai);font-size:12px;color:var(--zhu);width:19px;height:19px;border-radius:50%;box-shadow:inset 0 0 0 1.2px var(--zhu);display:grid;place-items:center;font-weight:400}
+.ycard ul.ingrp{margin-left:9px;padding-left:16px;border-left:1.5px solid var(--rule)}
+details.ts{margin-top:18px;border-top:1px solid var(--rule);padding-top:10px}
+details.ts summary{cursor:pointer;font-size:13px;font-weight:700;list-style:none;display:flex;align-items:center;gap:8px}
+details.ts summary::-webkit-details-marker{display:none}
+details.ts summary::before{content:"▸";color:var(--ink-3);transition:transform .15s}
+details.ts[open] summary::before{transform:rotate(90deg)}
+.tsec{margin:12px 0}
+.tsec .tt{font-size:11px;color:var(--ink-3);font-variant-numeric:tabular-nums;display:flex;gap:8px;align-items:center}
+.tsec .tt button.play-ts{cursor:pointer;border:0;background:none;padding:0;color:var(--zhu);font-size:11px}
+.tsec p{margin:4px 0;font-size:14px;line-height:1.8;color:var(--ink-2)}
+.tsec p.q{font-family:var(--f-kai);font-size:16px;color:var(--ink);border-left:3px solid var(--gold);padding-left:10px}
+.idx-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+.idx-item{display:block;width:100%;text-align:left;border:0;border-bottom:1px solid var(--rule);background:none;padding:9px 2px}
+.idx-item:hover{background:var(--zhu-wash)}
+.idx-item .w{font-family:var(--f-kai);font-size:15px;line-height:1.6}
+.idx-item .m{font-size:12px;color:var(--ink-3);margin-top:2px}
+.kwgrid{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0 16px}
+.kwgrid button{font-family:var(--f-kai);font-size:16px;border:1px solid var(--rule);background:var(--raised);color:var(--zhu);border-radius:7px;padding:2px 10px}
+.legend{display:flex;gap:10px;flex-wrap:wrap;align-items:center;font-size:12px;color:var(--ink-2)}
+
+/* 下載 */
+.pop{position:absolute;z-index:40;right:12px;top:48px;width:320px;max-width:calc(100% - 24px);background:var(--raised);border:1px solid var(--rule);border-radius:12px;box-shadow:var(--shadow);padding:14px 16px}
+.pop h4{margin:0 0 10px;font-size:14px}
+.pop label{display:flex;gap:8px;align-items:flex-start;margin:6px 0;font-size:13px;cursor:pointer}
+.pop .sub{font-size:12px;color:var(--ink-3)}
+.pop .row{display:flex;gap:8px;margin-top:12px;justify-content:flex-end;align-items:center}
+.pop .msg{font-size:12px;color:var(--ink-2);margin-top:8px;min-height:1em}
+/* 播放列 */
+.player{position:fixed;z-index:50;left:50%;transform:translateX(-50%);bottom:calc(14px + env(safe-area-inset-bottom,0px));width:min(620px,calc(100% - 32px));
+  background:var(--raised);border:1px solid var(--rule);border-radius:14px;box-shadow:var(--shadow);padding:10px 14px;display:grid;grid-template-columns:auto 1fr auto;gap:6px 12px;align-items:center}
+.player .pp{width:38px;height:38px;border-radius:50%;border:0;background:var(--zhu);color:#fff;display:grid;place-items:center;grid-row:span 2}
+.player .pp svg{width:16px;height:16px;fill:currentColor}
+.player .lb{font-size:13px;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.player .lb b{font-family:var(--f-kai);font-size:15px;color:var(--zhu);margin-left:6px}
+.player .tm{font-size:12px;color:var(--ink-3);font-variant-numeric:tabular-nums;white-space:nowrap}
+.player .bar{grid-column:2/4;position:relative;height:6px;border-radius:3px;background:var(--rule);cursor:pointer}
+.player .bar i{position:absolute;inset:0 auto 0 0;border-radius:3px;background:var(--zhu)}
+.player .x{border:0;background:none;color:var(--ink-3);font-size:16px;padding:0 2px}
+.player .src{font-size:11px;color:var(--ink-3)}
+.badge.ky{background:var(--t-li)}
+.badge.sj{background:none;color:var(--ink-2);box-shadow:inset 0 0 0 1.2px var(--ink-3)}
+.kytext{font-family:var(--f-kai);font-size:16px;line-height:1.8;color:var(--ink);margin:0;padding:10px 12px;border-radius:8px;background:var(--raised);border:1px solid var(--rule)}
+.sjtext{font-family:var(--f-kai);font-size:16px;line-height:1.85;margin:0}
+.sjtext .sjan{color:var(--ink-3);font-size:.9em}
+.sjtext .sjlab{font-style:normal;font-family:var(--f-ui);font-size:10px;border-radius:3px;padding:0 3px;margin:0 2px;vertical-align:2px}
+.sjnote{font-size:12px;color:var(--ink-3);margin:0}
+.sjkey{font-weight:400;color:var(--ink-3);font-size:11px}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--paper);padding:8px 14px;border-radius:8px;font-size:13px;z-index:60;box-shadow:var(--shadow)}
+
+/* 手機：大綱 */
+.mtabs{display:none}
+.outline{display:none}
+@media (max-width:980px){
+  body{overflow:auto}
+  html,body{height:auto}
+  .app{height:auto;min-height:100%}
+  .main{display:block}
+  .mtabs{display:flex;gap:4px;padding-block:8px;position:sticky;top:env(safe-area-inset-top,0px);background:var(--paper);z-index:20;border-bottom:1px solid var(--rule)}
+  body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:21;background:var(--paper)}
+  .mtabs button{flex:1;border:1px solid var(--rule);background:var(--raised);border-radius:8px;padding:6px 0;font-size:14px}
+  .mtabs button[aria-selected="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+  .map,.center,.detail,.outline,.gut{display:none}
+  .main[data-m="outline"] .outline{display:block}
+  .main[data-m="map"] .map{display:block;border:0;padding:12px 0}
+  .main[data-m="tree"] .center{display:grid;height:calc(100vh - 130px);border:0}
+  .main[data-m="index"] .detail{display:flex;border:0}
+  .main[data-m="index"] .detail .tabs{display:none}
+  .side{padding:12px 0 40px}
+  .brand .lesson{display:none}
+  .search{flex-basis:100%;max-width:none;margin-left:0;order:3}
+  .pop{position:fixed;top:auto;bottom:calc(16px + env(safe-area-inset-bottom,0px));right:16px;left:16px;width:auto}
+}
+.outline .oc{border-bottom:1px solid var(--rule);padding:14px 0}
+.outline .oc.sel{background:linear-gradient(90deg,var(--zhu-wash),transparent)}
+.outline .oc .yw{font-size:19px;margin:6px 0 8px}
+.outline details{margin-top:6px}
+.outline details summary{cursor:pointer;font-size:13px;color:var(--gold);font-weight:500}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+</style>
+
+<div class="app">
+  <header>
+    <div class="brand"><h1>師父講解科判</h1><span class="lesson" id="lessonInfo">載入中…</span></div>
+    <div class="search" role="search">
+      <svg viewBox="0 0 24 24" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
+      <input id="q" type="search" autocomplete="off" placeholder="搜原文、科判、延伸，或音檔「69A」「69A 12」" aria-label="搜尋">
+      <div class="results" id="results" hidden></div>
+    </div>
+  </header>
+
+  <nav class="mtabs" role="tablist" aria-label="檢視">
+    <button role="tab" data-m="outline" aria-selected="true">大綱</button>
+    <button role="tab" data-m="tree" aria-selected="false">科判圖</button>
+    <button role="tab" data-m="map" aria-selected="false">地圖</button>
+    <button role="tab" data-m="index" aria-selected="false">索引</button>
+  </nav>
+
+  <div class="main" id="main" data-m="outline">
+    <aside class="pane map" aria-label="廣論科判地圖">
+      <div class="maphd"><h2>地圖・廣論科判</h2>
+        <div class="seg" role="group" aria-label="地圖範圍"><button id="mapMine" aria-pressed="true">已整理</button><button id="mapAll" aria-pressed="false">全部</button></div></div>
+      <div class="kp" id="kp"></div>
+      <p class="note" id="mapNote"></p>
+    </aside>
+
+    <div class="gut" id="gutL" role="separator" aria-orientation="vertical" aria-label="調整地圖寬度（雙擊恢復）" tabindex="0"></div>
+    <section class="center" aria-label="師父講解科判圖">
+      <div class="bar">
+        <span class="lbl">圖層</span>
+        <div class="seg" role="group" aria-label="消文圖層">
+          <button id="lyBoth" aria-pressed="false">消文＋延伸</button>
+          <button id="lyYan" aria-pressed="true">只看延伸</button>
+        </div>
+        <span class="lbl" style="margin-left:6px">標亮</span>
+        <div id="tagbar" style="display:flex;gap:4px;flex-wrap:wrap"></div>
+        <span class="spacer"></span>
+        <button class="iconbtn" id="zOut" aria-label="縮小">－</button>
+        <button class="iconbtn" id="zFit" aria-label="符合高度">適中</button>
+        <button class="iconbtn" id="zIn" aria-label="放大">＋</button>
+        <button class="primary" id="dlBtn">下載圖片</button>
+      </div>
+      <div class="treewrap" id="treewrap"></div>
+      <div class="mini">
+        <div class="track" id="mini"></div>
+        <div class="cap"><span id="miniCap"></span><span>在圖上按住拖曳可移動・點縮圖跳到該處・由右往左讀</span></div>
+      </div>
+      <div class="pop" id="pop" hidden>
+        <h4>下載圖片</h4>
+        <div id="rangeOpts"></div>
+        <label><input type="checkbox" id="dlXw"> 含消文理路</label>
+        <div class="sub" style="margin-top:8px">格式</div>
+        <label><input type="radio" name="fmt" value="png" checked> PNG（2 倍解析度，印 A3 也清楚）</label>
+        <label><input type="radio" name="fmt" value="svg"> SVG（可再編輯）</label>
+        <div class="msg" id="dlMsg"></div>
+        <div class="row"><button class="iconbtn" id="dlCancel">取消</button><button class="primary" id="dlGo">下載</button></div>
+      </div>
+    </section>
+
+    <div class="gut" id="gutR" role="separator" aria-orientation="vertical" aria-label="調整細看寬度（雙擊恢復）" tabindex="0"></div>
+    <aside class="pane detail" aria-label="細看">
+      <div class="tabs" role="tablist">
+        <button role="tab" id="tabD" aria-selected="true">細看</button>
+        <button role="tab" id="tabI" aria-selected="false">索引</button>
+      </div>
+      <div class="side" id="side"></div>
+    </aside>
+
+    <section class="outline" id="outline" aria-label="大綱"></section>
+  </div>
+</div>
+
+<div class="player" id="player" hidden>
+  <button class="pp" id="ppBtn" aria-label="播放／暫停"><svg viewBox="0 0 12 12" id="ppIcon"><path d="M3 1.5v9l7.5-4.5z"/></svg></button>
+  <div class="lb" id="plLabel"></div>
+  <div style="display:flex;gap:8px;align-items:center"><span class="tm" id="plTime"></span><button class="x" id="plClose" aria-label="關閉播放列">✕</button></div>
+  <div class="bar" id="plBar"><i id="plFill"></i></div>
+</div>
+<audio id="aud" preload="none"></audio>
+<script id="kpdata" type="application/json">{"kepan":{"說明":"菩提道次第廣論科判樹。c=科判代號、t=標題、k=子節點、v=是否已核對過。v:false 的分支請先自行核對再用，build_deck.py 會出警告。","已核對":"戊一 於共下士道次修心 底下的『淨修皈依』與『深信業果』兩支，逐字對照過範例投影片(深信業果十一)的科判頁。其餘分支是依通行科判寫的，尚未逐條核對。","樹":{"c":"","t":"菩提道次第廣論","v":true,"k":[{"c":"甲一","t":"為顯其法根源淨故開示造者殊勝","v":true},{"c":"甲二","t":"令於教授起敬重故開示其法殊勝","v":true},{"c":"甲三","t":"如何講聞二種殊勝相應正法","v":true},{"c":"甲四","t":"如何正以教授引導學徒之次第","v":true,"k":[{"c":"乙一","t":"道之根本親近知識軌理","v":true,"k":[{"c":"丙一","t":"令發定解故稍開宣說","v":true},{"c":"丙二","t":"總略宣說修持軌理","v":true}]},{"c":"乙二","t":"既親近已如何修心次第","v":true,"k":[{"c":"丙一","t":"於有暇身勸取心要","v":true},{"c":"丙二","t":"如何攝取心要之理","v":true,"k":[{"c":"丁一","t":"於道總建立發決定解","v":true},{"c":"丁二","t":"正於彼道取心要之理","v":true,"k":[{"c":"戊一","t":"於共下士道次修心","v":true,"k":[{"c":"己一","t":"正修下士意樂","v":true,"k":[{"c":"庚一","t":"發生希求後世之心","v":true,"k":[{"c":"辛一","t":"思惟此世不能久住憶念必死","v":true},{"c":"辛二","t":"思惟後世當生何趣二趣苦樂","v":true}]},{"c":"庚二","t":"依止後世安樂方便","v":true,"k":[{"c":"辛一","t":"趣入聖教最勝之門淨修皈依","v":true,"k":[{"c":"壬一","t":"由依何事為皈依因","v":true},{"c":"壬二","t":"由依彼故所皈之境","v":true},{"c":"壬三","t":"由何道理而正皈依","v":true},{"c":"壬四","t":"既皈依已所學次第","v":true,"k":[{"c":"癸一","t":"攝分中出","短":"攝分","v":true},{"c":"癸二","t":"教授中出","短":"教授","v":true,"k":[{"c":"子一","t":"別學","v":true},{"c":"子二","t":"共學","v":true}]}]}]},{"c":"辛二","t":"一切善樂所有根本發深忍信","v":true,"k":[{"c":"壬一","t":"思總業果","v":true,"k":[{"c":"癸一","t":"正明思總之理","v":true,"k":[{"c":"子一","t":"業決定理","v":true},{"c":"子二","t":"業增長廣大","v":true},{"c":"子三","t":"業未造不遇","v":true},{"c":"子四","t":"業已造不失","v":true}]},{"c":"癸二","t":"分別思惟","v":true,"k":[{"c":"子一","t":"顯十業道而為上首","v":true},{"c":"子二","t":"抉擇業果","v":true,"k":[{"c":"丑一","t":"顯示黑業果","v":true,"k":[{"c":"寅一","t":"正顯示黑業道","v":true},{"c":"寅二","t":"輕重差別","v":true},{"c":"寅三","t":"此等之果","v":true,"小節":["異熟果","等流果","增上果"]}]},{"c":"丑二","t":"白業果","v":true},{"c":"丑三","t":"業餘差別","v":true}]}]}]},{"c":"壬二","t":"思別業果","v":true},{"c":"壬三","t":"思已正行進止之理","v":true,"k":[{"c":"癸一","t":"遮止惡行之理","v":true},{"c":"癸二","t":"特以四力淨修道理","v":true,"k":[{"c":"子一","t":"破壞現行力","v":false},{"c":"子二","t":"對治現行力","v":false},{"c":"子三","t":"遮止罪惡力","v":false},{"c":"子四","t":"依止力","v":false}]}]}]}]}]},{"c":"己二","t":"發此意樂之量","v":true},{"c":"己三","t":"除遣此中邪執","v":true}]},{"c":"戊二","t":"於共中士道次修心","v":true,"k":[{"c":"己一","t":"正修意樂","v":true,"k":[{"c":"庚一","t":"明求解脫之心","v":true},{"c":"庚二","t":"發此之方便","v":true,"k":[{"c":"辛一","t":"由於苦集門中思惟","v":true,"k":[{"c":"壬一","t":"思惟苦諦生死過患","v":true,"k":[{"c":"癸一","t":"顯示四諦先說苦諦之意趣","v":true},{"c":"癸二","t":"正修苦諦","v":true,"k":[{"c":"子一","t":"思惟生死總苦","v":true,"k":[{"c":"丑一","t":"思惟八苦","v":true},{"c":"丑二","t":"思惟六苦","v":true},{"c":"丑三","t":"思惟三苦","v":true}]},{"c":"子二","t":"思惟別苦","v":true}]}]},{"c":"壬二","t":"思惟集諦流轉次第","v":false,"k":[{"c":"癸一","t":"煩惱發生之理","v":false},{"c":"癸二","t":"彼集業之理","v":false},{"c":"癸三","t":"死沒及結生之理","v":false}]}]},{"c":"辛二","t":"由於十二緣起思惟","v":false}]}]},{"c":"己二","t":"彼生起之量","v":true},{"c":"己三","t":"除遣於此邪執分別","v":true},{"c":"己四","t":"決擇能趣解脫道性","v":true,"k":[{"c":"庚一","t":"以何等身滅除生死","v":false},{"c":"庚二","t":"修何等道而為滅除","v":false}]}]},{"c":"戊三","t":"於上士夫道次修心","v":true,"k":[{"c":"己一","t":"顯示入大乘門唯是發心","v":false},{"c":"己二","t":"如何發生此心道理","v":false},{"c":"己三","t":"既發心已學行道理","v":false,"k":[{"c":"庚一","t":"發心已後須學學處之因相","v":false},{"c":"庚二","t":"顯示學習智慧方便一分不能成佛","v":false},{"c":"庚三","t":"說明學習菩薩學處之次第","v":false,"k":[{"c":"辛一","t":"於總大乘學習道理","v":false,"k":[{"c":"壬一","t":"淨修欲學菩薩學處","v":false},{"c":"壬二","t":"修已受取佛子律儀","v":false},{"c":"壬三","t":"受已如何學習道理","v":false,"k":[{"c":"癸一","t":"何所學處","v":false},{"c":"癸二","t":"其中能攝諸學道理","v":false},{"c":"癸三","t":"於此如何學習次第","v":false,"k":[{"c":"子一","t":"初於總行學習道理","v":false,"k":[{"c":"丑一","t":"學習六度熟自佛法","v":false,"k":[{"c":"寅一","t":"布施波羅蜜多","v":false},{"c":"寅二","t":"持戒波羅蜜多","v":false},{"c":"寅三","t":"忍辱波羅蜜多","v":false},{"c":"寅四","t":"精進波羅蜜多","v":false},{"c":"寅五","t":"靜慮波羅蜜多","v":false},{"c":"寅六","t":"般若波羅蜜多","v":false}]},{"c":"丑二","t":"學習四攝熟他有情","v":false}]},{"c":"子二","t":"特於後二波羅蜜多學習道理","v":false,"k":[{"c":"丑一","t":"別學奢摩他法","v":false},{"c":"丑二","t":"別學毗缽舍那法","v":false},{"c":"丑三","t":"學習雙運法","v":false}]}]}]}]},{"c":"辛二","t":"特於金剛乘學習道理","v":false}]}]}]}]}]}]}]}]}},"index":[{"id":"siwei-kudi-02","標題":"思惟苦諦(2)","根":"思惟八苦","科判焦點":"丑一 思惟八苦","課本範圍":"P155 L8 ~ P157 L7","堂數":110,"日期":"2026/11/10"}],"lessons":{"siwei-kudi-02":{"id":"siwei-kudi-02","標題":"思惟苦諦(2)","根":"思惟八苦","科判焦點":"丑一 思惟八苦","課本範圍":"P155 L8 ~ P157 L7","堂數":110,"日期":"2026/11/10","分圖":[{"名":"標八苦・修法總則","原文":[0,9]},{"名":"引經證成・止觀","原文":[10,16]},{"名":"生苦五相","原文":[17,24]}],"音檔":{"68b":{"local":"音檔/gl1/068B.mp3","remote":"https://lamrim.xyz/player/media/gl1/068B.mp3"},"69a":{"local":"音檔/gl1/069A.mp3","remote":"https://lamrim.xyz/player/media/gl1/069A.mp3"}},"tch":"gl1","音檔網址":"https://lamrim.xyz/player2/?&tch=gl1&af1=68b&st1=1051&af2=69a&et2=1601","段":[{"文":"第二正修苦分二：一思惟生死總苦，二思惟別苦。初中分三：一思惟八苦，二思惟六苦，三思惟三苦。今初","口譯":"第二、正修苦諦分二：一、思惟生死總苦，二、思惟別苦。第一又分三：一、思惟八苦，二、思惟六苦，三、思惟三苦。以下說第一。","四家合註":null,"時":"68B 17:31","頁":155,"af":"68b","st":1051,"et":1088,"消文":[{"文":"先把苦的總相說明一下，第二個別地說。"},{"文":"總相當中，平常常聽見說「八苦交煎」，一個一個來看。"}],"延伸":[],"逐字稿":[{"t":"68B 17:31","b":[["q","第二正修苦分二：一思惟生死總苦，二思惟別苦。"],["s","把這個苦的總相，說明一下。第二呢？個別地說。"]]},{"t":"68B 17:52","b":[["q","初中分三：一思惟八苦，二思惟六苦，三思惟三苦。　今初"],["s","那麼先說那個總相，總相當中平常我們常常聽見說「八苦交煎」，乃至於下面的，我們一個一個來看。"]]}]},{"文":"如《親友書》云：「仁和應厭於生死，欲乏死病及老等，無量眾苦出生處。」應如是修。","口譯":"如《親友書》說：「仁和（龍樹菩薩對收信國王的敬稱），應當厭離生死，它是欲求匱乏、死、病以及老等無量眾苦出生的地方。」應當這樣修。","四家合註":null,"時":"68B 18:08","頁":155,"af":"68b","st":1088,"et":1143,"消文":[{"文":"對三有生死輪迴的內涵，應該認識而生起厭惡。"},{"文":"這裡快樂一點都沒有，想要的都得不到；死、病、老，各式痛苦都從這裡來。"},{"文":"應如是修：這是我們應該認識、應該這樣去修的。"}],"延伸":[],"逐字稿":[{"t":"68B 18:08","b":[["q","如《親友書》云：「仁和應厭於生死，欲乏死病及老等，無量眾苦出生處。」應如是修。"],["s","所以菩薩呀！這個你應該了解，去生起厭患的啊！對於這個三有生死輪迴這個內涵，你應該認識而生起的厭惡。要曉得這個裡邊快樂是一點都沒有，你要想的東西都得不到，恰恰相反的是什麼？死、病、老，各式各樣的痛苦都從這個地方來的，這是我們應該認識，應該這樣去修的。"]]}]},{"文":"此中修習厭生死者，謂思惟彼是眾苦根源。苦者，謂已顯說欲乏等四，等字攝四，共為八種。此八種苦，是薄伽梵於多經中，明苦諦時«數所宣說»。","口譯":"這裡所說修習厭離生死，就是思惟生死是眾苦的根源。所說的苦，是已明白說出的欲乏等四種，「等」字又攝四種，共為八種。這八種苦，是薄伽梵在許多經中，說明苦諦時一再宣說的。","四家合註":null,"時":"68B 19:03","頁":155,"af":"68b","st":1143,"et":1232,"消文":[{"文":"欲乏：欲樂缺乏，沒有好的，沒有好的就是壞的。"},{"文":"等字包含生老病死，共分八個項目。"},{"文":"這八項，世尊在很多經典中不斷地告訴我們。"}],"延伸":[{"題":"數所宣說","組":[{"題":"多方面策勵","說":[{"類":"因","文":"為什麼不斷地講？用多方面的策勵，總有一點觸動你的心。"}]},{"題":"相應處把握","說":[{"類":"下手","文":"那裡看到跟你相應了，就拼命在那裡把握住、去努力。"},{"類":"破","文":"稍微看一看就說沒勁；只在外面轉，暇滿人身就浪費掉了。"}]}],"說":[{"類":"因","文":"為什麼不斷地講？用多方面的策勵，總有一點觸動你的心。"},{"類":"下手","文":"那裡看到跟你相應了，就拼命在那裡把握住、去努力。"},{"類":"破","文":"稍微看一看就說沒勁；只在外面轉，暇滿人身就浪費掉了。"}],"af":"68b","st":1143}],"逐字稿":[{"t":"68B 19:03","b":[["q","此中修習厭生死者，謂思惟彼是眾苦根源。苦者，謂已顯說欲乏等四，等字攝四，共為八種。此八種苦，是薄伽梵於多經中，明苦諦時數所宣說。"],["s","前面告訴我們苦啊，就是說明了什麼？「欲乏」，就是欲樂缺乏，沒有好的，沒有好的那就是壞的嘛！「等」，這個等字包涵了下面，生老病死。那麼現在共分八個項目。這八個項目，世尊在很多經典當中，不斷、不斷地告訴我們。他為什麼要不斷、不斷告訴我們哪？用多方面的策勵，總有一點一下觸動你的心，然後你從這地方拼命進入、努力，就行了，就行了。現在我們也是這樣，所以不要說稍微看一看，哎呀，看了沒有勁，你要努力去看。那裡看到了跟你相應了，那你就拼命在這地方把握住，去努力，那個時候就有機會，就有機會。否則只是在這外面轉，好可惜啊，就把這個暇滿的人身就浪費掉了啦！"]]}]},{"文":"修共中士一切所緣法類，如共下時所說共法，此亦應取。","口譯":"修共中士的一切所緣法類時，如共下士時所說的共同之法，在這裡也應取用。","四家合註":null,"時":"68B 20:32","頁":155,"af":"68b","st":1232,"et":1266,"消文":[{"文":"開始修中士了；中士跟下士是次第相關地向上進步。"},{"文":"共下士的法這裡還要取來修，等到堅固了再走上去。"}],"延伸":[],"逐字稿":[{"t":"68B 20:32","b":[["q","修共中士一切所緣法類，如共下時所說共法，此亦應取。"],["s","那麼，現在我們這個地方開始修中士了。說這個中士跟前面的下士，是次第相關地向上進步。所以前面共下士的，這個地方還是應該取來修習，等到這個堅固了，然後呢走上去。所以："]]}]},{"文":"諸不共之修事，若有慧力，如下所寫皆當善修。","口譯":"各種不共的修事，如果有慧力，對以下所寫的都應善加修習。","四家合註":null,"時":"68B 21:06","頁":155,"af":"68b","st":1266,"et":1311,"消文":[{"文":"不共指中士道：目的在上的是共，只求下的則對下不共。"},{"文":"前面基礎修好了，有慧力就照下面所說的修。"},{"文":"換句話說：力量不夠，暫時不必忙，先把基礎弄好。"}],"延伸":[],"逐字稿":[{"t":"68B 21:06","b":[["q","諸不共之修事，若有慧力，如下所寫皆當善修。"],["s","那麼，不共呢？就是指中士道，這個中士道對這個下士來說，不共的。有很多人他的目的在上，那麼是共同的；有很多人目的只求下，所以對下是不共的。所以假定他把前面那個基礎修好了，進一步修上面這個，那麼那個時候，如果有慧力的時候，那麼照著下面的所做。換句話說這個地方告訴我們什麼？如果你的力量不夠，暫時不必忙，先把基礎弄好。所以說："]]}]},{"文":"若慧劣弱，可暫捨置所引教文，","口譯":"如果慧力薄弱，可以暫時放下所引的經論文句，","四家合註":null,"時":"68B 21:51","頁":156,"af":"68b","st":1311,"et":1326,"消文":[{"文":"力量不夠的話，暫時不要先忙下面深入的。"}],"延伸":[],"逐字稿":[{"t":"68B 21:51","b":[["q","若慧劣弱，可暫捨置所引教文，"],["s","如果你的力量不夠的話，暫時不要先忙，忙下面深入的。"]]}]},{"文":"唯當修習«應時義體»。","口譯":"只修習合於當下的義理要點（應時義體）。","四家合註":null,"時":"68B 22:06","頁":156,"af":"68b","st":1326,"et":1550,"消文":[{"文":"修習跟我們相應的、合宜的，步步踏實地深入。"}],"延伸":[{"題":"應時義體","組":[{"題":"舉例","說":[{"類":"例","文":"愛講道理的同修說：「我已經錯了，我感到真高興！」轉過來得到功德。"}]},{"題":"目的・習氣","說":[{"類":"立","文":"進佛門一定要了解兩件事：目的何在，習氣是什麼。"},{"類":"因","文":"宿生習氣使我們進佛門，來了幹什麼卻弄不清楚；六祖聞一句即相應，畢竟少數。"}]},{"題":"先把握根本因","說":[{"類":"破","文":"弄不清楚時，千萬不要說：哪裡有大法去求。"},{"類":"立","文":"先把握根本因，進一步才是圓滿因。"},{"類":"喻","文":"做生意先要了解賺不賺錢；虧本生意拼命做，越做越虧本。"}]},{"題":"慧對治煩惱","說":[{"類":"立","文":"慧的特質是對治煩惱：認識了才能對治，才能解脫生死。"},{"類":"破","文":"否則拋棄世間跑到這裡來，不顛倒了嗎？"},{"類":"回扣","文":"慧力比較差的話，應該修習應時義體。"}]}],"說":[{"類":"例","文":"愛講道理的同修說：「我已經錯了，我感到真高興！」轉過來得到功德。"},{"類":"立","文":"進佛門一定要了解兩件事：目的何在，習氣是什麼。"},{"類":"因","文":"宿生習氣使我們進佛門，來了幹什麼卻弄不清楚；六祖聞一句即相應，畢竟少數。"},{"類":"破","文":"弄不清楚時，千萬不要說：哪裡有大法去求。"},{"類":"立","文":"先把握根本因，進一步才是圓滿因。"},{"類":"喻","文":"做生意先要了解賺不賺錢；虧本生意拼命做，越做越虧本。"},{"類":"立","文":"慧的特質是對治煩惱：認識了才能對治，才能解脫生死。"},{"類":"破","文":"否則拋棄世間跑到這裡來，不顛倒了嗎？"},{"類":"回扣","文":"慧力比較差的話，應該修習應時義體。"}],"af":"68b","st":1326}],"逐字稿":[{"t":"68B 22:06","b":[["q","唯當修習應時義體。"],["s","就是應該修習跟我們相應的、合宜的這個。我們總要步步踏實，這樣深入，這個是它最重要的！那麼照著這個次第上來，就步步地。所以我剛才說，我們懺悔有人見效，然後呢，讀了文有人見效，最近有好幾位同學。以前哪就有一位同修，他常常歡喜講道理，最近他認識了，他常常說：「哎呀，我已經錯了，我感到真高興！」我實在讚歎，我實在感謝！因為什麼呢？我們大家共同研究，他轉過來了，他得到功德，然後呢我也沾了他的光，我一天當中為了他歡喜，啊，我覺得真歡喜啊！"]]},{"t":"68B 23:06","b":[["s","這個法，所以我這個地方特別說明：你們一定要了解，一定要了解什麼？兩件事情。哪兩件事情？這個目的何在，還有習氣是什麼。我們因為宿生的習氣所使，因為宿生的習氣所使，所以自然而然又跑到佛門當中來。但是剛才說過了，雖然來是來了，來了目的幹什麼？一下的的確確弄不清楚的，這個倒是千真萬確的事實。極少數的大根性的人，他很快相應，譬如六祖大師，哦，他聽見了人家唸一句《金剛經》，行了，就這樣。可是這種人畢竟少數。我們大部分人哪，是，你看見這個廟很歡喜，你只是歡喜而已，這已經很難得了，你肯出家已經更不容易了。但是呢，畢竟我們在這個習氣當中。"]]},{"t":"68B 24:07","b":[["s","所以現在眼前進來的第一件事情，你一定要把這個，如果說弄不清楚的話，千萬不要說：哎呀，哪裡有大法去求啊，哪一個什麼好啊！不是的。說主要的它的根本在什麼地方把握住，根本因，進一步是圓滿因；根本因，然後是圓滿因。就像你賺錢一樣，你先要了解你做這個生意賺錢、不賺錢，賺錢的，然後再談那個生意做下去。所以你弄不清楚，明明這個虧本生意，你拼命地做，越做啊是越虧本哪！這是我們要了解的。所以實際上，他前面告訴我們，說：如果說自己的慧的力量比較差的話，那麼應該修習應時體義。慧的特質是什麼？慧的特質是對治煩惱。你必定要認識這個東西，你才談得到對它對治，對治了煩惱，才能夠解脫生死，這個才是我們進入佛門當中修行的特質。否則的話，你把世間的事情拋棄掉了，跑到這地方來，你不顛倒了嗎？你忙這些事情幹什麼？這是我們應該了解的。所以繼續。"]]}]},{"文":"此等雖是思擇而修，然除應修諸所緣外，餘善不善無記等上，«悉不應散»。","口譯":"這些雖然是思擇而修（觀察修），但是除了應修的各個所緣之外，對其餘的善、不善、無記等上，都不應散亂。","四家合註":null,"時":"68B 25:50","頁":156,"af":"68b","st":1550,"et":1719,"消文":[{"文":"思擇：為何不講聞？前面是善知識指導聽聞，現在如所聽聞的正理來思惟。"},{"文":"應修諸所緣：上課要聽，早晚課隨文作觀念誦。"},{"文":"除此以外一切時，善、不善、無記上都不應散亂。"}],"延伸":[{"題":"悉不應散","組":[{"題":"不善更不能散","說":[{"類":"因","文":"不善、無記怎麼也不散亂？不善的更不能散亂！不散亂才曉得是不善而對治。"},{"類":"破","文":"不善現起時一散亂，修了半天是白忙，抵銷掉了。"}]},{"題":"一時一刻不放鬆","說":[{"類":"立","文":"正修時一時一刻不放鬆，出去散步聊天也不會走歪路。"},{"類":"喻","文":"坐了沒味道出去散心，涼亭一坐三個鐘頭還嫌不夠；看書難得十分二十分。"},{"類":"立","文":"別小看這裡，我們的毛病、關鍵都在這上頭。"}]}],"說":[{"類":"因","文":"不善、無記怎麼也不散亂？不善的更不能散亂！不散亂才曉得是不善而對治。"},{"類":"破","文":"不善現起時一散亂，修了半天是白忙，抵銷掉了。"},{"類":"立","文":"正修時一時一刻不放鬆，出去散步聊天也不會走歪路。"},{"類":"喻","文":"坐了沒味道出去散心，涼亭一坐三個鐘頭還嫌不夠；看書難得十分二十分。"},{"類":"立","文":"別小看這裡，我們的毛病、關鍵都在這上頭。"}],"af":"68b","st":1550}],"逐字稿":[{"t":"68B 25:50","b":[["q","此等雖是思擇而修，然除應修諸所緣外，餘善不善無記等上，悉不應散。"],["s","了解了這一點，那麼我們緊跟著下去。說這些，是的，修這些都要什麼，「思擇」。他為什麼不講聞呢？因為前面告訴我們，什麼？這是善知識指導正確的內容，讓我們學習聽聞；從這裡我們現在開始的是，如所聽聞的正理而來思惟啊！所以說「雖是思擇而修」。但是除了我們「應修諸所緣外」 ─這個很重要哦！就是說，我們現在上課的時候要聽，作早晚課的時候要隨文作觀念誦，然後呢，除此以外，「餘善不善無記等上，悉不應散」。在除了這個時間以外，一切時間上頭，不管是善的、不善的、無記等上，都不應該散亂。你說：欸，善的嘛不要散亂，不善的、無記上面怎麼不散亂哪？善的固然是不要散亂，不善的是更不能散亂哪！因為你不散亂，所以你曉得：哎喲，不善的。曉得了不善的，然後你對治。如果不善的現起，你一散亂，你修了個半天，是白忙啊，然後呢抵銷掉了。懂不懂這個道理？"]]},{"t":"68B 27:39","b":[["s","所以你正式修的時候，一時一刻都不能放鬆，這個你必定要自己把握得住，那樣的話你才會認真地去修習。就算到那時候你出去散一下步，就算是聊一下天，你也不會走歪路。要不然的話，啊，你就算用功在這兒坐了一下，坐了就沒味道，然後跑出去想散散心，看見幾個人坐在涼亭裡，「哎呀，找到機會了！」然後就坐下來，啊！高高興興。在那裡看書，難得看它十分、二十分；這一坐啊，坐三個鐘頭，還嫌不夠，為什麼原因？就是這個。所以他這個地方你別小看哪，好像沒有深刻的道理，實際上真正的我們毛病、關鍵都在這個上頭啊！這是我們應該了解的！這是我們必定應該了解的。所以說："]]}]},{"文":"當於所緣遮心掉等，亦莫令隨昏睡沈沒增上而轉，","口譯":"應當在所緣上遮止內心的掉舉等，也不要讓心隨著昏睡、沈沒的增上力而轉，","四家合註":null,"時":"68B 28:39","頁":156,"af":"68b","st":1719,"et":1766,"消文":[{"文":"能識的心緣所緣，不如法的話要遮止它。"},{"文":"掉：跟散亂、貪相應的；等：包括其他不相應的。"},{"文":"向上揚是掉舉，掉完向下沈是昏沈，都是輪迴因。"}],"延伸":[],"逐字稿":[{"t":"68B 28:39","b":[["q","當於所緣遮心掉等，"],["s","所以我們在任何一切時候，我們這個心 ─在識心當中，一定有一個能識的心，去識所識的對象、所緣的。這個對這個所緣的，如果不如法的話，要遮止它。「掉等」，「等」字包括了不相應的，「掉」就是跟散亂、貪相應的這種。"]]},{"t":"68B 29:10","b":[["q","亦莫令隨昏睡沈沒增上而轉，"],["s","向上揚的時候嘛，掉舉，然後呢掉完了以後，向下沈的時候是昏沈，那個都是輪迴因。"]]}]},{"文":"當令其識極為明淨，漸次修習。","口譯":"應當讓心識極為明了清淨，漸次修習。","四家合註":null,"時":"68B 29:26","頁":156,"af":"68b","st":1766,"et":null,"消文":[{"文":"一切時處心要明跟淨：跟善淨之法相應，而且很明。"},{"文":"稍微一點輕昏狀態，已經不對了。"},{"文":"依這個目標，慢慢地一步一步深入相應。"}],"延伸":[],"逐字稿":[{"t":"68B 29:26","b":[["q","當令其識極為明淨，漸次修習。"],["s","一切時處，要使我們的心情兩個現象：明跟淨。淨是清淨的，一定是跟善淨之法，而且這個善淨之法很明。"]]},{"t":"69A 00:05","b":[["s","有的時候稍微一點輕昏狀態，已經不對了，一定要明淨。這個是目標，然後呢，我們慢慢、慢慢地根據了這個認識的目標，慢慢、慢慢地修習，想辦法一步一步地深入相應。"]]}]},{"文":"《入行論》云：「雖長夜修行，念誦苦行等，若心散亂修，佛說無義利。」此說一切«散亂善行»，其果微少。","口譯":"《入行論》說：「雖然長時修行，念誦、苦行等等，如果以散亂心來修，佛說沒有義利。」這是說一切散亂的善行，它的果報很微少。","四家合註":null,"時":"69A 00:24","頁":156,"af":"69a","st":24,"et":154,"消文":[{"文":"長時修行、念誦、苦行，心散亂就沒有多大利益。"},{"文":"要怎麼辦？照前面說的，令其識明淨。"},{"文":"散亂善行，得到的果非常少。"}],"延伸":[{"題":"散亂善行","組":[{"題":"回想圓滿人身","說":[{"類":"立","文":"回想前面：修行要靠人身，還要最圓滿的德相，具足戒乃至菩薩戒。"},{"類":"立","文":"心裡也要明跟淨，身心相應，才真正應得上佛說的戒。"}]},{"題":"戒的中心","說":[{"類":"立","文":"戒總括三句：以「自淨其意」為中心，形之身口「諸惡莫作，眾善奉行」。"},{"類":"立","文":"然後進入定慧，這是必定不能動的道理。"}]}],"說":[{"類":"立","文":"回想前面：修行要靠人身，還要最圓滿的德相，具足戒乃至菩薩戒。"},{"類":"立","文":"心裡也要明跟淨，身心相應，才真正應得上佛說的戒。"},{"類":"立","文":"戒總括三句：以「自淨其意」為中心，形之身口「諸惡莫作，眾善奉行」。"},{"類":"立","文":"然後進入定慧，這是必定不能動的道理。"}],"af":"69a","st":70}],"逐字稿":[{"t":"69A 00:24","b":[["q","《入行論》云：「雖長夜修行，念誦苦行等，若心散亂修，佛說無義利。」此說一切散亂善行，其果微少。"],["s","喏！引論上面告訴我們。雖然你長時候地修行，念誦、苦行等等，這個各方面的，但是你的心如果散亂的話，這樣也沒有多大的利益。要怎麼辦呢？就是照前面說的，令其識明淨，這樣的。「此說一切散亂善行，其果微少」，他得到的果非常少、非常少。"]]},{"t":"69A 01:10","b":[["s","說到這裡我們也同時可以回想一下，所以前面說，我們修行雖然是要靠人身，就是得到了人身還要最圓滿的德相。所以外面的身一定要選這樣的，說六道當中只有人道，人道當中還要這樣的圓滿的德相。不是一般的在家，不是受五戒、八關齋戒，乃至於沙彌，要具足戒，而且在具足戒上面，還要受菩薩戒等等。然後呢，心裡邊是要什麼狀態？也要身心一一相應，明跟淨，那個時候才真正應得上佛告訴我們的戒。佛講的戒，總括起來就這麼三句 ─以「自淨其意」作為它的中心，然後呢，由於這個心體上面，形之於身口是「諸惡莫作，眾善奉行」！然後進入定慧，這個是必定不能動的一個道理。"]]}]},{"文":"又《修信大乘經》云：「善男子由此異門，說諸菩薩，隨其所有信解大乘，大乘出生，當知一切，皆是由其不散亂心，正思法義之所出生。」","口譯":"又《修信大乘經》說：「善男子，由這個異門（角度）來說，諸菩薩所有對大乘的信解，以及大乘的出生，應當知道一切都是由不散亂心正確思惟法與義所出生的。」","四家合註":"大小二乘世出世間一切功德，皆止觀之果。如《解深密經》云：「慈氏，若諸聲聞、若諸菩薩、若諸如來所有世間及出世間一切善法，應知皆是此奢摩他、毘缽舍那所得之果。」<i class=\"sjlab\" style=\"background:#007f3c;color:#ffffff\">語<\/i><span>第二分二：一、疑彼；二、答之。初者：<\/span>若謂止觀，豈非已得修所成者相續功德，今說彼一切功德皆止觀之果，云何應理？<i class=\"sjlab\" style=\"background:#007f3c;color:#ffffff\">語<\/i><span>第二分二：一、正答；二、將彼結合經教。初者：<\/span>答：如下所說真實止觀，實是已得修所成者相續之德，則大小乘一切功德，非盡彼二之果，然於善所緣心一境性以上諸三摩地，悉皆攝為奢摩他品，及凡簡擇如所有性、盡所有性義諸妙善慧，悉皆攝為毘缽舍那品。故密意說三乘所有一切功德皆止觀之果，無相違過。<i class=\"sjlab\" style=\"background:#007f3c;color:#ffffff\">語<\/i><span>第二、結合教典者：<\/span>又於此義，《修信大乘經》亦密意說云：「善男子，由此異門，說諸菩薩盡其所有大乘信解，<i class=\"sjlab\" style=\"background:#950d43;color:#ffffff\">巴<\/i><span>謂即意樂圓滿，及<\/span>大乘出生，<i class=\"sjlab\" style=\"background:#950d43;color:#ffffff\">巴<\/i><span>謂即加行圓滿，<\/span>應知皆是無散亂心正思法、義之所出生。」無散亂心，謂奢摩他品心一境性；正思法、義，謂毘缽舍那品妙觀察慧。<i class=\"sjlab\" style=\"background:#007f3c;color:#ffffff\">語<\/i><span>第三、以理亦能成立成辦大小二乘一切功德勝利者：<\/span>故大小乘一切功德，皆以觀慧思擇而修，及於所緣心一境性二所成辦，非唯止修或唯觀修一分而成。","時":"69A 02:34","頁":156,"af":"69a","st":154,"et":225,"消文":[{"文":"前面是論，這裡是經。異門：各方面不同的種種門。"},{"文":"信解大乘：由認識啟發信心，增長見解，如法行持。"},{"文":"大乘功德從開始到圓滿，都從不散亂心正思法義出生。"}],"延伸":[],"逐字稿":[{"t":"69A 02:34","b":[["q","又《修信大乘經》云：「善男子由此異門，說諸菩薩，隨其所有信解大乘，大乘出生，當知一切，皆是由其不散亂心，正思法義之所出生。」"],["s","前面是論，那個地方是經，也告訴我們，由於上面所說的這個道理，各式、各方面，「異門」是各方面不同的種種門當中說。修、修大乘的，「信解大乘」就是初步的信，由如何認識，啟發信心，然後呢，深入增長見解，如法行持。一切大乘的功德，從開始到圓滿出生，都從這個地方，什麼？「不散亂心」，那個不散亂心幹什麼？用這個心「正思法義」。是，前面所說的，我們現在的一切時處，不管是善、不善、無記等上，不要令它餘散，都安住在這個上頭。"]]}]},{"文":"此中不散亂心者，謂除善所緣，不向餘散，«法及義»者謂文及義。","口譯":"這裡所說的不散亂心，是指除了善所緣之外，心不向其他地方散亂；法和義，是指文和義。","四家合註":null,"時":"69A 03:45","頁":156,"af":"69a","st":225,"et":293,"消文":[{"文":"「那麼就是這個」：師父併在上一句講，沒有另外解。"}],"延伸":[{"題":"法及義","組":[{"題":"來了卻煩惱","說":[{"類":"破","文":"來了還滿好，心裡面卻煩煩惱惱。"},{"類":"立","文":"佛法真正的中心就是對治煩惱。"},{"類":"破","文":"不能對治煩惱，就是跟著佛身邊也沒有用。"}]},{"題":"唯一目的","說":[{"類":"立","文":"我們所學的只有一個目的：淨除煩惱，這是根本。"},{"類":"回扣","文":"不散亂、正思法義，法的特質就是指這個。"}]}],"說":[{"類":"破","文":"來了還滿好，心裡面卻煩煩惱惱。"},{"類":"立","文":"佛法真正的中心就是對治煩惱。"},{"類":"破","文":"不能對治煩惱，就是跟著佛身邊也沒有用。"},{"類":"立","文":"我們所學的只有一個目的：淨除煩惱，這是根本。"},{"類":"回扣","文":"不散亂、正思法義，法的特質就是指這個。"}],"af":"69a","st":225}],"逐字稿":[{"t":"69A 03:45","b":[["q","此中不散亂心者，謂除善所緣，不向餘散，法及義者謂文及義。"],["s","那麼就是這個。這個道理，我們只要自己內心上面，一觀察就很容易了解。現在很多人來了，大家覺得：哎呀，來是來了還滿好，心裡面就是煩煩惱惱啊！那時候你要清楚喔！修學佛法沒有別的，佛法的真正的中心就是對治煩惱，就是對治煩惱。如果說你不能對治煩惱的話，在任何地方，就是跟著佛身邊也沒有用！就是跟著佛身邊也沒有用，這是我們千真萬確必定要認識的。我們所有學的東西，只有一個目的，什麼？淨除煩惱，如此，因為這是根本嘛！所以不散亂，正思法義，法的特質指的是什麼？就是指這個，這是我們應該了解的。"]]}]},{"文":"正思惟者，謂以觀慧觀察思擇，由此顯示隨修一切功德之法，皆須此二。","口譯":"正思惟，是指用觀慧來觀察思擇。由此顯示：隨修任何功德之法，都必須具備這兩者。","四家合註":null,"時":"69A 04:53","頁":156,"af":"69a","st":293,"et":339,"消文":[{"文":"正思惟：如法地、一點不錯地思惟。"},{"文":"觀慧觀察思擇：以智慧觀察、抉擇，不是糊里糊塗的。"},{"文":"一切功德，都由不散亂的心正思惟而來。"}],"延伸":[],"逐字稿":[{"t":"69A 04:53","b":[["q","正思惟者，謂以觀慧觀察思擇，由此顯示隨修一切功德之法，皆須此二。"],["s","那麼然後呢，你照著他的「正思惟」，如法地、一點不錯地思惟。那麼這個思惟什麼？就是以觀察的慧，就是我們的心裡面觀察、抉擇。這不是糊裡糊塗的喔！這個慧就是智慧，去觀察、去思惟、去抉擇。從這個地方說，一切的功德都這樣來的，都這樣才來的，以不散亂的心去正思惟，然後深入。"]]}]},{"文":"故說引發三乘一切功德，皆須二事，一除善所緣心不餘散，專一而住真奢摩他«或其隨順»。二善觀察善所緣境，如所有性盡所有性，毘缽舍那或其隨順。","口譯":"所以說引發三乘的一切功德，都需要兩件事：一、心除了善所緣之外不向其他地方散亂，專一安住的真實奢摩他（止），或與它隨順的；二、善加觀察善所緣境的如所有性、盡所有性，即毘缽舍那（觀），或與它隨順的。","四家合註":null,"時":"69A 05:39","頁":156,"af":"69a","st":339,"et":549,"消文":[{"文":"三乘功德主要只有兩樣：一是止，善所緣心不餘散，安住其上。"},{"文":"或其隨順：未證奢摩他前，隨於此法、順於此法，先集聚資糧。"},{"文":"二是觀。如所有性：一切法的真如、本性、空性。"},{"文":"盡所有性：一切法現出來的相，五蘊、六入、十八界。"},{"文":"真實內涵，到毘缽舍那時再詳細講。"}],"延伸":[{"題":"或其隨順","組":[{"題":"學戒的目的","說":[{"類":"立","文":"戒是定的基礎，這才是學戒真正的目的。"},{"類":"破","文":"講戒這裡怎麼說、那裡怎麼說，到處生是非，完全弄錯戒的特質。"},{"類":"喻","文":"十八部如金碗裂開，不管哪一塊都是金。"}]},{"題":"集聚定的資糧","說":[{"類":"回扣","文":"其隨順，就是集聚定的資糧，我們目前做的這些；定是為了慧。"},{"類":"下手","文":"做任何事始終記得這個中心目標，慢慢地越跑越近。"}]}],"說":[{"類":"立","文":"戒是定的基礎，這才是學戒真正的目的。"},{"類":"破","文":"講戒這裡怎麼說、那裡怎麼說，到處生是非，完全弄錯戒的特質。"},{"類":"喻","文":"十八部如金碗裂開，不管哪一塊都是金。"},{"類":"回扣","文":"其隨順，就是集聚定的資糧，我們目前做的這些；定是為了慧。"},{"類":"下手","文":"做任何事始終記得這個中心目標，慢慢地越跑越近。"}],"af":"69a","st":339}],"逐字稿":[{"t":"69A 05:39","b":[["q","故說引發三乘一切功德，皆須二事，一除善所緣心不餘散，專一而住真奢摩他或其隨順。二善觀察善所緣境，如所有性盡所有性，毘缽舍那或其隨順。"],["s","那麼，這個裡邊整個的三乘的功德，主要的只有二樣：一個就是止，所謂「善所緣心不餘散」，安住在這個上頭。「或其隨順」，什麼叫隨順呢？就是你沒有證得奢摩他之前，隨於這個法，順於這個法。就像我們現在，把這個心總是種種地先集聚資糧，準備努力。所以戒是什麼？定的基礎，這才是我們學戒的真正目的，學戒真正的目的。這是我們必定要了解的。"]]},{"t":"69A 06:39","b":[["s","現在我看見有一些人那真是，說起來也可以說很可憐。哎喲！他講這個戒啊，這裡怎麼說，那裡怎麼說，結果弄了這個戒，到處在那裡生是非。他不曉得戒的真正的特質是幹什麼的，完全弄錯掉了。所以說，佛說得清清楚楚，十八部，哪一部 ……隨不同的根性 ─金啊、碗啊，碗裂開來了，不管哪一塊都是金啊！真正重要的，你要派這個用場。現在你弄錯了，這個是我們要了解的，所以這個目的在這裡。那所以「其隨順」，就是你要集聚定的資糧，那麼我們目前做的這些。而定是為什麼？目的還是為了慧，所以進一步是「善觀察善所緣境，如所有性盡所有性，毘缽舍那或其隨順。」那麼，這個盡所有性、如所有性，前面也簡單地說，真實的內涵等到毘缽舍那的時候，再詳細講說它。"]]},{"t":"69A 07:53","b":[["s","這「如所有性」就是換句話說，一切法的真如，簡單地說。換句話說，我們就說：喏！這個一切法的真相，或者說它的本性，或者說空性，就是這個。「盡所有性」呢，說一切法現出來的相，那就是這些啦，或者是五蘊啦、什麼六入啦、十八界啦，換句話說這個法在圈子裡面就是這個，它就是它整個的邊際。那進一步來說，就是那一個空性所現出來的行相、法相，或者緣起，或者是俗諦，種種所牽涉的，你歸納起來，那不外乎說五蘊，乃至於到十八界等等，這一些。那麼這個呢，就是屬於毘缽舍那，所謂觀。我們現在這個也就是隨順，那一步一步我們這麼上去，這個才是我們的中心，我們的目標。做任何一件事情，修學佛法，我們始終記得這個。你如果記得這個的話，做什麼事情，慢慢地、慢慢地，越跑越近，越跑越近，越跑越上，這一點特別重要。"]]}]},{"文":"如是亦如《解深密經》云：「慈氏，若諸聲聞，或諸菩薩，或諸如來，所有世間及出世間一切善法，當知皆是此奢摩他，毘缽舍那所得之果。」","口譯":"這也如《解深密經》說：「慈氏，不論是聲聞、菩薩或如來，所有世間及出世間的一切善法，應當知道都是這奢摩他、毘缽舍那所得的果。」","四家合註":"大小二乘世出世間一切功德，皆止觀之果。如《解深密經》云：「慈氏，若諸聲聞、若諸菩薩、若諸如來所有世間及出世間一切善法，應知皆是此奢摩他、毘缽舍那所得之果。」<i class=\"sjlab\" style=\"background:#007f3c;color:#ffffff\">語<\/i><span>第二分二：一、疑彼；二、答之。初者：<\/span>若謂止觀，豈非已得修所成者相續功德，今說彼一切功德皆止觀之果，云何應理？<i class=\"sjlab\" style=\"background:#007f3c;color:#ffffff\">語<\/i><span>第二分二：一、正答；二、將彼結合經教。初者：<\/span>答：如下所說真實止觀，實是已得修所成者相續之德，則大小乘一切功德，非盡彼二之果，然於善所緣心一境性以上諸三摩地，悉皆攝為奢摩他品，及凡簡擇如所有性、盡所有性義諸妙善慧，悉皆攝為毘缽舍那品。故密意說三乘所有一切功德皆止觀之果，無相違過。<i class=\"sjlab\" style=\"background:#007f3c;color:#ffffff\">語<\/i><span>第二、結合教典者：<\/span>又於此義，《修信大乘經》亦密意說云：「善男子，由此異門，說諸菩薩盡其所有大乘信解，<i class=\"sjlab\" style=\"background:#950d43;color:#ffffff\">巴<\/i><span>謂即意樂圓滿，及<\/span>大乘出生，<i class=\"sjlab\" style=\"background:#950d43;color:#ffffff\">巴<\/i><span>謂即加行圓滿，<\/span>應知皆是無散亂心正思法、義之所出生。」無散亂心，謂奢摩他品心一境性；正思法、義，謂毘缽舍那品妙觀察慧。<i class=\"sjlab\" style=\"background:#007f3c;color:#ffffff\">語<\/i><span>第三、以理亦能成立成辦大小二乘一切功德勝利者：<\/span>故大小乘一切功德，皆以觀慧思擇而修，及於所緣心一境性二所成辦，非唯止修或唯觀修一分而成。","時":"69A 09:09","頁":156,"af":"69a","st":549,"et":577,"消文":[{"文":"聲聞、菩薩、佛，世出世間一切善法，都是這兩樣所得的果。"}],"延伸":[],"逐字稿":[{"t":"69A 09:09","b":[["q","如是亦如《解深密經》云：「慈氏，若諸聲聞，或諸菩薩，或諸如來，所有世間及出世間一切善法，當知皆是此奢摩他，毘缽舍那所得之果。」"],["s","喏，經上面，不管聲聞、菩薩、佛，不管世間、出世間一切善法，都是這兩樣東西所得的果，所得的果。"]]}]},{"文":"此中若無真實止觀及«隨順»二，則三乘一切功德，非定皆是止觀之果。","口譯":"這裡如果沒有包括真實的止觀及隨順止觀這兩類，那麼三乘的一切功德，就不一定都是止觀的果了。","四家合註":null,"時":"69A 09:37","頁":156,"af":"69a","st":577,"et":1131,"消文":[{"文":"隨順：止觀的眷屬、類屬。"},{"文":"這是反顯：實際上三乘所有功德都是止觀的果。"},{"文":"正修八苦之前，又把次第重新提一下。"}],"延伸":[{"題":"隨順","組":[{"題":"為何一再提醒","說":[{"類":"因","文":"平常提不上去，就是忽視了這一點；佛見到我們的毛病都在這上頭，所以一再提醒。"},{"類":"喻","文":"看書急著找中心，像造一百層樓，下面基礎不要。"}]},{"題":"過猶不及","說":[{"類":"破","文":"好高騖遠；或說「我就是不行」癱著爬不起來，「只要念念佛」卻昏沈瞌睡：過猶不及。"},{"類":"下手","文":"觀察壞的策勵自己；太緊了就觀察好的，慶幸放寬。慢慢調，急不來。"}]},{"題":"討論的重要","說":[{"類":"例","文":"同修用功太緊，聽輕鬆的音樂放鬆心情。"},{"類":"喻","文":"電視廣告當時討厭，日後派上用場；靡靡之音的種子落在心裡，遇緣又生起。"},{"類":"立","文":"自己覺得想對了，這裡大有問題，這才是要觀察、討論的。"}]},{"題":"因地做對","說":[{"類":"立","文":"不要怕摸不進去；因地做對了，果自然現起。"},{"類":"回扣","文":"有了這個策勵、這個認識，正修了：那麼怎麼修？說八苦當中。"}]}],"說":[{"類":"因","文":"平常提不上去，就是忽視了這一點；佛見到我們的毛病都在這上頭，所以一再提醒。"},{"類":"喻","文":"看書急著找中心，像造一百層樓，下面基礎不要。"},{"類":"破","文":"好高騖遠；或說「我就是不行」癱著爬不起來，「只要念念佛」卻昏沈瞌睡：過猶不及。"},{"類":"下手","文":"觀察壞的策勵自己；太緊了就觀察好的，慶幸放寬。慢慢調，急不來。"},{"類":"例","文":"同修用功太緊，聽輕鬆的音樂放鬆心情。"},{"類":"喻","文":"電視廣告當時討厭，日後派上用場；靡靡之音的種子落在心裡，遇緣又生起。"},{"類":"立","文":"自己覺得想對了，這裡大有問題，這才是要觀察、討論的。"},{"類":"立","文":"不要怕摸不進去；因地做對了，果自然現起。"},{"類":"回扣","文":"有了這個策勵、這個認識，正修了：那麼怎麼修？說八苦當中。"}],"af":"69a","st":652}],"逐字稿":[{"t":"69A 09:37","b":[["q","此中若無真實止觀及隨順二，則三乘一切功德，非定皆是止觀之果。"],["s","假定沒有真實的這個止觀及其隨順，隨順就是說它的眷屬、類屬，那麼就三乘的功德，不一定。實際上呢，三乘的所有的功德都是止觀的果。所以換句話說，這是反顯。總之一句話：不管三乘哪一乘，它真正重要的目的都在這個上頭。那是在正修那個八苦之前，先又提一下。說現在我們要修了，那麼這個次第，從下面怎麼上來，乃至於修的時候，又重新提。前面是告訴我們：修的時候正修時怎麼修；然後呢修完了以後，迴向怎麼迴向；迴向完了再下面一座，還沒有修的中間應該如何。又講四種資糧，然後又講把錯誤的很多錯誤的概念又提出，一步一步說得這麼清楚。乃至於到現在正式修了，他又隨時提醒我們，隨時提醒我們。"]]},{"t":"69A 10:52","b":[["s","這個地方有一個重點，這我們平常真正提不上去的，就是忽視掉了這一點，就是忽視掉了這一點，所以這個地方一再提醒。為什麼佛要一再提醒？佛陀的一切智人，就正見到我們平常的毛病都在這上頭。平常我們看書總是這樣，趕快要找到那個問題的中心在哪裡，欸，結果你往往前面這個東西不要的。像造房子一樣，「哎呀！我希望造的房子，造的一百層樓。」你趕快把一百層樓建起來，下面基礎不要的。至於像這個地方，他佛陀處處地方告訴我們，說下面這個你必須要修，你有了力量啊向上去。"]]},{"t":"69A 11:41","b":[["s","現在我們每有一類人，哎呀！好高騖遠，總翹求高的。反過來有一類人，「唉呀，我就是不行，我就是不行！」癱在這裡就爬不起來，就這樣。說：「我只要念念佛。」念佛本來不錯呀，你真的如果念佛的話，是非常好呀！結果呢，他心裡面就因為這麼弱，他說的時候，「我只要念念佛。」實際上行的時候，他念了佛沒有？沒有念欸！在那裡昏沈、瞌睡，一生空過，所以說過猶不及啊！我們目前大部分犯的毛病就是這個。大的來說這樣，細的來說呢，我們心理狀態平常也是這樣，一下猛利的時候，就衝過頭；一下塌下來的時候，唉！又提不起，就這樣。"]]},{"t":"69A 12:36","b":[["s","所以這一點地方，所以從這地方我們要注意，這個不是說一下叫我們改過來。所以這個後面就告訴我們，我們做任何事情，就是這樣：它開頭的時候，哇！起伏很大；然後呢你曉得了，慢慢、慢慢、慢慢、慢慢、慢慢，它必然地調得這樣子相。只要你自己感覺到，慢慢地，欸，在對了；然後呢，你緣著你做的這個方式，這樣進，還是急不來的喔！這就是真實的進步，真實的進步必然如此的，這我們要了解，這我們要了解。然後到了這個時候的話，你隨時觀察壞的方面，策勵自己。然後呢，策勵自己覺得很緊了，然後呢觀察好的方面呢，慶幸，啊，又放寬了，高興。就這樣地不斷地在調，它慢慢地一步一步、一步一步。"]]},{"t":"69A 13:24","b":[["s","這個地方我順便提起以前的事情來，所以平常思惟觀察固然是絕端地重要，還有呢，同學之間的共同的真正的討論，也非常重要。諸位啊！你們千萬不要把這個工夫，用在聊天上頭啊！這裡有幾位同修，經常願意跑得來跟我談談，我真歡喜，真歡喜啊！他往往有的時候他有一個小問題，我不妨舉出來。"]]},{"t":"69A 13:55","b":[["s","那有一個同修就說：嗯，有的時候，覺得用功用得心裡很緊。那是一個的確非常好的一個同修，他然後用功用得很緊，所以這個心裡就，哎喲，非常緊張，覺得：哎呀，這個死啊！又是：一旦生命失去了 ……那些都是好現象。然後呢，越弄越緊、越弄越緊，到那時候睡也睡不著，到那時候，書啊，看起書來 ……這樣。那怎麼辦？他就想一個鬆弛的辦法，欸，最後有的時候找到了一個鬆弛的辦法，找到鬆弛的辦法。那麼那位同修是個在家的同修，所以他就 ……因為在家人哪，以前譬如說有的時候聽聽什麼，外面偶然這個很輕鬆的這種音樂等等，欸，這個是滿好啊，這樣。對呀！然後呢，放輕鬆了以後再來。他說：「我的的確確地說，我並沒有染著這個音樂，可是那個時候，卻是放鬆了我的這個心情。」在他想起來很好。"]]},{"t":"69A 15:02","b":[["s","原則上面，我也非常讚歎他，可是那個時候就顯出那個討論的非常重要來，非常重要來了。所以我那時候舉了一個比喻，我當時也沒有談。「是，非常好，可是我舉一個例子給你聽聽。」他說：「好。」「你看電視看過沒有？」「看過。」「然後正在一個重要的節目，你聽得、看得很起勁的時候，忽然之間來一個廣告。你就覺得這個廣告真討厭，怎麼來這個東西，趕快、趕快過去。是，廣告商也未嘗不知道這樣，但是他就把那個廣告插進去，你曉得他為什麼？欸，妙了，你那個時候固然一心一意，正因為一心一意全部吸引在裡頭，那個廣告商讓你討厭；等到完了以後，你不在這個節目當中現行，有一天你想到要用的時候，你就想到：哎呀！當年討厭那個東西，就是你現在要的，它就派上用場了。」「嗯，對呀！」"]]},{"t":"69A 16:03","b":[["s","「現在你想想看，那個時候沒錯，你現在覺得很緊的時候，讓你調一下，是的，你覺得現在的心裡並沒有什麼。可是調的這個，那種世間的這種靡靡之音的種子，落在心裡面。假定說你證得果的聖人，不怕！佛根本不在乎。你是個凡夫，你還有無比地染污的種子，還有很多無比地染污的外緣。當另外一個時候，你的心不在正念上頭的時候，然後呢，你心裡本來就在這個世間的染緣當中，它又生起來了，因為有這個種子，裡邊有這個種子，外面有這個緣，你就跟著它去了。」他想了半天，「哎呀！沒有錯。」「就像你雖然當時是討厭這個廣告，但是對不起，這個廣告就派上用場了，對嗎？」「是啊！」"]]},{"t":"69A 17:01","b":[["s","所以有的時候我們平常我們自己覺得想對了，對不起，這裡有問題的哦！這個才是我們真正應該觀察、討論啊！所以平常不要說：「啊！我懂了，現在我就是對啊！」對不起，這裡大有問題，佛法不是那麼簡單。那麼佛有沒有？佛有，有種種善巧方便，這個地方我們不深入，我隨舉一例。結果這位同學聽了好歡喜啊！我剛才告訴你的，馬上有感應的，就是他只要處處深入，他隨時觸發到，隨時就來了。啊！他今天早晨懺悔完了以後，一句話，哎呀！他哭了個半天，然後又歡喜了半天。我就報告老法師，老法師好高興！「哈！善根發！」這千真萬確的，凡是真正有過經驗的，他這個次第必然是如此。"]]},{"t":"69A 17:53","b":[["s","所以我就特別提醒你們：你們不要怕，眼前好像顯得，唉呀，怎麼也摸不進去。你不要忙，只要因，這個因地當中你做對了，你只要再摸，你不要問它摸得進摸不進，這個因地在對了，你正在進去嘛，很簡單嘛！到那個時候，到某個時候，它這個果自然必然現起來的。這是所有過來佛菩薩，都是這樣的經驗，他也告訴我們。那眼前就是像我們普通這麼看看，大家推起來，你看看、我看看，我跟你都差不多。的確差不多啊，但是他在因地上面如法走，馬上見效。所以像這樣完整的次第，你只要肯做，立刻見效。現在呢，我們有了這個策勵，有了這個認識，那個時候正修了，原來在這裡呀！那麼怎麼修？說八苦當中，"]]}]},{"文":"如是八苦之中，初思惟生苦分五。","口譯":"這樣，八苦之中，第一思惟生苦，分為五種。","四家合註":null,"時":"69A 18:51","頁":156,"af":"69a","st":1131,"et":1159,"消文":[{"文":"八苦：生、老、病、死、愛別離、求不得、怨憎會、五陰熾盛。"},{"文":"一樣一樣分開研究；生苦分五個項目。"}],"延伸":[],"逐字稿":[{"t":"69A 18:51","b":[["q","如是八苦之中，"],["s","思惟生苦。那個八苦平常我們曉得的：生、老、病、死、愛別離、求不得、怨憎會、五陰熾盛，八樣東西。一樣一樣分開來，研究下去。"]]},{"t":"69A 19:16","b":[["q","初思惟生苦分五。"],["s","分五個項目。"]]}]},{"文":"眾苦所隨故生為苦者，謂諸有情那洛迦中，及諸一向唯苦餓鬼，並諸胎生卵生，如是四類，於初生時，便有無量猛利苦受，隨逐而生。","口譯":"一、眾苦所隨故生是苦：就是那洛迦（地獄）中的有情，以及一向唯苦的餓鬼，還有胎生、卵生，這四類在剛出生時，就有無量猛利的苦受隨逐而生。","四家合註":null,"時":"69A 19:19","頁":156,"af":"69a","st":1159,"et":1212,"消文":[{"文":"一切的苦都隨著生，生一來，苦就跟著來了。"},{"文":"那洛迦、餓鬼、胎生、卵生四類，一有這個身體，無量猛苦跟著來。"}],"延伸":[],"逐字稿":[{"t":"69A 19:19","b":[["q","眾苦所隨故生為苦者，謂諸有情那洛迦中，及諸一向唯苦餓鬼，並諸胎生卵生，如是四類，於初生時，便有無量猛利苦受，隨逐而生。"],["s","第一個，「生」這個苦，它這個東西啊，一切的苦都隨著這個生，生一來，苦就跟著來了。那洛迦當然不談，一跑下去，唉呀，那不得了！餓鬼。除了這個以外，就是其他的胎生、卵生，一切四類，只要一生，一有了這個身體以後，無量的猛苦跟著來了，無量的苦都跟著來，只要「生」有，苦都跟著來了。第二個呢，"]]}]},{"文":"粗重所隨故生為苦者，謂三界一切諸行，為煩惱品粗重所隨，無堪能性，不自在轉。","口譯":"二、粗重所隨故生是苦：就是三界的一切諸行，都被煩惱品類的粗重所隨逐，沒有堪能性（能力），不能自在而轉。","四家合註":null,"時":"69A 20:12","頁":157,"af":"69a","st":1212,"et":1260,"消文":[{"文":"粗重就是煩惱的異名；一旦生了，煩惱也跟著來。"},{"文":"三界一切行：乃至色界、無色界，都在行苦當中。"},{"文":"無堪能性：沒有力量，想不受輪迴的圈套，做不到，不得自在。"}],"延伸":[],"逐字稿":[{"t":"69A 20:12","b":[["q","粗重所隨故生為苦者，"],["s","什麼是「粗重」呢？粗重就是煩惱的異名。"]]},{"t":"69A 20:20","b":[["q","謂三界一切諸行，為煩惱品粗重所隨，無堪能性，不自在轉。"],["s","這一旦生了以後，生起來了以後，煩惱也跟著來了。「三界一切行」，不但是地獄，那當然不談，惡道不談，乃至於天上面，色界也好，無色界也好，行苦當中。這個「行」本身就是「煩惱品」。「無堪能性」，什麼叫無堪能性？你沒有力量，你想不受這個苦的輪迴的圈套，做不到，你不得自在的。這第二個。"]]}]},{"文":"三界有情諸行生起，皆為煩惱品類粗重隨逐。總之由有生住增長，煩惱種子隨逐流轉，故無堪能安住善事，亦不如欲自在而轉。","口譯":"三界有情的諸行生起，都被煩惱品類的粗重隨逐。總之，由於有生、住、增長，煩惱種子就隨逐流轉，所以沒有堪能力安住於善事，也不能隨自己的意願自在而轉。","四家合註":null,"時":"69A 21:00","頁":157,"af":"69a","st":1260,"et":1347,"消文":[{"文":"由生住增長，煩惱的現行、種子跟著流轉。"},{"文":"所以沒辦法安住在善所緣的事上。"},{"文":"不如欲自在而轉：希望要快樂，它偏偏不聽你招呼。"},{"類":"例","文":"好吃的吃飽了肚子脹，還要上大號、洗、買、弄；最快樂的吃就這麼多。"}],"延伸":[],"逐字稿":[{"t":"69A 21:00","b":[["q","三界有情諸行生起，皆為煩惱品類粗重隨逐。總之由有生住增長，煩惱種子隨逐流轉，故無堪能安住善事，亦不如欲自在而轉。"],["s","這個就是粗重煩惱的特質。因為三界的一切有情在行當中，行當中，那麼行的話呢，煩惱品粗重跟著來、跟著來。所以總之一句話：由於生、住、增長，生了下面緊跟著就什麼？喏，這樣來了，就是那個煩惱的現行，現行種子，跟著在這地方流轉，你沒辦法安住在善所緣的事，沒辦法。「亦不如欲自在而轉」，你希望的事情，對不起，做不到。你希望要快樂，它就偏偏不聽你招呼。就是眼前小小的快樂，好吃的東西吃飽了，等一下唉呀！肚子脹脹地難受，等一下還要上大號去、還要去洗、還要去忙、還要去買、還要去弄。那吃，這最快樂的事情，就這麼多，其他的不談了。所以這個生啊，是會有這樣的不理想啊！"]]}]},{"文":"眾苦所依故生為苦者，謂於三界既受生已，由此因緣，便能增長老病死等，無邊眾苦。","口譯":"三、眾苦所依故生是苦：就是在三界中受生之後，由這個因緣，便會增長老、病、死等無邊的眾苦。","四家合註":null,"時":"69A 22:27","頁":157,"af":"69a","st":1347,"et":1383,"消文":[{"文":"生是一切苦的依處；受生了，老病死無邊眾苦都依此而來。"}],"延伸":[],"逐字稿":[{"t":"69A 22:27","b":[["q","眾苦所依故生為苦者，謂於三界既受生已，由此因緣，便能增長老病死等，無邊眾苦。"],["s","第三個，這個生是一切苦的依處，這個一切的苦都依這個上面，所以「眾苦所依」。第一個是眾苦所跟著來，還有呢煩惱跟著來，煩惱。現在呢，一切的苦是依於這個生，這三界之內一旦受生了，下面的都依這個，無邊眾苦。"]]}]},{"文":"煩惱所依故生為苦者，謂於生死既受生已，便於貪境瞋境癡境發生三毒，由此能令身心苦惱不靜，不安樂住，謂諸煩惱，由種種門逼惱身心。","口譯":"四、煩惱所依故生是苦：就是在生死中受生之後，便對貪境、瞋境、癡境生起三毒，由此令身心苦惱不靜、不能安樂而住；也就是種種煩惱從各種門路逼惱身心。","四家合註":null,"時":"69A 23:03","頁":157,"af":"69a","st":1383,"et":1451,"消文":[{"文":"前面講苦果，這裡講苦因煩惱。"},{"文":"前面是生理的老病死，這裡是心理的。"},{"文":"好的貪、不好的瞋、其他的癡；三毒令身心逼惱，不靜不安樂。"}],"延伸":[],"逐字稿":[{"t":"69A 23:03","b":[["q","煩惱所依故生為苦者，謂於生死既受生已，便於貪境瞋境癡境發生三毒，由此能令身心苦惱不靜，不安樂住，謂諸煩惱，由種種門逼惱身心。"],["s","那麼這個是煩惱。這個幾樣東西，一個是苦的果，一個是苦的因。因當中又分成業因跟那個 ……業因當中是惑、業等等。現在這個地方所講的就是苦因煩惱，「煩惱所依」。一旦生起來了以後，這個煩惱都增長了，這煩惱是心理現象。上面說這個是指生理的，病啊、老啊、死啊，這個地方是心理的。因為你生了以後，對於好的嘛是貪，不好的嘛是瞋，其他的是癡，「發生三毒」。因為這個三毒令身心逼惱，「不靜」，不安樂。啊！這個是第四點，這個是第四點。最後"]]}]},{"文":"不隨所欲離別法性故生苦者，謂一切生最後邊際咸不出死，此非所愛，此復能令唯受眾苦。","口譯":"五、不隨所欲離別法性故生是苦：就是一切的生，最後的終點都不出於死，這不是所愛樂的，而且又只會令人承受眾苦。","四家合註":null,"時":"69A 24:11","頁":157,"af":"69a","st":1451,"et":1491,"消文":[{"文":"不隨所欲：道地的不自在，你希望的總歸不聽你招呼。"},{"文":"離別法性：沒有人想死，偏偏最後要死；生的本質法爾如是。"},{"文":"「謂一切生…」：師父只說「就這樣」，沒有另外解。"}],"延伸":[],"逐字稿":[{"t":"69A 24:11","b":[["q","不隨所欲離別法性故生苦者，"],["s","就這樣。最後生苦是什麼？「不隨所欲」，就是道地的不自在，你沒辦法自己把握住自己的，你希望的，它總歸不聽你招呼，到最後呢 ─別離。沒有一個人想別離，換句話說，沒有人想死的，它偏偏到最後你要死，這「別離法性」。它「生」這個特質的本質，法爾如是，這叫作苦。"]]},{"t":"69A 24:43","b":[["q","謂一切生最後邊際咸不出死，此非所愛，此復能令唯受眾苦。"],["s","就這樣。"]]}]},{"文":"«故應思惟»如是生時，眾苦俱生，粗重俱生，生復能引衰老病等煩惱死亡，此亦能令受苦道理。","口譯":"所以應當思惟：像這樣出生的時候，眾苦一起生起，粗重一起生起，生又能引來衰老、病等、煩惱與死亡，這也就是生能令人受苦的道理。","四家合註":null,"時":"69A 24:51","頁":157,"af":"69a","st":1491,"et":1601,"消文":[{"文":"一共五樣：從生上面去想，分五個項目。"}],"延伸":[{"題":"故應思惟","組":[{"題":"多方面思惟","說":[{"類":"立","文":"越能深入多方面去思惟，增長的功德越大。"}]},{"題":"對治淨相","說":[{"類":"破","文":"眼前都顛倒了：把可愛、快樂的看成淨相增長。"},{"類":"下手","文":"對眼前可愛的東西，要想到它可怕、不可愛的那一面。"}]},{"題":"講戒無用","說":[{"類":"破","文":"講了半天戒，境界現前了不相干，就是沒有認真思惟。"},{"類":"回扣","文":"這個地方，宗大師現在提醒我們這一點。"}]}],"說":[{"類":"立","文":"越能深入多方面去思惟，增長的功德越大。"},{"類":"破","文":"眼前都顛倒了：把可愛、快樂的看成淨相增長。"},{"類":"下手","文":"對眼前可愛的東西，要想到它可怕、不可愛的那一面。"},{"類":"破","文":"講了半天戒，境界現前了不相干，就是沒有認真思惟。"},{"類":"回扣","文":"這個地方，宗大師現在提醒我們這一點。"}],"af":"69a","st":1504}],"逐字稿":[{"t":"69A 24:51","b":[["q","故應思惟如是生時，眾苦俱生，粗重俱生，生復能引衰老病等煩惱死亡，"],["s","一共五樣。"]]},{"t":"69A 25:04","b":[["q","此亦能令受苦道理。"],["s","所以從第一個，從生上面去想，又分這個五個項目，分五個項目。你越能夠深入多方面去思惟，那麼增長的功德是越大，增長的功德越大。我們眼前都顛倒了。前面一開始告訴我們，我們把眼前很多事情覺得淨相增長。「淨相」是什麼？好的，看快樂的、安樂的。我們無始的煩惱在這裡，唯一的方法就是對治。所以對眼前很多可愛的東西，千萬注意啊！要想到它的可怕，不可愛的那一面。你如果不修習這個的話，說什麼都沒有用。講戒，就在這個上面，所以講了半天的戒，然後呢到這個境界現起，為什麼一點用場都沒有啊？就是你沒有認真思惟。所以有一些人，哎呀！講戒啊，又講這個、講這個，境界現前，了不相干。我心裡面實在覺得可憐，也只能說這樣，只能說可憐、愚癡啊！然後呢，他還自作聰明，這是我覺得愚癡是莫勝於此！我想這是我的善知識，阿彌陀佛！我可千萬不要犯這個毛病。這個，這個地方他現在提醒我們這一點。"]]}]}]}}}</script><script>
+"use strict";
+// ───────── 常數 ─────────
+const TAGS = [ // 第四層類別：鍵、顯示、說明
+  ["立","li","所立（宗）"],["破","po","所破"],["因","yin","因"],["喻","yu","喻"],
+  ["例","yu","例"],["下手","xia","下手處"],["回扣","hui","回扣原文"]];
+const TAGKEY = Object.fromEntries(TAGS.map(t=>[t[0],t[1]]));
+const LIGHT = {paper:"#F1EEE6",ink:"#26231E","ink-2":"#5D574C","ink-3":"#8E877A",line:"#6F685C",zhu:"#B3352B",gold:"#92700F",
+  "t-li":"#2E6A88","t-po":"#AE3A2E","t-yin":"#7A58A3","t-yu":"#2E7A52","t-xia":"#B4701A","t-hui":"#777064"};
+const LV = {1:{size:46,cap:8,pitch:1.3,gap:0},2:{size:26,cap:15,pitch:1.32,gap:44},
+            3:{size:30,cap:8,pitch:1.3,gap:26},4:{size:24,cap:9,pitch:1.3,gap:20},5:{size:21,cap:16,pitch:1.3,gap:10}};
+const ROW_GAP=64, BAR_DROP=26, MARGIN=50;
+const NO_HEAD = new Set("，。、：；」』）！？…・‧");
+const VERT = {"，":"︐","。":"︒","、":"︑","：":"︓","；":"︔","！":"︕","？":"︖","「":"﹁","」":"﹂","『":"﹃","』":"﹄",
+  "《":"︽","》":"︾","（":"︵","）":"︶","…":"︙","—":"︱","(":"︵",")":"︶"};
+const KAI = '"LXGW WenKai TC","DFKai-SB","BiauKai",serif';
+
+const S = {kepan:null,index:[],lesson:null,seg:2,yan:null,xw:false,filter:null,scale:null,
+           range:null,pick:null,tab:"d",laid:null};
+const $ = s=>document.querySelector(s);
+const esc = s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const plain = s=>s.replace(/[«»]/g,"");
+const redHtml = s=>esc(s).replace(/«(.*?)»/g,'<span class="red">$1</span>');
+const mmss = s=>{s=Math.max(0,s|0);return String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0")};
+function store(k,v){try{if(v===undefined)return localStorage.getItem(k);localStorage.setItem(k,v)}catch(e){return null}}
+
+function playUrl(af,st,et){
+  const L=S.lesson; return `https://lamrim.xyz/player2/?&tch=${L.tch}&af1=${af}&st1=${st}`+(et!=null?`&et1=${et}`:"");
+}
+function playLink(af,st,et,label,ghost,title){
+  return `<button class="play${ghost?" ghost":""}" data-af="${af}" data-st="${st}" data-et="${et??""}" data-t="${esc(title||label)}">`+
+    `<svg viewBox="0 0 12 12"><path d="M3 1.5v9l7.5-4.5z"/></svg>${esc(label)}</button>`;
+}
+// ───────── 播放（本機音檔優先，沒有才連線上 mp3；不開別的網頁） ─────────
+const P={af:null,st:0,et:null,usingRemote:false};
+function audioSrc(af,remote){const a=(S.lesson.音檔||{})[af];if(!a)return null;return remote?a.remote:a.local}
+function playSeg(af,st,et,title){
+  const aud=$("#aud");P.st=st;P.et=et==null||et===""?null:+et;
+  const src=audioSrc(af,false);if(!src){toast("這段沒有音檔資料");return}
+  const go=()=>{aud.currentTime=st;aud.play().catch(e=>toast("無法播放："+e.message))};
+  if(P.af!==af||P.usingRemote){P.af=af;P.usingRemote=false;aud.src=src;aud.onloadedmetadata=()=>{aud.onloadedmetadata=null;go()};aud.load()}
+  else go();
+  $("#plLabel").innerHTML=`${esc(af.toUpperCase())} ${mmss(st)}${P.et!=null?"～"+mmss(P.et):""}<b>${esc(title||"")}</b>`;
+  $("#player").hidden=false;
+}
+function bindPlayer(){
+  const aud=$("#aud");
+  aud.addEventListener("error",()=>{ // 本機沒下載就改連線上
+    if(!P.usingRemote&&P.af){P.usingRemote=true;const st=P.st;aud.src=audioSrc(P.af,true);aud.onloadedmetadata=()=>{aud.onloadedmetadata=null;aud.currentTime=st;aud.play().catch(()=>{})};aud.load();toast("本機沒有音檔，改從網路播放")}
+    else toast("音檔載入失敗，請確認網路");
+  });
+  aud.addEventListener("timeupdate",()=>{
+    const t=aud.currentTime,end=P.et??aud.duration;
+    if(P.et!=null&&t>=P.et){aud.pause();aud.currentTime=P.et}
+    const span=Math.max(1,(end||t)-P.st);$("#plFill").style.width=Math.min(100,Math.max(0,(t-P.st)/span*100))+"%";
+    $("#plTime").textContent=`${mmss(t)} / ${mmss(end||0)}`;
+  });
+  const icon=()=>{$("#ppIcon").innerHTML=aud.paused?'<path d="M3 1.5v9l7.5-4.5z"/>':'<path d="M2.5 1.5h2.6v9H2.5zM6.9 1.5h2.6v9H6.9z"/>'};
+  aud.addEventListener("play",icon);aud.addEventListener("pause",icon);
+  $("#ppBtn").onclick=()=>{if(aud.paused){if(P.et!=null&&aud.currentTime>=P.et-0.3)aud.currentTime=P.st;aud.play().catch(()=>{})}else aud.pause()};
+  $("#plClose").onclick=()=>{aud.pause();$("#player").hidden=true};
+  $("#plBar").onclick=e=>{const r=e.currentTarget.getBoundingClientRect(),end=P.et??aud.duration;if(!end)return;aud.currentTime=P.st+(e.clientX-r.left)/r.width*(end-P.st);if(aud.paused)aud.play().catch(()=>{})};
+  document.addEventListener("click",e=>{const t=e.target.closest("button.play-ts");if(t){playSeg(t.dataset.af,+t.dataset.st,t.dataset.et,"逐字稿");return}const b=e.target.closest("button.play");if(!b)return;e.stopPropagation();playSeg(b.dataset.af,+b.dataset.st,b.dataset.et,b.dataset.t)});
+}
+const segRange = s=>`${s.af.toUpperCase()} ${mmss(s.st)}`+(s.et!=null?`～${mmss(s.et)}`:" 起");
+
+// ───────── 科判樹 ─────────
+const groupsOf=y=>y.組&&y.組.length?y.組:[{題:null,說:y.說||[]}];
+function chars(text){const out=[];let red=false;for(const ch of text){if(ch==="«")red=true;else if(ch==="»")red=false;else out.push([ch,red])}return out}
+function cols(cs,cap){const out=[];let i=0;while(i<cs.length){let j=Math.min(i+cap,cs.length);while(j<cs.length&&NO_HEAD.has(cs[j][0]))j++;out.push(cs.slice(i,j));i=j}return out}
+function Node(lv,text,o={}){
+  const c=LV[lv],n={lv,kids:[],...o};
+  n.size=c.size;n.pitch=c.size*c.pitch;n.cols=cols(chars(text),c.cap);
+  n.tagS=lv===3?Math.round(n.size*.7):n.size-2;
+  n.tagH=n.tag?n.tag.length*n.tagS+14:0;
+  n.bw=n.cols.length*n.pitch;n.bh=n.tagH+Math.max(...n.cols.map(c=>c.length))*n.size;
+  return n;
+}
+function width(n){if(!n.kids.length)return n.bw;const g=LV[n.kids[0].lv].gap;
+  return Math.max(n.bw,n.kids.reduce((a,k)=>a+width(k),0)+g*(n.kids.length-1))}
+function buildTree(L,{xw,from=0,to=L.段.length-1}){
+  const root=Node(1,L.根);
+  L.段.forEach((s,i)=>{
+    if(i<from||i>to)return;
+    const n2=Node(2,s.文,{s:i,time:s.時});
+    if(xw&&s.消文.length){const n3=Node(3,"消文",{kind:"xw",s:i});
+      s.消文.forEach((x,k)=>n3.kids.push(Node(5,x.文,{tag:x.類,s:i,xi:k})));n2.kids.push(n3)}
+    s.延伸.forEach((y,yi)=>{const n3=Node(3,"«"+y.題+"»",{tag:"延伸",kind:"ys",s:i,yv:yi});
+      groupsOf(y).forEach(g=>{let host=n3;
+        if(g.題){host=Node(4,g.題,{kind:"grp",s:i,yv:yi});n3.kids.push(host)}
+        g.說.forEach((x,k)=>host.kids.push(Node(5,x.文,{tag:x.類,s:i,yv:yi,k})))});
+      n2.kids.push(n3)});
+    root.kids.push(n2);
+  });
+  return root;
+}
+function layout(root){
+  const h={};(function w(n){h[n.lv]=Math.max(h[n.lv]||0,n.bh);n.kids.forEach(w)})(root);
+  const tops={};let y=MARGIN;Object.keys(h).sort().forEach(lv=>{tops[lv]=y;y+=h[lv]+ROW_GAP});
+  const W=width(root)+MARGIN*2+40,H=y-ROW_GAP+MARGIN;
+  (function place(n,right){n.x1=right;n.y=tops[n.lv];n.ax=right-n.pitch/2;
+    if(n.kids.length){const g=LV[n.kids[0].lv].gap;
+      // 最右邊的子節點對齊父節點的接線點，直線才不會拐一下
+      let r=n.ax+n.kids[0].pitch/2;for(const k of n.kids){place(k,r);r-=width(k)+g}}})(root,W-MARGIN);
+  return {root,W,H,tops};
+}
+function walk(n,f){f(n);n.kids.forEach(k=>walk(k,f))}
+function glyphs(n,f){n.cols.forEach((col,ci)=>{const cx=n.x1-n.pitch*(ci+.5);col.forEach(([ch,red],i)=>f(VERT[ch]||ch,cx,n.y+n.tagH+(i+.5)*n.size,red))})}
+function lines(lay,f){
+  (function go(n){if(!n.kids.length)return;const bar=lay.tops[n.kids[0].lv]-BAR_DROP,xs=n.kids.map(k=>k.ax).concat(n.ax);
+    const fc=n.tagH+n.cols[0].length*n.size, sg=n.lv===1?null:n.s;
+    f(n.ax,n.y+fc+6,n.ax,bar,sg,n);f(Math.min(...xs),bar,Math.max(...xs),bar,sg,n);
+    n.kids.forEach(k=>{f(k.ax,bar,k.ax,k.y-6,k.lv===2?k.s:sg,k);go(k)})})(lay.root);
+}
+function tagColor(t){return t==="延伸"?"zhu":"t-"+(TAGKEY[t]||"hui")}
+
+// SVG：畫面版用 CSS 變數（跟著深淺色），匯出版寫死淺色
+function svgOf(lay,{exp=false,caption=""}={}){
+  const C=k=>exp?LIGHT[k]:`var(--${k})`;const o=[];
+  const H=lay.H+(caption?40:0);
+  o.push(`<svg xmlns="http://www.w3.org/2000/svg" ${exp?"":'id="tree" '}width="${lay.W}" height="${H}" viewBox="0 0 ${lay.W} ${H}">`);
+  if(exp)o.push(`<rect width="100%" height="100%" fill="${LIGHT.paper}"/>`);
+  o.push(`<g id="treeg" font-family='${KAI}'>`);
+  lines(lay,(x1,y1,x2,y2,sg)=>o.push(`<line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}"`+
+    (exp?` stroke="${LIGHT.line}" stroke-width="1.5"`:(sg!=null?` data-s="${sg}"`:""))+`/>`));
+  walk(lay.root,n=>{
+    const cls=["n","lv"+n.lv];if(n.lv===5)cls.push("t-"+(TAGKEY[n.tag]||"none"));
+    o.push(exp?"<g>":`<g class="${cls.join(" ")}"${n.s!=null?` data-s="${n.s}"`:""}${n.yv!=null?` data-y="${n.yv}"`:""}>`);
+    if(!exp&&n.lv>1)o.push(`<rect class="hit" x="${(n.x1-n.bw-6).toFixed(1)}" y="${(n.y-8).toFixed(1)}" width="${(n.bw+12).toFixed(1)}" height="${(n.bh+16).toFixed(1)}" rx="6"/>`);
+    if(n.kind==="xw"){const w=n.size+14;o.push(`<rect x="${(n.ax-w/2).toFixed(1)}" y="${n.y-8}" width="${w}" height="${n.bh+16}" rx="4" fill="none" stroke="${C("gold")}" stroke-width="1.6"/>`)}
+    if(n.tag){const t=n.tagS,w=t+6,h=n.tag.length*t+8;
+      o.push(`<rect x="${(n.ax-w/2).toFixed(1)}" y="${n.y}" width="${w}" height="${h}" rx="4" style="fill:${C(tagColor(n.tag))}"/>`);
+      [...n.tag].forEach((ch,i)=>o.push(`<text x="${n.ax.toFixed(1)}" y="${(n.y+4+t*(i+.5)).toFixed(1)}" font-size="${t}" text-anchor="middle" dominant-baseline="central" fill="#fff" font-family="${exp?"Noto Sans TC, Microsoft JhengHei, sans-serif":"var(--f-ui)"}">${esc(ch)}</text>`))}
+    if(n.kind==="grp")o.push(`<line x1="${(n.ax-n.size*.45).toFixed(1)}" y1="${n.y-6}" x2="${(n.ax+n.size*.45).toFixed(1)}" y2="${n.y-6}" style="stroke:${C("zhu")};stroke-width:2"/>`);
+    const base=n.kind==="xw"?C("gold"):n.kind==="grp"?C("ink-2"):C("ink");
+    o.push(`<text font-size="${n.size}" text-anchor="middle" dominant-baseline="central"${n.lv===1?' font-weight="700"':""} style="fill:${base}">`);
+    glyphs(n,(ch,x,y,red)=>o.push(`<tspan x="${x.toFixed(1)}" y="${y.toFixed(1)}"${red?` style="fill:${C("zhu")}"`:""}>${esc(ch)}</tspan>`));
+    o.push(`</text>`);
+    if(n.time)o.push(`<text x="${(n.ax-10).toFixed(1)}" y="${n.y+n.bh+16}" font-size="13" text-anchor="end" style="fill:${C("ink-3")}" font-family="Noto Sans TC, sans-serif">${esc(n.time)}</text>`);
+    o.push("</g>");
+  });
+  o.push("</g>");
+  if(caption)o.push(`<text x="${MARGIN}" y="${H-28}" font-size="18" fill="${LIGHT["ink-3"]}" font-family="Noto Sans TC, Microsoft JhengHei, sans-serif">${esc(caption)}</text>`);
+  o.push("</svg>");return o.join("");
+}
+
+// ───────── 畫主圖 ─────────
+function renderTree(keepScroll){
+  const L=S.lesson,wrap=$("#treewrap");
+  const prevRight=keepScroll?wrap.scrollWidth-wrap.scrollLeft:null;
+  const root=buildTree(L,{xw:S.xw});
+  const lay=layout(root);S.laid=lay;
+  wrap.innerHTML=svgOf(lay);
+  applyScale();
+  // 縮圖：只畫方塊（原文灰、延伸朱、引導淡），不畫字
+  const mb=[];walk(lay.root,n=>{if(n.lv<2)return;const f=n.kind==="ys"?"var(--zhu)":n.kind==="xw"?"var(--gold)":n.lv===2?"var(--ink-3)":"var(--rule)";
+    mb.push(`<rect x="${(n.x1-n.bw).toFixed(0)}" y="${n.y}" width="${Math.max(6,n.bw-4).toFixed(0)}" height="${n.bh}" rx="6" style="fill:${f}" data-s="${n.s}"/>`)});
+  $("#mini").innerHTML=`<svg viewBox="0 0 ${lay.W} ${lay.H}" preserveAspectRatio="none">${mb.join("")}</svg><div class="view" id="miniView"></div>`;
+  $("#miniCap").textContent=`${L.段.length} 段原文・延伸 ${L.段.reduce((a,s)=>a+s.延伸.length,0)} 處`;
+  if(prevRight!=null)wrap.scrollLeft=wrap.scrollWidth-prevRight;
+  paintState();updateMini();
+}
+function applyScale(){
+  const wrap=$("#treewrap"),svg=$("#tree"),lay=S.laid;if(!svg)return;
+  if(S.scale==null){const h=wrap.clientHeight||700;S.scale=Math.max(.6,Math.min(1,(h-8)/lay.H))}
+  svg.setAttribute("width",Math.round(lay.W*S.scale));svg.setAttribute("height",Math.round(lay.H*S.scale));
+  $("#zFit").textContent=Math.round(S.scale*100)+"%";
+}
+function paintState(){
+  const svg=$("#tree");if(!svg)return;
+  svg.querySelectorAll(".n").forEach(g=>{
+    const s=+g.dataset.s,isL2=g.classList.contains("lv2");
+    g.classList.toggle("sel",isL2&&s===S.seg);
+    g.classList.toggle("inrange",isL2&&S.range&&s>=S.range[0]&&s<=S.range[1]);
+  });
+  svg.querySelectorAll("line").forEach(l=>l.classList.toggle("on",l.dataset.s!=null&&+l.dataset.s===S.seg));
+  svg.classList.toggle("filt",!!S.filter);
+  if(S.filter)svg.querySelectorAll(".lv5").forEach(g=>g.classList.toggle("on",g.classList.contains("t-"+S.filter)));
+  document.querySelectorAll("#tagbar .tagbtn").forEach(b=>b.setAttribute("aria-pressed",String(!S.filter||b.dataset.k===S.filter)));
+}
+function scrollToSeg(i,smooth=true){
+  const wrap=$("#treewrap"),lay=S.laid;if(!lay||!wrap.clientWidth)return;
+  let n=null;walk(lay.root,x=>{if(x.lv===2&&x.s===i)n=x});if(!n)return;
+  const right=n.x1*S.scale,left=(n.x1-Math.max(n.bw,width(n)))*S.scale;
+  const cw=wrap.clientWidth;
+  // 整段（含延伸）放得下就置中；放不下就讓原文那一行靠右邊，往左讀
+  let target=(right-left)<cw-80?(left+right)/2-cw/2:right+40-cw;
+  target=Math.max(0,Math.min(wrap.scrollWidth-cw,target));
+  wrap.scrollTo({left:target,behavior:smooth?"smooth":"auto"});
+}
+function updateMini(){
+  const wrap=$("#treewrap"),v=$("#miniView");if(!v||!wrap.scrollWidth)return;
+  const W=wrap.scrollWidth,tw=$("#mini").clientWidth;
+  v.style.left=(wrap.scrollLeft/W*tw)+"px";v.style.width=Math.max(10,wrap.clientWidth/W*tw)+"px";
+}
+
+// ───────── 細看 ─────────
+function kpPath(){ // 根據科判焦點找路徑
+  const want=S.lesson.科判焦點;let found=null;
+  (function go(n,p){const me=p.concat(n);if(!found&&(`${n.c} ${n.t}`===want||n.t===want))found=me;(n.k||[]).forEach(k=>go(k,me))})(S.kepan.樹,[]);
+  return found||[];
+}
+function renderDetail(){
+  const L=S.lesson,s=L.段[S.seg],side=$("#side");
+  if(S.tab==="i"){renderIndex(side);return}
+  const path=kpPath().slice(1);
+  const crumb=path.slice(-4).map((n,i,a)=>i===a.length-1?`<b>${esc(n.t)}</b>`:esc(n.t)).join("　›　");
+  side.innerHTML=`
+    <div class="crumb">${crumb}</div>
+    <div class="meta-row"><span class="pill">第 ${S.seg+1}／${L.段.length} 段</span>${s.頁?`<span class="pill">課本 p${s.頁}</span>`:""}
+      <span class="pill">${segRange(s)}</span>${playLink(s.af,s.st,s.et,"播放這段",false,`第 ${S.seg+1} 段`)}</div>
+    <div class="yw">${redHtml(s.文)}</div>
+    ${kySj(s)}
+    ${detailBody(s,true)}`;
+  const hl=side.querySelector(".ycard.hl");if(hl)hl.scrollIntoView({block:"nearest"});
+}
+function yGroups(y){
+  const gs=groupsOf(y);
+  return gs.map((g,gi)=>`${g.題?`<div class="ygrp"><span class="gno">${"一二三四五六七八九十"[gi]||gi+1}</span>${esc(g.題)}</div>`:""}
+    <ul${g.題?' class="ingrp"':""}>${g.說.map(x=>`<li class="${S.filter&&TAGKEY[x.類]!==S.filter?"dim":""}">${itemBadge(x.類)}<span>${esc(x.文)}</span></li>`).join("")}</ul>`).join("");
+}
+function kySj(s,compact){
+  const ky=s.口譯?`<div class="sec"><h3><span class="badge ky">口譯</span>口譯<span class="sjkey">整段原文的白話，對著原文翻</span></h3><p class="kytext">${esc(s.口譯)}</p></div>`:"";
+  const sj=s.四家合註?`<div class="sec"><h3><span class="badge sj">四家合註</span>四家合註<span class="sjkey">灰字＝箋註　巴＝巴梭法王　語＝語王堅穩　妙＝妙音笑　札＝札帝格西</span></h3><p class="sjtext">${s.四家合註}</p></div>`
+    :(compact?"":`<div class="sec"><p class="sjnote">四家合註：中譯本目前只出到共下士道（卷十一）與止觀（卷二十六～二十九），這段還沒有。</p></div>`);
+  return ky+sj;
+}
+function itemBadge(t){if(!t)return"";const k=TAGKEY[t]||"hui";return `<span class="badge" style="background:var(--t-${k})">${esc(t)}</span>`}
+function detailBody(s,withTs){
+  const xw=s.消文.length?`<div class="sec"><h3><span class="badge xw">消文</span>消文理路<span class="meta" style="font-weight:400;color:var(--ink-3)">師父貼著原文逐句解</span></h3>
+    <ol class="xwlist">${s.消文.map(x=>`<li>${x.類?itemBadge(x.類)+" ":""}${esc(x.文)}</li>`).join("")}</ol></div>`:"";
+  const ys=s.延伸.map((y,yi)=>`<div class="ycard${S.yan===yi?" hl":""}" data-y="${yi}">
+      <div class="hd"><span class="badge ys">延伸</span><span class="kw">${esc(y.題)}</span><span class="spacer" style="flex:1"></span>${y.af?playLink(y.af,y.st,s.et,`${y.af.toUpperCase()} ${mmss(y.st)}`,true,"延伸・"+y.題):""}</div>
+      ${yGroups(y)}</div>`).join("");
+  const ysSec=s.延伸.length?`<div class="sec"><h3><span class="badge ys">延伸</span>延伸理路<span style="font-weight:400;color:var(--ink-3)">從紅字關鍵詞深入講</span></h3>${ys}</div>`:
+    `<div class="sec" style="color:var(--ink-3);font-size:13px">這段師父貼著原文解，沒有另外延伸。</div>`;
+  const ts=withTs?`<details class="ts"${S.tsOpen?" open":""}><summary>逐字稿（${s.逐字稿.length} 節）</summary>
+    ${s.逐字稿.map(t=>{const[af,mm]=t.t.split(" ");const st=mmss2s(mm);
+      return `<div class="tsec"><div class="tt"><span>${esc(t.t)}</span><button class="play-ts" data-af="${af.toLowerCase()}" data-st="${st}" data-et="${s.af===af.toLowerCase()?(s.et??""):""}">▶ 從這裡聽</button></div>
+      ${t.b.map(([k,x])=>`<p class="${k==="q"?"q":""}">${esc(x)}</p>`).join("")}</div>`}).join("")}</details>`:"";
+  return xw+ysSec+ts;
+}
+function mmss2s(m){const[a,b]=m.split(":");return(+a)*60+(+b)}
+
+function allItems(){const out=[];S.lesson.段.forEach((s,i)=>s.延伸.forEach((y,yi)=>groupsOf(y).forEach(g=>g.說.forEach(x=>out.push({s:i,yi,y,x,g:g.題})))));return out}
+function renderIndex(side){
+  const items=allItems(),f=S.filter;
+  const kws=S.lesson.段.flatMap((s,i)=>s.延伸.map((y,yi)=>({s:i,yi,y})));
+  const list=items.filter(it=>!f||TAGKEY[it.x.類]===f);
+  side.innerHTML=`
+    <h2>延伸關鍵詞（${kws.length}）</h2>
+    <div class="kwgrid">${kws.map(k=>`<button data-go="${k.s}" data-y="${k.yi}">${esc(k.y.題)}</button>`).join("")}</div>
+    <h2>師父的引導・依類別</h2>
+    <div class="idx-tags">${["",...new Set(TAGS.map(t=>t[1]))].map(k=>{const t=k?TAGS.find(x=>x[1]===k):null;const n=items.filter(it=>!k||TAGKEY[it.x.類]===k).length;
+      return `<button class="chip${k?"":""}" data-f="${k}" aria-pressed="${(f||"")===k}">${k?(k==="yu"?"喻・例":t[0]):"全部"}　${n}</button>`}).join("")}</div>
+    ${list.map(it=>`<button class="idx-item" data-go="${it.s}" data-y="${it.yi}"><div class="w">${itemBadge(it.x.類)} ${esc(it.x.文)}</div>
+      <div class="m">延伸・${esc(it.y.題)}${it.g?"・"+esc(it.g):""}　｜　第 ${it.s+1} 段${S.lesson.段[it.s].頁?"・p"+S.lesson.段[it.s].頁:""}</div></button>`).join("")||'<p style="color:var(--ink-3)">這個類別在本課沒有。</p>'}`;
+}
+
+// ───────── 大綱（手機） ─────────
+function renderOutline(){
+  const L=S.lesson;
+  $("#outline").innerHTML=`<div class="crumb" style="padding:10px 0 2px">${kpPath().slice(1).slice(-3).map(n=>esc(n.t)).join("　›　")}</div>`+
+  L.段.map((s,i)=>`<div class="oc${i===S.seg?" sel":""}" id="oc${i}">
+    <div class="meta-row" style="margin:0"><span class="pill">${i+1}</span>${s.頁?`<span class="pill">p${s.頁}</span>`:""}<span class="pill">${segRange(s)}</span>${playLink(s.af,s.st,s.et,"播放")}</div>
+    <div class="yw">${redHtml(s.文)}</div>
+    ${s.口譯?`<details open><summary style="color:var(--t-li)">口譯</summary><p class="kytext" style="margin-top:6px">${esc(s.口譯)}</p></details>`:""}
+    ${s.四家合註?`<details><summary style="color:var(--ink-2)">四家合註</summary><p class="sjtext" style="margin-top:6px">${s.四家合註}</p></details>`:""}
+    ${s.消文.length?`<details${S.xw?" open":""}><summary>消文理路（${s.消文.length}）</summary><ol class="xwlist" style="margin-top:6px">${s.消文.map(x=>`<li>${x.類?itemBadge(x.類)+" ":""}${esc(x.文)}</li>`).join("")}</ol></details>`:""}
+    ${s.延伸.map((y,yi)=>`<div class="ycard" data-y="${yi}"><div class="hd"><span class="badge ys">延伸</span><span class="kw">${esc(y.題)}</span><span style="flex:1"></span>${y.af?playLink(y.af,y.st,s.et,`${y.af.toUpperCase()} ${mmss(y.st)}`,true):""}</div>
+      ${yGroups(y)}</div>`).join("")}
+    <details><summary style="color:var(--ink-2)">逐字稿（${s.逐字稿.length} 節）</summary>${s.逐字稿.map(t=>`<div class="tsec"><div class="tt">${esc(t.t)}</div>${t.b.map(([k,x])=>`<p class="${k==="q"?"q":""}">${esc(x)}</p>`).join("")}</div>`).join("")}</details>
+  </div>`).join("");
+}
+
+// ───────── 地圖 ─────────
+function renderMap(){
+  const has=new Set(S.index.map(x=>x.科判焦點)),path=new Set(kpPath());
+  const keep=new Set();(function go(n,p){const me=p.concat(n),key=`${n.c} ${n.t}`;if(has.has(key)||has.has(n.t))me.forEach(x=>keep.add(x));(n.k||[]).forEach(k=>go(k,me))})(S.kepan.樹,[]);
+  const mine=!S.mapAll;
+  const lessonsOf=n=>S.index.filter(x=>x.科判焦點===`${n.c} ${n.t}`||x.科判焦點===n.t);
+  function li(n,depth){
+    if(mine&&!keep.has(n))return "";
+    const key=`${n.c} ${n.t}`,ls=lessonsOf(n),isHas=ls.length>0,kids=n.k||[];
+    const isOpen=mine||path.has(n)||depth<1;
+    const lessonBtns=isHas?`<div class="lessons" style="--d:${depth}">${ls.map(x=>`<button data-lesson="${esc(x.id)}" class="${S.lesson&&S.lesson.id===x.id?"cur":""}"><b>${esc(x.標題)}</b>第${x.堂數}堂・${esc(x.課本範圍.replace(" ~ ","～"))}</button>`).join("")}</div>`:"";
+    return `<li><div class="row${path.has(n)?" path":""}${isHas?" has":""}${isHas&&S.lesson&&lessonsOf(n).some(x=>x.id===S.lesson.id)?" cur":""}" style="--d:${depth}" ${isHas?`data-has="${esc(key)}" tabindex="0"`:""}>
+      ${kids.length?`<button class="tw" aria-expanded="${isOpen}" aria-label="展開">${isOpen?"▾":"▸"}</button>`:'<span class="tw"></span>'}
+      ${n.c?`<span class="c">${esc(n.c)}</span>`:""}<span class="t">${esc(n.t)}</span></div>${lessonBtns}
+      ${kids.length?`<ul${isOpen?"":" hidden"}>${kids.map(k=>li(k,depth+1)).join("")}</ul>`:""}</li>`;
+  }
+  const kp=$("#kp");kp.classList.toggle("mine",mine);
+  kp.innerHTML=`<ul>${li(S.kepan.樹,0)}</ul>`;
+  $("#mapMine").setAttribute("aria-pressed",String(mine));$("#mapAll").setAttribute("aria-pressed",String(!mine));
+  $("#mapNote").textContent=mine?`目前整理了 ${S.index.length} 課。按「全部」看整部廣論科判，可以從那裡搜尋或定位。`:"朱點＝已整理師父講解的節點；其他節點之後一課一課補上。";
+  const cur=$("#kp .row.cur");if(cur&&!mine)setTimeout(()=>{const m=$(".map");m.scrollTop=cur.offsetTop-m.clientHeight/2;m.scrollLeft=0},50);
+}
+
+// ───────── 選取 ─────────
+function selectSeg(i,{yan=null,scroll=true,from}={}){
+  S.seg=i;S.yan=yan;
+  if(S.tab==="i"&&from!=="index"){}
+  paintState();renderDetail();
+  document.querySelectorAll("#outline .oc").forEach((el,k)=>el.classList.toggle("sel",k===i));
+  if(scroll)scrollToSeg(i);
+  if(isMobile()&&$("#main").dataset.m==="outline"&&scroll){const el=$("#oc"+i);if(el)el.scrollIntoView({behavior:"smooth",block:"start"})}
+  try{history.replaceState(null,"","#seg-"+(i+1))}catch(e){}
+}
+const isMobile=()=>matchMedia("(max-width:980px)").matches;
+
+// ───────── 搜尋 ─────────
+const TIME_RE=/^\s*(\d{1,3})\s*([AaBb])(?:\s*(\d{1,2})(?:\s*[:：]?\s*(\d{2}))?)?\s*$/;
+function hl(text,q){const i=text.indexOf(q);if(i<0)return esc(text.slice(0,60));const a=Math.max(0,i-18);
+  return(a?"…":"")+esc(text.slice(a,i))+"<mark>"+esc(q)+"</mark>"+esc(text.slice(i+q.length,i+q.length+40))+"…"}
+function doSearch(q){
+  q=q.trim();const box=$("#results");if(!q){box.hidden=true;return}
+  const L=S.lesson,groups=[];
+  // 音檔：「69A」列出這一卷的所有段；「69A 12」「69a1230」「69A 12:30」跳到那個時間；「12:30」兩卷都找
+  const tm=q.match(TIME_RE),tm2=!tm&&q.match(/^\s*(\d{1,2})\s*[:：]\s*(\d{2})\s*$/);
+  const segAt=(af,sec)=>{let hit=-1;L.段.forEach((s,i)=>{if(s.af===af&&s.st<=sec)hit=i});return hit};
+  if(tm){const af=(String(+tm[1]).padStart(3,"0")+tm[2]).toLowerCase().replace(/^0+/,"").padStart(3,"0");
+    const afk=L.段.find(s=>s.af.replace(/^0+/,"")===af.replace(/^0+/,""))?.af||af;
+    if(tm[3]==null){
+      const list=L.段.map((s,i)=>({s,i})).filter(x=>x.s.af===afk);
+      groups.push(["音檔 "+afk.toUpperCase(),list.map(x=>({go:x.i,h:`${segRange(x.s)}　第 ${x.i+1} 段`,m:plain(x.s.文).slice(0,36)+"…"})),
+        list.length?null:`本課沒有 ${afk.toUpperCase()}（本課是 ${[...new Set(L.段.map(s=>s.af.toUpperCase()))].join("、")}）`]);
+    }else{
+      const sec=(+tm[3])*60+(tm[4]!=null?+tm[4]:0),hit=segAt(afk,sec);
+      groups.push(["音檔",hit>=0?[{go:hit,h:`${afk.toUpperCase()} ${mmss(sec)} → 第 ${hit+1} 段（${segRange(L.段[hit])}）`,m:plain(L.段[hit].文).slice(0,40)+"…"}]:[],
+        hit<0?`${afk.toUpperCase()} ${mmss(sec)} 不在本課範圍`:null]);
+    }
+  }else if(tm2){const sec=(+tm2[1])*60+(+tm2[2]);const res=[];
+    [...new Set(L.段.map(s=>s.af))].forEach(af=>{const h=segAt(af,sec);if(h>=0)res.push({go:h,h:`${af.toUpperCase()} ${mmss(sec)} → 第 ${h+1} 段`,m:plain(L.段[h].文).slice(0,40)+"…"})});
+    if(res.length)groups.push(["音檔",res]);
+  }
+  const kp=[];(function go(n,p){const me=p.concat(n);if(n.t&&(n.t.includes(q)||(n.c&&n.c===q)))kp.push(me);(n.k||[]).forEach(k=>go(k,me))})(S.kepan.樹,[]);
+  if(kp.length)groups.push(["科判",kp.slice(0,8).map(p=>{const n=p.at(-1),key=`${n.c} ${n.t}`,has=S.index.some(x=>x.科判焦點===key||x.科判焦點===n.t);
+    return {kp:key,h:`${esc(n.c)} ${hl(n.t,q)}`,m:(has?"已整理・":"尚未整理・")+p.slice(1,-1).slice(-2).map(x=>x.t).join(" › "),raw:true}})]);
+  const yw=[],ys=[],xw=[],ts=[];
+  L.段.forEach((s,i)=>{
+    if(plain(s.文).includes(q))yw.push({go:i,h:hl(plain(s.文),q),m:`第 ${i+1} 段${s.頁?"・p"+s.頁:""}`,raw:true});
+    s.延伸.forEach((y,yi)=>{if(y.題.includes(q))ys.push({go:i,y:yi,h:"延伸・"+hl(y.題,q),m:`第 ${i+1} 段`,raw:true});
+      y.說.forEach(x=>{if(x.文.includes(q))ys.push({go:i,y:yi,h:`<span class="badge" style="background:var(--t-${TAGKEY[x.類]||"hui"})">${esc(x.類)}</span> `+hl(x.文,q),m:`延伸・${y.題}・第 ${i+1} 段`,raw:true})})});
+    if(s.口譯&&s.口譯.includes(q))xw.push({go:i,h:hl(s.口譯,q),m:`口譯・第 ${i+1} 段`,raw:true});
+    s.消文.forEach(x=>{if(x.文.includes(q))xw.push({go:i,h:hl(x.文,q),m:`消文・第 ${i+1} 段`,raw:true})});
+    s.逐字稿.forEach(t=>t.b.forEach(([k,x])=>{if(k==="s"&&x.includes(q))ts.push({go:i,h:hl(x,q),m:`${t.t}・第 ${i+1} 段`,raw:true})}));
+  });
+  if(yw.length)groups.push(["原文",yw]);if(ys.length)groups.push(["延伸理路",ys]);if(xw.length)groups.push(["口譯・消文理路",xw]);if(ts.length)groups.push(["逐字稿（師父）",ts.slice(0,12)]);
+  S.results=[];let html="";
+  for(const [g,arr,note] of groups){html+=`<div class="grp">${g}</div>`;if(note)html+=`<div class="empty">${esc(note)}</div>`;
+    arr.forEach(r=>{S.results.push(r);html+=`<button data-r="${S.results.length-1}"><div>${r.raw?r.h:esc(r.h)}</div><div class="meta">${esc(r.m)}</div></button>`})}
+  box.innerHTML=html||`<div class="empty">找不到「${esc(q)}」。可以試試原文裡的詞、科判名稱，或「69A 12:30」這種音檔時間。</div>`;
+  box.hidden=false;
+}
+function goResult(r){
+  $("#results").hidden=true;
+  if(r.kp){const row=[...document.querySelectorAll("#kp .row")].find(x=>x.querySelector(".t")&&(`${x.querySelector(".c")?.textContent||""} ${x.querySelector(".t").textContent}`.trim()===r.kp.trim()));
+    openMapTo(r.kp);
+    if(S.index.some(x=>x.科判焦點===r.kp||x.科判焦點===r.kp.split(" ").pop())){selectSeg(0)}
+    else toast("這一節還沒整理師父講解；地圖上已標出位置。");
+    if(isMobile())setM("map");return}
+  if(isMobile()&&$("#main").dataset.m==="map")setM("outline");
+  selectSeg(r.go,{yan:r.y??null});
+}
+function openMapTo(key){
+  if(!S.mapAll){S.mapAll=true;renderMap()}
+  let target=null;const p=[];(function go(n,path){const me=path.concat(n);if(!target&&`${n.c} ${n.t}`.trim()===key.trim())target=me;(n.k||[]).forEach(k=>go(k,me))})(S.kepan.樹,[]);
+  if(!target)return;
+  // 依序展開
+  const rows=[...document.querySelectorAll("#kp .row")];
+  const keyOf=row=>`${row.querySelector(".c")?.textContent||""} ${row.querySelector(".t").textContent}`.trim();
+  target.forEach(n=>{const r=rows.find(x=>keyOf(x)===`${n.c} ${n.t}`.trim());if(r){const ul=r.nextElementSibling;if(ul){ul.hidden=false;const b=r.querySelector(".tw");if(b){b.textContent="▾";b.setAttribute("aria-expanded","true")}}}});
+  const last=rows.find(x=>keyOf(x)===key.trim());if(last){last.scrollIntoView({block:"center",behavior:"smooth"});last.classList.remove("flash");void last.offsetWidth;last.classList.add("flash")}
+}
+
+// ───────── 下載 ─────────
+let downloads=null;
+function openPop(){
+  const L=S.lesson,parts=L.分圖||[];
+  $("#rangeOpts").innerHTML=`<div class="sub">範圍</div>
+    <label><input type="radio" name="rg" value="all" checked> 整課（${L.段.length} 段）</label>
+    ${parts.map((p,i)=>`<label><input type="radio" name="rg" value="p${i}"> ${esc(p.名)}<span class="sub">　第 ${p.原文[0]+1}～${p.原文[1]+1} 段</span></label>`).join("")}
+    <label><input type="radio" name="rg" value="seg"> 目前這一段（第 ${S.seg+1} 段）</label>
+    <label><input type="radio" name="rg" value="pick"> 自選區段<span class="sub">　${S.range?`第 ${S.range[0]+1}～${S.range[1]+1} 段・`:""}在圖上點起點和終點</span></label>`;
+  $("#dlXw").checked=S.xw;$("#dlMsg").textContent="";
+  $("#pop").hidden=false;
+}
+function rangeFromPop(){
+  const v=document.querySelector('input[name="rg"]:checked').value,L=S.lesson;
+  if(v==="all")return[0,L.段.length-1,"整課"];
+  if(v==="seg")return[S.seg,S.seg,`第${S.seg+1}段`];
+  if(v==="pick")return S.range?[S.range[0],S.range[1],`第${S.range[0]+1}-${S.range[1]+1}段`]:null;
+  const p=L.分圖[+v.slice(1)];return[p.原文[0],p.原文[1],p.名];
+}
+async function doDownload(){
+  const v=document.querySelector('input[name="rg"]:checked').value;
+  if(v==="pick"&&!S.range){startPick();return}
+  const [a,b,name]=rangeFromPop(),xw=$("#dlXw").checked,fmt=document.querySelector('input[name="fmt"]:checked').value;
+  const L=S.lesson,lay=layout(buildTree(L,{xw,from:a,to:b}));
+  const cap=`${L.標題}　師父講解科判${xw?"":"（延伸理路）"}　${name}　｜　${L.課本範圍}　｜　紅字＝延伸關鍵詞　立＝所立　破＝所破　下手＝下手處　回扣＝回扣原文`;
+  const fname=`${L.標題}_師父科判${xw?"":"_延伸"}_${name}.${fmt}`;
+  $("#dlMsg").textContent="產生中…";
+  try{
+    let data;
+    if(fmt==="svg")data=svgOf(lay,{exp:true,caption:cap});
+    else data=await toPng(lay,cap);
+    if(downloads)await downloads.save({filename:fname,data});
+    else{const blob=data instanceof Blob?data:new Blob([data],{type:"image/svg+xml"});const a=document.createElement("a");
+      a.href=URL.createObjectURL(blob);a.download=fname;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1000)}
+    $("#pop").hidden=true;toast("已下載："+fname);
+  }catch(e){
+    const c=e&&e.code;$("#dlMsg").textContent=c==="declined"?"已取消。":c==="rate_limited"?"已經有一個存檔視窗開著，等一下再試。":"沒有存成："+(e&&e.message||e);
+  }
+}
+async function toPng(lay,cap){
+  const sc=2,H=lay.H+40,cv=document.createElement("canvas");cv.width=lay.W*sc;cv.height=H*sc;
+  const ctx=cv.getContext("2d");ctx.scale(sc,sc);
+  let all="";walk(lay.root,n=>n.cols.forEach(c=>c.forEach(([ch])=>all+=VERT[ch]||ch)));
+  try{await Promise.all([26,21,30,46].map(z=>document.fonts.load(`${z}px "LXGW WenKai TC"`,all)))}catch(e){}
+  ctx.fillStyle=LIGHT.paper;ctx.fillRect(0,0,lay.W,H);
+  ctx.strokeStyle=LIGHT.line;ctx.lineWidth=1.5;
+  lines(lay,(x1,y1,x2,y2)=>{ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke()});
+  ctx.textAlign="center";ctx.textBaseline="middle";
+  walk(lay.root,n=>{
+    if(n.kind==="xw"){const w=n.size+14;ctx.strokeStyle=LIGHT.gold;ctx.lineWidth=1.6;rr(ctx,n.ax-w/2,n.y-8,w,n.bh+16,4);ctx.stroke()}
+    if(n.tag){const t=n.tagS,w=t+6,h=n.tag.length*t+8;ctx.fillStyle=LIGHT[tagColor(n.tag)];rr(ctx,n.ax-w/2,n.y,w,h,4);ctx.fill();
+      ctx.fillStyle="#fff";ctx.font=`500 ${t}px "Noto Sans TC","Microsoft JhengHei",sans-serif`;[...n.tag].forEach((ch,i)=>ctx.fillText(ch,n.ax,n.y+4+t*(i+.5)))}
+    if(n.kind==="grp"){ctx.strokeStyle=LIGHT.zhu;ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(n.ax-n.size*.45,n.y-6);ctx.lineTo(n.ax+n.size*.45,n.y-6);ctx.stroke();ctx.strokeStyle=LIGHT.line;ctx.lineWidth=1.5}
+    ctx.font=`${n.lv===1?"700 ":""}${n.size}px ${KAI}`;
+    glyphs(n,(ch,x,y,red)=>{ctx.fillStyle=red?LIGHT.zhu:(n.kind==="xw"?LIGHT.gold:n.kind==="grp"?LIGHT["ink-2"]:LIGHT.ink);ctx.fillText(ch,x,y)});
+    if(n.time){ctx.font='13px "Noto Sans TC",sans-serif';ctx.fillStyle=LIGHT["ink-3"];ctx.textAlign="right";ctx.fillText(n.time,n.ax-10,n.y+n.bh+12);ctx.textAlign="center"}
+  });
+  ctx.textAlign="left";ctx.font='18px "Noto Sans TC","Microsoft JhengHei",sans-serif';ctx.fillStyle=LIGHT["ink-3"];ctx.fillText(cap,MARGIN,H-34);
+  return await new Promise((res,rej)=>cv.toBlob(b=>b?res(b):rej(new Error("圖太大，請改選較小的區段")),"image/png"));
+}
+function rr(c,x,y,w,h,r){c.beginPath();c.moveTo(x+r,y);c.arcTo(x+w,y,x+w,y+h,r);c.arcTo(x+w,y+h,x,y+h,r);c.arcTo(x,y+h,x,y,r);c.arcTo(x,y,x+w,y,r);c.closePath()}
+function startPick(){
+  $("#pop").hidden=true;S.pick={a:null};
+  let h=$("#pickhint");if(!h){h=document.createElement("div");h.id="pickhint";h.className="pickhint";$("#treewrap").appendChild(h)}
+  h.textContent="自選區段：點起點那段原文";h.hidden=false;
+  if(isMobile())setM("tree");
+}
+function pickClick(i){
+  const h=$("#pickhint");
+  if(S.pick.a==null){S.pick.a=i;S.range=[i,i];h.textContent=`起點：第 ${i+1} 段。再點終點那段原文`;paintState();return}
+  const a=Math.min(S.pick.a,i),b=Math.max(S.pick.a,i);S.range=[a,b];S.pick=null;h.hidden=true;paintState();
+  openPop();document.querySelector('input[name="rg"][value="pick"]').checked=true;
+}
+
+function toast(m){const t=document.createElement("div");t.className="toast";t.textContent=m;document.body.appendChild(t);setTimeout(()=>t.remove(),2600)}
+function setM(m){$("#main").dataset.m=m;document.querySelectorAll(".mtabs button").forEach(b=>b.setAttribute("aria-selected",String(b.dataset.m===m)));
+  if(m==="tree"){S.scale=null;requestAnimationFrame(()=>{applyScale();scrollToSeg(S.seg,false);updateMini()})}
+  if(m==="index"){S.tab="i";renderDetail()}else if(S.tab==="i"&&isMobile()){S.tab="d"}
+}
+
+// ───────── 事件 ─────────
+function bind(){
+  const wrap=$("#treewrap");
+  // 按住拖曳平移（滑鼠）；移動超過 5px 才算拖曳，不會誤觸點選
+  let dg=null;
+  wrap.addEventListener("pointerdown",e=>{if(e.pointerType!=="mouse"||e.button!==0)return;
+    dg={x:e.clientX,y:e.clientY,l:wrap.scrollLeft,t:wrap.scrollTop,moved:false,id:e.pointerId}});
+  wrap.addEventListener("pointermove",e=>{if(!dg)return;const dx=e.clientX-dg.x,dy=e.clientY-dg.y;
+    if(!dg.moved&&Math.hypot(dx,dy)>5){dg.moved=true;wrap.classList.add("dragging");try{wrap.setPointerCapture(dg.id)}catch(_){}}
+    if(dg.moved){wrap.scrollLeft=dg.l-dx;wrap.scrollTop=dg.t-dy}});
+  const endDrag=()=>{if(!dg)return;if(dg.moved){wrap.dataset.justDragged="1";setTimeout(()=>delete wrap.dataset.justDragged,0)}
+    wrap.classList.remove("dragging");dg=null};
+  wrap.addEventListener("pointerup",endDrag);wrap.addEventListener("pointercancel",endDrag);
+  // 滾輪：圖不需要上下捲的時候，直接變左右捲
+  wrap.addEventListener("wheel",e=>{if(e.shiftKey||e.ctrlKey||Math.abs(e.deltaX)>Math.abs(e.deltaY))return;
+    if(wrap.scrollHeight<=wrap.clientHeight+2){wrap.scrollLeft-=e.deltaY;e.preventDefault()}},{passive:false});
+  wrap.addEventListener("click",e=>{
+    if(wrap.dataset.justDragged)return;
+    const g=e.target.closest(".n");if(!g||g.dataset.s==null)return;const i=+g.dataset.s;
+    if(S.pick){if(g.classList.contains("lv2")||true)pickClick(i);return}
+    const y=g.dataset.y!=null?+g.dataset.y:null;
+    S.tab="d";syncTabs();selectSeg(i,{yan:y,scroll:false});
+    if(isMobile()){}
+  });
+  wrap.addEventListener("scroll",updateMini,{passive:true});
+  const mini=$("#mini");let drag=false;
+  const jump=e=>{const r=mini.getBoundingClientRect(),x=(e.clientX-r.left)/r.width;wrap.scrollLeft=x*wrap.scrollWidth-wrap.clientWidth/2};
+  mini.addEventListener("pointerdown",e=>{drag=true;mini.setPointerCapture(e.pointerId);jump(e)});
+  mini.addEventListener("pointermove",e=>{if(drag)jump(e)});
+  mini.addEventListener("pointerup",()=>drag=false);
+  $("#lyBoth").onclick=()=>{S.xw=true;store("kp.xw","1");syncLayer();renderTree();scrollToSeg(S.seg,false)};
+  $("#lyYan").onclick=()=>{S.xw=false;store("kp.xw","0");syncLayer();renderTree();scrollToSeg(S.seg,false)};
+  $("#zIn").onclick=()=>{S.scale=Math.min(1.6,(S.scale||1)*1.2);zoomKeep()};
+  $("#zOut").onclick=()=>{S.scale=Math.max(.25,(S.scale||1)/1.2);zoomKeep()};
+  $("#zFit").onclick=()=>{S.scale=null;zoomKeep()};
+  $("#tagbar").innerHTML=TAGS.filter((t,i,a)=>a.findIndex(x=>x[1]===t[1])===i).map(t=>`<button class="tagbtn" data-k="${t[1]}" style="background:var(--t-${t[1]})" aria-pressed="true" title="${t[2]}">${t[1]==="yu"?"喻例":t[0]}</button>`).join("");
+  $("#tagbar").addEventListener("click",e=>{const b=e.target.closest(".tagbtn");if(!b)return;S.filter=S.filter===b.dataset.k?null:b.dataset.k;paintState();renderDetail();renderOutline()});
+  $("#tabD").onclick=()=>{S.tab="d";syncTabs();renderDetail()};
+  $("#tabI").onclick=()=>{S.tab="i";syncTabs();renderDetail()};
+  $("#side").addEventListener("click",e=>{
+    const f=e.target.closest("[data-f]");if(f){S.filter=f.dataset.f||null;paintState();renderDetail();return}
+    const go=e.target.closest("[data-go]");if(go){S.tab="d";syncTabs();if(isMobile())setM("outline");selectSeg(+go.dataset.go,{yan:go.dataset.y!=null?+go.dataset.y:null})}
+  });
+  $("#side").addEventListener("toggle",e=>{if(e.target.matches("details.ts"))S.tsOpen=e.target.open},true);
+  const q=$("#q");let act=-1;
+  q.addEventListener("input",()=>{act=-1;doSearch(q.value)});
+  q.addEventListener("focus",()=>{if(q.value.trim())doSearch(q.value)});
+  q.addEventListener("keydown",e=>{const bs=[...$("#results").querySelectorAll("button")];
+    if(e.key==="ArrowDown"||e.key==="ArrowUp"){e.preventDefault();act=(act+(e.key==="ArrowDown"?1:-1)+bs.length)%bs.length;bs.forEach((b,i)=>b.classList.toggle("act",i===act));bs[act]?.scrollIntoView({block:"nearest"})}
+    else if(e.key==="Enter"){const b=bs[act>=0?act:0];if(b)goResult(S.results[+b.dataset.r])}
+    else if(e.key==="Escape"){$("#results").hidden=true;q.blur()}});
+  $("#results").addEventListener("click",e=>{const b=e.target.closest("button[data-r]");if(b)goResult(S.results[+b.dataset.r])});
+  document.addEventListener("click",e=>{if(!e.target.closest(".search"))$("#results").hidden=true;
+    if(!e.target.closest("#pop")&&!e.target.closest("#dlBtn")&&!$("#pop").hidden&&!S.pick)$("#pop").hidden=true});
+  $("#mapMine").onclick=()=>{S.mapAll=false;store("kp.mapAll","0");renderMap()};
+  $("#mapAll").onclick=()=>{S.mapAll=true;store("kp.mapAll","1");renderMap()};
+  $("#kp").addEventListener("click",e=>{
+    const lb=e.target.closest("[data-lesson]");if(lb){selectSeg(0);if(isMobile())setM("outline");return}
+    const tw=e.target.closest(".tw");if(tw&&tw.tagName==="BUTTON"){const ul=tw.closest(".row").nextElementSibling;if(ul){ul.hidden=!ul.hidden;tw.textContent=ul.hidden?"▸":"▾";tw.setAttribute("aria-expanded",String(!ul.hidden))}return}
+    const r=e.target.closest(".row.has");if(r){selectSeg(0);if(isMobile())setM("outline")}
+  });
+  $("#dlBtn").onclick=e=>{e.stopPropagation();$("#pop").hidden?openPop():($("#pop").hidden=true)};
+  $("#dlCancel").onclick=()=>$("#pop").hidden=true;
+  $("#dlGo").onclick=doDownload;
+  $("#outline").addEventListener("click",e=>{const oc=e.target.closest(".oc");if(!oc||e.target.closest("a,summary,button"))return;const i=+oc.id.slice(2);if(i!==S.seg){S.seg=i;document.querySelectorAll("#outline .oc").forEach((el,k)=>el.classList.toggle("sel",k===i));paintState()}});
+  document.querySelectorAll(".mtabs button").forEach(b=>b.onclick=()=>setM(b.dataset.m));
+  addEventListener("resize",()=>{applyScale();updateMini()});
+  addEventListener("hashchange",fromHash);
+}
+// ───────── 分隔線：寬度存在本機 ─────────
+const SPLIT={map:[270,0,520],det:[380,280,720]};
+function setW(k,w,save){const [d,mn,mx]=SPLIT[k];w=Math.round(w);
+  if(k==="map"&&w<90)w=0;else w=Math.max(mn,Math.min(mx,w));
+  $("#main").style.setProperty(k==="map"?"--mapw":"--detw",w+"px");S[k+"W"]=w;
+  if(save)store("kp."+k+"W",String(w));updateMini()}
+function bindSplit(){
+  [["gutL","map",1],["gutR","det",-1]].forEach(([id,k,sign])=>{
+    const g=$("#"+id);let st=null;
+    g.addEventListener("pointerdown",e=>{st={x:e.clientX,w:S[k+"W"]};g.setPointerCapture(e.pointerId);g.classList.add("on");document.body.classList.add("resizing");e.preventDefault()});
+    g.addEventListener("pointermove",e=>{if(st)setW(k,st.w+sign*(e.clientX-st.x),false)});
+    const end=()=>{if(!st)return;st=null;g.classList.remove("on");document.body.classList.remove("resizing");setW(k,S[k+"W"],true);applyScale()};
+    g.addEventListener("pointerup",end);g.addEventListener("pointercancel",end);
+    g.addEventListener("dblclick",()=>{setW(k,SPLIT[k][0],true);store("kp."+k+"W",null)});
+    g.addEventListener("keydown",e=>{if(e.key==="ArrowLeft"||e.key==="ArrowRight"){e.preventDefault();setW(k,S[k+"W"]+(e.key==="ArrowRight"?sign:-sign)*20,true)}});
+  });
+  for(const k of ["map","det"]){const v=+store("kp."+k+"W");setW(k,v>=0&&store("kp."+k+"W")!=null?v:SPLIT[k][0],false)}
+}
+function zoomKeep(){const wrap=$("#treewrap"),fr=(wrap.scrollLeft+wrap.clientWidth/2)/wrap.scrollWidth;applyScale();wrap.scrollLeft=fr*wrap.scrollWidth-wrap.clientWidth/2;updateMini()}
+function syncLayer(){$("#lyBoth").setAttribute("aria-pressed",String(S.xw));$("#lyYan").setAttribute("aria-pressed",String(!S.xw))}
+function syncTabs(){$("#tabD").setAttribute("aria-selected",String(S.tab==="d"));$("#tabI").setAttribute("aria-selected",String(S.tab==="i"))}
+function fromHash(){const m=location.hash.match(/^#seg-(\d+)$/);if(m&&S.lesson){const i=+m[1]-1;if(i>=0&&i<S.lesson.段.length&&i!==S.seg)selectSeg(i)}}
+
+// ───────── 啟動 ─────────
+async function start(){
+  bind();bindPlayer();bindSplit();
+  try{
+    const emb=document.getElementById("kpdata");
+    if(emb){const D=JSON.parse(emb.textContent);S.kepan=D.kepan;S.index=D.index;S.lessons=D.lessons;S.lesson=D.lessons[D.index[0].id]}
+    else{
+      const [kp,idx]=await Promise.all([fetch("data/kepan.json").then(r=>r.json()),fetch("data/index.json").then(r=>r.json())]);
+      S.kepan=kp;S.index=idx;
+      S.lesson=await fetch(`data/lessons/${idx[0].id}.json`).then(r=>r.json());
+    }
+  }catch(e){$("#side").innerHTML=`<p>資料載入失敗：${esc(e.message)}。重新整理一次試試。</p>`;return}
+  const L=S.lesson;
+  $("#lessonInfo").textContent=`${L.標題}・第${L.堂數}堂・${L.課本範圍.replace(" ~ ","～")}・${L.日期}`;
+  S.mapAll=store("kp.mapAll")==="1";
+  const sx=store("kp.xw");if(sx!=null)S.xw=sx==="1";syncLayer();
+  const m=location.hash.match(/^#seg-(\d+)$/);if(m)S.seg=Math.min(L.段.length-1,Math.max(0,+m[1]-1));
+  renderMap();renderTree();renderDetail();renderOutline();
+  const firstScroll=()=>{const w=$("#treewrap");w.scrollLeft=w.scrollWidth;scrollToSeg(S.seg,false);updateMini()};
+  requestAnimationFrame(firstScroll);setTimeout(firstScroll,250);setTimeout(firstScroll,800);
+  try{document.fonts.ready.then(()=>setTimeout(firstScroll,50))}catch(e){}
+  if(m&&isMobile())setTimeout(()=>$("#oc"+S.seg)?.scrollIntoView({block:"start"}),120);
+  try{downloads=window.claude?.use?await window.claude.use("downloads"):null}catch(e){downloads=null}
+}
+start();
+</script>
+</body></html>

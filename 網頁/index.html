@@ -1,0 +1,895 @@
+<title>師父講解科判</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=LXGW+WenKai+TC:wght@400;700&family=Noto+Sans+TC:wght@400;500;700&display=swap">
+<style>
+/* 版面：地圖（廣論科判）｜道路＋前導車（直排師父科判）｜細看（消文・延伸・逐字稿）。宣紙、墨、朱砂、泥金。 */
+:root{
+  --paper:#F1EEE6; --panel:#E8E3D7; --raised:#F8F6F0; --ink:#26231E; --ink-2:#5D574C; --ink-3:#8E877A;
+  --line:#6F685C; --rule:#D6CFBF; --zhu:#B3352B; --zhu-wash:rgba(179,53,43,.09); --gold:#92700F;
+  --t-li:#2E6A88; --t-po:#AE3A2E; --t-yin:#7A58A3; --t-yu:#2E7A52; --t-xia:#B4701A; --t-hui:#777064;
+  --f-kai:"LXGW WenKai TC","DFKai-SB","BiauKai","Kaiti TC",serif;
+  --f-ui:"Noto Sans TC","Microsoft JhengHei","PingFang TC",system-ui,sans-serif;
+  --shadow:0 6px 24px rgba(40,30,10,.12);
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --paper:#1B1A17; --panel:#232119; --raised:#2A2820; --ink:#E9E3D4; --ink-2:#BAB2A1; --ink-3:#878070;
+  --line:#958D7E; --rule:#3B382F; --zhu:#E1715F; --zhu-wash:rgba(225,113,95,.14); --gold:#D3AA4F;
+  --t-li:#6FA8C6; --t-po:#E07A6C; --t-yin:#AC90D6; --t-yu:#6DBA8E; --t-xia:#E0A456; --t-hui:#A39C8E;
+  --shadow:0 6px 24px rgba(0,0,0,.4); color-scheme:dark}}
+:root[data-theme="dark"]{
+  --paper:#1B1A17; --panel:#232119; --raised:#2A2820; --ink:#E9E3D4; --ink-2:#BAB2A1; --ink-3:#878070;
+  --line:#958D7E; --rule:#3B382F; --zhu:#E1715F; --zhu-wash:rgba(225,113,95,.14); --gold:#D3AA4F;
+  --t-li:#6FA8C6; --t-po:#E07A6C; --t-yin:#AC90D6; --t-yu:#6DBA8E; --t-xia:#E0A456; --t-hui:#A39C8E;
+  --shadow:0 6px 24px rgba(0,0,0,.4); color-scheme:dark}
+html,body{height:100%}
+body{background:var(--paper);color:var(--ink);font-family:var(--f-ui);font-size:14px;line-height:1.6;overflow:hidden}
+button,input{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--zhu);outline-offset:2px}
+.app{height:100%;display:grid;grid-template-rows:auto 1fr;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+
+/* 頁首 */
+header{display:flex;align-items:center;gap:14px;padding-block:10px;border-bottom:1px solid var(--rule);flex-wrap:wrap}
+.brand{display:flex;align-items:baseline;gap:10px;min-width:0}
+.brand h1{font-family:var(--f-kai);font-weight:700;font-size:22px;margin:0;letter-spacing:.08em;white-space:nowrap}
+.brand .lesson{color:var(--ink-2);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.search{position:relative;flex:1 1 320px;max-width:560px;margin-left:auto}
+.search input{width:100%;box-sizing:border-box;padding:8px 12px 8px 34px;border:1px solid var(--rule);border-radius:8px;background:var(--raised)}
+.search input::placeholder{color:var(--ink-3)}
+.search svg{position:absolute;left:10px;top:50%;transform:translateY(-50%);width:16px;height:16px;stroke:var(--ink-3);fill:none}
+.results{position:absolute;z-index:30;top:calc(100% + 6px);left:0;right:0;max-height:min(70vh,560px);overflow:auto;background:var(--raised);border:1px solid var(--rule);border-radius:10px;box-shadow:var(--shadow);padding:6px}
+.results .grp{font-size:11px;letter-spacing:.12em;color:var(--ink-3);padding:8px 10px 4px}
+.results button{display:block;width:100%;text-align:left;border:0;background:none;padding:7px 10px;border-radius:6px}
+.results button:hover,.results button.act{background:var(--zhu-wash)}
+.results .meta{font-size:12px;color:var(--ink-3)}
+.results mark{background:none;color:var(--zhu);font-weight:700}
+.results .empty{padding:12px;color:var(--ink-2)}
+.tools{display:flex;gap:6px;align-items:center}
+.chip{border:1px solid var(--rule);background:var(--raised);border-radius:999px;padding:4px 11px;font-size:13px;white-space:nowrap}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.chip.zhu[aria-pressed="true"]{background:var(--zhu);border-color:var(--zhu);color:#fff}
+
+/* 三欄 */
+.main{--mapw:270px;--detw:380px;display:grid;grid-template-columns:var(--mapw) 9px minmax(0,1fr) 9px var(--detw);min-height:0;gap:0}
+.gut{position:relative;cursor:col-resize;touch-action:none;z-index:4}
+.gut::before{content:"";position:absolute;top:0;bottom:0;left:4px;width:1px;background:var(--rule)}
+.gut::after{content:"";position:absolute;top:50%;left:2px;width:5px;height:36px;transform:translateY(-50%);border-radius:3px;background:var(--rule);opacity:0;transition:opacity .15s}
+.gut:hover::before,.gut.on::before{background:var(--zhu);width:2px;left:3.5px}
+.gut:hover::after,.gut.on::after{opacity:1;background:var(--zhu)}
+body.resizing{cursor:col-resize;user-select:none}
+body.resizing iframe,body.resizing svg{pointer-events:none}
+.pane{min-height:0;overflow:auto}
+.map{position:relative;padding:12px 8px 24px 0;min-width:0}
+.detail{min-width:0;display:flex;flex-direction:column;min-height:0;overflow:hidden}
+.center{display:grid;grid-template-rows:auto 1fr auto;min-height:0;min-width:0}
+
+/* 地圖 */
+.map h2,.side h2{font-size:11px;letter-spacing:.18em;color:var(--ink-3);font-weight:500;margin:4px 0 8px}
+.kp ul{list-style:none;margin:0 0 0 5px;padding-left:3px;border-left:1px dotted var(--rule)}
+.kp>ul{padding-left:0;border:0}
+.kp li{margin:1px 0}
+.kp{width:max-content;min-width:100%}
+.kp .row{white-space:nowrap;display:flex;align-items:flex-start;gap:4px;padding:2px 4px;border-radius:5px;font-size:13px;line-height:1.45;color:var(--ink-3)}
+.kp .row .tw{flex:none;width:14px;border:0;background:none;padding:0;color:var(--ink-3);font-size:10px;line-height:19px}
+.kp .row .c{flex:none;font-family:var(--f-kai);color:var(--ink-3)}
+.kp .row .t{font-family:var(--f-kai);font-size:14px}
+.kp .row.path .t{color:var(--ink)}
+.kp .row.has{color:var(--ink);cursor:pointer}
+.kp .row.has .t{color:var(--zhu);font-weight:700}
+.kp .row.has::after{content:"";flex:none;width:7px;height:7px;margin-top:6px;border-radius:50%;background:var(--zhu)}
+.kp .row.has:hover,.kp .row.cur{background:var(--zhu-wash)}
+.kp .row.flash{animation:flash 1.2s}
+@keyframes flash{0%,40%{background:var(--zhu-wash);box-shadow:0 0 0 2px var(--zhu)}100%{box-shadow:none}}
+.maphd{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px}
+.maphd h2{margin:0}
+.maphd .seg button{padding:1px 8px;font-size:12px}
+.kp.mine{width:auto}
+.kp.mine .row{white-space:normal}
+.kp.mine ul{margin:0;padding:0;border:0}
+.kp.mine .row{padding-left:calc(var(--d,0) * 9px + 4px)}
+.kp.mine .row .tw{display:none}
+.kp .lessons{margin:2px 0 8px;padding-left:calc(var(--d,0) * 9px + 22px);display:flex;flex-direction:column;gap:4px}
+.kp .lessons button{text-align:left;border:1px solid var(--rule);background:var(--raised);border-radius:8px;padding:5px 9px;font-size:12px;color:var(--ink-2);white-space:normal;line-height:1.5}
+.kp .lessons button b{display:block}
+.kp .lessons button b{font-family:var(--f-kai);font-size:14px;color:var(--ink);font-weight:700;margin-right:6px}
+.kp .lessons button.cur{border-color:var(--zhu);box-shadow:0 0 0 2px var(--zhu-wash)}
+.map .note{font-size:12px;color:var(--ink-3);margin:14px 4px 0;line-height:1.6}
+
+/* 主圖 */
+.bar{display:flex;align-items:center;gap:8px;padding:8px 12px;border-bottom:1px solid var(--rule);flex-wrap:wrap}
+.bar .lbl{font-size:12px;color:var(--ink-3);margin-right:2px}
+.seg{display:inline-flex;border:1px solid var(--rule);border-radius:8px;overflow:hidden;background:var(--raised)}
+.seg button{border:0;background:none;padding:3px 10px;font-size:13px}
+.seg button+button{border-left:1px solid var(--rule)}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
+.tagbtn{border:0;border-radius:5px;padding:2px 8px;font-size:12px;color:#fff;opacity:.9}
+.tagbtn[aria-pressed="false"]{background:transparent!important;color:var(--ink-2);box-shadow:inset 0 0 0 1px var(--rule)}
+.spacer{flex:1}
+.iconbtn{border:1px solid var(--rule);background:var(--raised);border-radius:7px;padding:3px 9px;font-size:13px}
+.primary{border:0;background:var(--zhu);color:#fff;border-radius:7px;padding:5px 12px;font-size:13px;font-weight:500}
+.treewrap{overflow:auto;min-height:0;position:relative;background:var(--paper);cursor:grab;touch-action:pan-x pan-y}
+.treewrap.dragging{cursor:grabbing;user-select:none}
+.treewrap.dragging #tree .n{cursor:grabbing}
+#tree{display:block}
+#tree .hit{fill:transparent;rx:6}
+#tree .n{cursor:pointer}
+#tree .n:hover .hit{fill:var(--zhu-wash)}
+#tree .n.sel>.hit{fill:var(--zhu-wash);stroke:var(--zhu);stroke-width:1.4}
+#tree .n.inrange>.hit{fill:var(--zhu-wash);stroke:var(--zhu);stroke-dasharray:5 4;stroke-width:1.4}
+#tree line{stroke:var(--line);stroke-width:1.5}
+#tree line.on{stroke:var(--zhu);stroke-width:2.4}
+#tree.filt .lv5:not(.on),#tree.filt .lv4{opacity:.16}
+#tree.filt .lv5.on>.hit{fill:var(--zhu-wash)}
+.mini{border-top:1px solid var(--rule);padding:6px 12px 8px;background:var(--panel)}
+.mini .track{position:relative;height:64px;cursor:pointer;border-radius:6px;overflow:hidden;background:var(--paper)}
+.mini svg{position:absolute;inset:0;width:100%;height:100%}
+.mini .view{position:absolute;top:0;bottom:0;border:2px solid var(--zhu);border-radius:5px;background:var(--zhu-wash);pointer-events:none}
+.mini .cap{font-size:11px;color:var(--ink-3);margin-top:4px;display:flex;gap:12px;flex-wrap:wrap}
+.pickhint{position:absolute;left:12px;top:12px;z-index:5;background:var(--zhu);color:#fff;border-radius:8px;padding:6px 12px;font-size:13px;box-shadow:var(--shadow)}
+
+/* 細看 */
+.tabs{display:flex;border-bottom:1px solid var(--rule);padding:0 14px}
+.tabs button{border:0;background:none;padding:10px 4px;margin-right:18px;font-size:14px;color:var(--ink-3);border-bottom:2px solid transparent}
+.tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--zhu);font-weight:500}
+.side{overflow:auto;padding:16px 18px 40px;min-height:0;flex:1}
+.crumb{font-size:12px;color:var(--ink-3);font-family:var(--f-kai);line-height:1.5}
+.crumb b{color:var(--zhu);font-weight:700}
+.meta-row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:10px 0 8px;font-size:12px;color:var(--ink-2);font-variant-numeric:tabular-nums}
+.pill{border:1px solid var(--rule);border-radius:999px;padding:1px 9px;background:var(--raised)}
+.play{border:0;cursor:pointer;display:inline-flex;align-items:center;gap:5px;text-decoration:none;color:#fff;background:var(--zhu);border-radius:999px;padding:3px 11px 3px 9px;font-size:12px;font-weight:500}
+.play svg{width:12px;height:12px;fill:currentColor}
+.play.ghost{background:none;color:var(--zhu);box-shadow:inset 0 0 0 1px var(--zhu)}
+.yw{font-family:var(--f-kai);font-size:21px;line-height:1.75;margin:4px 0 14px;text-align:justify}
+.red{color:var(--zhu)}
+.sec{margin-top:18px}
+.sec h3{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700;margin:0 0 8px;letter-spacing:.05em}
+.badge{display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;border-radius:4px;padding:0 6px;line-height:19px;color:#fff;white-space:nowrap}
+.badge.xw{background:none;color:var(--gold);box-shadow:inset 0 0 0 1.4px var(--gold)}
+.badge.ys{background:var(--zhu)}
+.xwlist{margin:0;padding-left:0;list-style:none;counter-reset:x;font-family:var(--f-kai);font-size:16px;line-height:1.7}
+.xwlist li{position:relative;padding-left:24px;margin:4px 0;counter-increment:x}
+.xwlist li::before{content:counter(x);position:absolute;left:0;top:3px;font-family:var(--f-ui);font-size:11px;color:var(--gold);width:17px;height:17px;border-radius:50%;box-shadow:inset 0 0 0 1px var(--gold);text-align:center;line-height:17px}
+.ycard{border:1px solid var(--rule);border-radius:10px;padding:12px 14px;margin:10px 0;background:var(--raised)}
+.ycard.hl{border-color:var(--zhu);box-shadow:0 0 0 2px var(--zhu-wash)}
+.ycard .hd{display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap}
+.ycard .kw{font-family:var(--f-kai);font-size:20px;color:var(--zhu);font-weight:700}
+.ycard ul{list-style:none;margin:0;padding:0}
+.ycard li{display:grid;grid-template-columns:40px 1fr;gap:8px;align-items:start;margin:7px 0;font-family:var(--f-kai);font-size:16px;line-height:1.65}
+.ycard li .badge{margin-top:3px;justify-self:start}
+.ycard li.dim{opacity:.3}
+.ygrp{display:flex;align-items:center;gap:7px;margin:12px 0 2px;font-family:var(--f-kai);font-size:16px;font-weight:700;color:var(--ink-2)}
+.ygrp:first-child{margin-top:2px}
+.ygrp .gno{font-family:var(--f-kai);font-size:12px;color:var(--zhu);width:19px;height:19px;border-radius:50%;box-shadow:inset 0 0 0 1.2px var(--zhu);display:grid;place-items:center;font-weight:400}
+.ycard ul.ingrp{margin-left:9px;padding-left:16px;border-left:1.5px solid var(--rule)}
+details.ts{margin-top:18px;border-top:1px solid var(--rule);padding-top:10px}
+details.ts summary{cursor:pointer;font-size:13px;font-weight:700;list-style:none;display:flex;align-items:center;gap:8px}
+details.ts summary::-webkit-details-marker{display:none}
+details.ts summary::before{content:"▸";color:var(--ink-3);transition:transform .15s}
+details.ts[open] summary::before{transform:rotate(90deg)}
+.tsec{margin:12px 0}
+.tsec .tt{font-size:11px;color:var(--ink-3);font-variant-numeric:tabular-nums;display:flex;gap:8px;align-items:center}
+.tsec .tt button.play-ts{cursor:pointer;border:0;background:none;padding:0;color:var(--zhu);font-size:11px}
+.tsec p{margin:4px 0;font-size:14px;line-height:1.8;color:var(--ink-2)}
+.tsec p.q{font-family:var(--f-kai);font-size:16px;color:var(--ink);border-left:3px solid var(--gold);padding-left:10px}
+.idx-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+.idx-item{display:block;width:100%;text-align:left;border:0;border-bottom:1px solid var(--rule);background:none;padding:9px 2px}
+.idx-item:hover{background:var(--zhu-wash)}
+.idx-item .w{font-family:var(--f-kai);font-size:15px;line-height:1.6}
+.idx-item .m{font-size:12px;color:var(--ink-3);margin-top:2px}
+.kwgrid{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0 16px}
+.kwgrid button{font-family:var(--f-kai);font-size:16px;border:1px solid var(--rule);background:var(--raised);color:var(--zhu);border-radius:7px;padding:2px 10px}
+.legend{display:flex;gap:10px;flex-wrap:wrap;align-items:center;font-size:12px;color:var(--ink-2)}
+
+/* 下載 */
+.pop{position:absolute;z-index:40;right:12px;top:48px;width:320px;max-width:calc(100% - 24px);background:var(--raised);border:1px solid var(--rule);border-radius:12px;box-shadow:var(--shadow);padding:14px 16px}
+.pop h4{margin:0 0 10px;font-size:14px}
+.pop label{display:flex;gap:8px;align-items:flex-start;margin:6px 0;font-size:13px;cursor:pointer}
+.pop .sub{font-size:12px;color:var(--ink-3)}
+.pop .row{display:flex;gap:8px;margin-top:12px;justify-content:flex-end;align-items:center}
+.pop .msg{font-size:12px;color:var(--ink-2);margin-top:8px;min-height:1em}
+/* 播放列 */
+.player{position:fixed;z-index:50;left:50%;transform:translateX(-50%);bottom:calc(14px + env(safe-area-inset-bottom,0px));width:min(620px,calc(100% - 32px));
+  background:var(--raised);border:1px solid var(--rule);border-radius:14px;box-shadow:var(--shadow);padding:10px 14px;display:grid;grid-template-columns:auto 1fr auto;gap:6px 12px;align-items:center}
+.player .pp{width:38px;height:38px;border-radius:50%;border:0;background:var(--zhu);color:#fff;display:grid;place-items:center;grid-row:span 2}
+.player .pp svg{width:16px;height:16px;fill:currentColor}
+.player .lb{font-size:13px;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.player .lb b{font-family:var(--f-kai);font-size:15px;color:var(--zhu);margin-left:6px}
+.player .tm{font-size:12px;color:var(--ink-3);font-variant-numeric:tabular-nums;white-space:nowrap}
+.player .bar{grid-column:2/4;position:relative;height:6px;border-radius:3px;background:var(--rule);cursor:pointer}
+.player .bar i{position:absolute;inset:0 auto 0 0;border-radius:3px;background:var(--zhu)}
+.player .x{border:0;background:none;color:var(--ink-3);font-size:16px;padding:0 2px}
+.player .src{font-size:11px;color:var(--ink-3)}
+.badge.ky{background:var(--t-li)}
+.badge.sj{background:none;color:var(--ink-2);box-shadow:inset 0 0 0 1.2px var(--ink-3)}
+.kytext{font-family:var(--f-kai);font-size:16px;line-height:1.8;color:var(--ink);margin:0;padding:10px 12px;border-radius:8px;background:var(--raised);border:1px solid var(--rule)}
+.sjtext{font-family:var(--f-kai);font-size:16px;line-height:1.85;margin:0}
+.sjtext .sjan{color:var(--ink-3);font-size:.9em}
+.sjtext .sjlab{font-style:normal;font-family:var(--f-ui);font-size:10px;border-radius:3px;padding:0 3px;margin:0 2px;vertical-align:2px}
+.sjnote{font-size:12px;color:var(--ink-3);margin:0}
+.sjkey{font-weight:400;color:var(--ink-3);font-size:11px}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--paper);padding:8px 14px;border-radius:8px;font-size:13px;z-index:60;box-shadow:var(--shadow)}
+
+/* 手機：大綱 */
+.mtabs{display:none}
+.outline{display:none}
+@media (max-width:980px){
+  body{overflow:auto}
+  html,body{height:auto}
+  .app{height:auto;min-height:100%}
+  .main{display:block}
+  .mtabs{display:flex;gap:4px;padding-block:8px;position:sticky;top:env(safe-area-inset-top,0px);background:var(--paper);z-index:20;border-bottom:1px solid var(--rule)}
+  body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:21;background:var(--paper)}
+  .mtabs button{flex:1;border:1px solid var(--rule);background:var(--raised);border-radius:8px;padding:6px 0;font-size:14px}
+  .mtabs button[aria-selected="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+  .map,.center,.detail,.outline,.gut{display:none}
+  .main[data-m="outline"] .outline{display:block}
+  .main[data-m="map"] .map{display:block;border:0;padding:12px 0}
+  .main[data-m="tree"] .center{display:grid;height:calc(100vh - 130px);border:0}
+  .main[data-m="index"] .detail{display:flex;border:0}
+  .main[data-m="index"] .detail .tabs{display:none}
+  .side{padding:12px 0 40px}
+  .brand .lesson{display:none}
+  .search{flex-basis:100%;max-width:none;margin-left:0;order:3}
+  .pop{position:fixed;top:auto;bottom:calc(16px + env(safe-area-inset-bottom,0px));right:16px;left:16px;width:auto}
+}
+.outline .oc{border-bottom:1px solid var(--rule);padding:14px 0}
+.outline .oc.sel{background:linear-gradient(90deg,var(--zhu-wash),transparent)}
+.outline .oc .yw{font-size:19px;margin:6px 0 8px}
+.outline details{margin-top:6px}
+.outline details summary{cursor:pointer;font-size:13px;color:var(--gold);font-weight:500}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+</style>
+
+<div class="app">
+  <header>
+    <div class="brand"><h1>師父講解科判</h1><span class="lesson" id="lessonInfo">載入中…</span></div>
+    <div class="search" role="search">
+      <svg viewBox="0 0 24 24" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
+      <input id="q" type="search" autocomplete="off" placeholder="搜原文、科判、延伸，或音檔「69A」「69A 12」" aria-label="搜尋">
+      <div class="results" id="results" hidden></div>
+    </div>
+  </header>
+
+  <nav class="mtabs" role="tablist" aria-label="檢視">
+    <button role="tab" data-m="outline" aria-selected="true">大綱</button>
+    <button role="tab" data-m="tree" aria-selected="false">科判圖</button>
+    <button role="tab" data-m="map" aria-selected="false">地圖</button>
+    <button role="tab" data-m="index" aria-selected="false">索引</button>
+  </nav>
+
+  <div class="main" id="main" data-m="outline">
+    <aside class="pane map" aria-label="廣論科判地圖">
+      <div class="maphd"><h2>地圖・廣論科判</h2>
+        <div class="seg" role="group" aria-label="地圖範圍"><button id="mapMine" aria-pressed="true">已整理</button><button id="mapAll" aria-pressed="false">全部</button></div></div>
+      <div class="kp" id="kp"></div>
+      <p class="note" id="mapNote"></p>
+    </aside>
+
+    <div class="gut" id="gutL" role="separator" aria-orientation="vertical" aria-label="調整地圖寬度（雙擊恢復）" tabindex="0"></div>
+    <section class="center" aria-label="師父講解科判圖">
+      <div class="bar">
+        <span class="lbl">圖層</span>
+        <div class="seg" role="group" aria-label="消文圖層">
+          <button id="lyBoth" aria-pressed="false">消文＋延伸</button>
+          <button id="lyYan" aria-pressed="true">只看延伸</button>
+        </div>
+        <span class="lbl" style="margin-left:6px">標亮</span>
+        <div id="tagbar" style="display:flex;gap:4px;flex-wrap:wrap"></div>
+        <span class="spacer"></span>
+        <button class="iconbtn" id="zOut" aria-label="縮小">－</button>
+        <button class="iconbtn" id="zFit" aria-label="符合高度">適中</button>
+        <button class="iconbtn" id="zIn" aria-label="放大">＋</button>
+        <button class="primary" id="dlBtn">下載圖片</button>
+      </div>
+      <div class="treewrap" id="treewrap"></div>
+      <div class="mini">
+        <div class="track" id="mini"></div>
+        <div class="cap"><span id="miniCap"></span><span>在圖上按住拖曳可移動・點縮圖跳到該處・由右往左讀</span></div>
+      </div>
+      <div class="pop" id="pop" hidden>
+        <h4>下載圖片</h4>
+        <div id="rangeOpts"></div>
+        <label><input type="checkbox" id="dlXw"> 含消文理路</label>
+        <div class="sub" style="margin-top:8px">格式</div>
+        <label><input type="radio" name="fmt" value="png" checked> PNG（2 倍解析度，印 A3 也清楚）</label>
+        <label><input type="radio" name="fmt" value="svg"> SVG（可再編輯）</label>
+        <div class="msg" id="dlMsg"></div>
+        <div class="row"><button class="iconbtn" id="dlCancel">取消</button><button class="primary" id="dlGo">下載</button></div>
+      </div>
+    </section>
+
+    <div class="gut" id="gutR" role="separator" aria-orientation="vertical" aria-label="調整細看寬度（雙擊恢復）" tabindex="0"></div>
+    <aside class="pane detail" aria-label="細看">
+      <div class="tabs" role="tablist">
+        <button role="tab" id="tabD" aria-selected="true">細看</button>
+        <button role="tab" id="tabI" aria-selected="false">索引</button>
+      </div>
+      <div class="side" id="side"></div>
+    </aside>
+
+    <section class="outline" id="outline" aria-label="大綱"></section>
+  </div>
+</div>
+
+<div class="player" id="player" hidden>
+  <button class="pp" id="ppBtn" aria-label="播放／暫停"><svg viewBox="0 0 12 12" id="ppIcon"><path d="M3 1.5v9l7.5-4.5z"/></svg></button>
+  <div class="lb" id="plLabel"></div>
+  <div style="display:flex;gap:8px;align-items:center"><span class="tm" id="plTime"></span><button class="x" id="plClose" aria-label="關閉播放列">✕</button></div>
+  <div class="bar" id="plBar"><i id="plFill"></i></div>
+</div>
+<audio id="aud" preload="none"></audio>
+<script>
+"use strict";
+// ───────── 常數 ─────────
+const TAGS = [ // 第四層類別：鍵、顯示、說明
+  ["立","li","所立（宗）"],["破","po","所破"],["因","yin","因"],["喻","yu","喻"],
+  ["例","yu","例"],["下手","xia","下手處"],["回扣","hui","回扣原文"]];
+const TAGKEY = Object.fromEntries(TAGS.map(t=>[t[0],t[1]]));
+const LIGHT = {paper:"#F1EEE6",ink:"#26231E","ink-2":"#5D574C","ink-3":"#8E877A",line:"#6F685C",zhu:"#B3352B",gold:"#92700F",
+  "t-li":"#2E6A88","t-po":"#AE3A2E","t-yin":"#7A58A3","t-yu":"#2E7A52","t-xia":"#B4701A","t-hui":"#777064"};
+const LV = {1:{size:46,cap:8,pitch:1.3,gap:0},2:{size:26,cap:15,pitch:1.32,gap:44},
+            3:{size:30,cap:8,pitch:1.3,gap:26},4:{size:24,cap:9,pitch:1.3,gap:20},5:{size:21,cap:16,pitch:1.3,gap:10}};
+const ROW_GAP=64, BAR_DROP=26, MARGIN=50;
+const NO_HEAD = new Set("，。、：；」』）！？…・‧");
+const VERT = {"，":"︐","。":"︒","、":"︑","：":"︓","；":"︔","！":"︕","？":"︖","「":"﹁","」":"﹂","『":"﹃","』":"﹄",
+  "《":"︽","》":"︾","（":"︵","）":"︶","…":"︙","—":"︱","(":"︵",")":"︶"};
+const KAI = '"LXGW WenKai TC","DFKai-SB","BiauKai",serif';
+
+const S = {kepan:null,index:[],lesson:null,seg:2,yan:null,xw:false,filter:null,scale:null,
+           range:null,pick:null,tab:"d",laid:null};
+const $ = s=>document.querySelector(s);
+const esc = s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const plain = s=>s.replace(/[«»]/g,"");
+const redHtml = s=>esc(s).replace(/«(.*?)»/g,'<span class="red">$1</span>');
+const mmss = s=>{s=Math.max(0,s|0);return String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0")};
+function store(k,v){try{if(v===undefined)return localStorage.getItem(k);localStorage.setItem(k,v)}catch(e){return null}}
+
+function playUrl(af,st,et){
+  const L=S.lesson; return `https://lamrim.xyz/player2/?&tch=${L.tch}&af1=${af}&st1=${st}`+(et!=null?`&et1=${et}`:"");
+}
+function playLink(af,st,et,label,ghost,title){
+  return `<button class="play${ghost?" ghost":""}" data-af="${af}" data-st="${st}" data-et="${et??""}" data-t="${esc(title||label)}">`+
+    `<svg viewBox="0 0 12 12"><path d="M3 1.5v9l7.5-4.5z"/></svg>${esc(label)}</button>`;
+}
+// ───────── 播放（本機音檔優先，沒有才連線上 mp3；不開別的網頁） ─────────
+const P={af:null,st:0,et:null,usingRemote:false};
+function audioSrc(af,remote){const a=(S.lesson.音檔||{})[af];if(!a)return null;return remote?a.remote:a.local}
+function playSeg(af,st,et,title){
+  const aud=$("#aud");P.st=st;P.et=et==null||et===""?null:+et;
+  const src=audioSrc(af,false);if(!src){toast("這段沒有音檔資料");return}
+  const go=()=>{aud.currentTime=st;aud.play().catch(e=>toast("無法播放："+e.message))};
+  if(P.af!==af||P.usingRemote){P.af=af;P.usingRemote=false;aud.src=src;aud.onloadedmetadata=()=>{aud.onloadedmetadata=null;go()};aud.load()}
+  else go();
+  $("#plLabel").innerHTML=`${esc(af.toUpperCase())} ${mmss(st)}${P.et!=null?"～"+mmss(P.et):""}<b>${esc(title||"")}</b>`;
+  $("#player").hidden=false;
+}
+function bindPlayer(){
+  const aud=$("#aud");
+  aud.addEventListener("error",()=>{ // 本機沒下載就改連線上
+    if(!P.usingRemote&&P.af){P.usingRemote=true;const st=P.st;aud.src=audioSrc(P.af,true);aud.onloadedmetadata=()=>{aud.onloadedmetadata=null;aud.currentTime=st;aud.play().catch(()=>{})};aud.load();toast("本機沒有音檔，改從網路播放")}
+    else toast("音檔載入失敗，請確認網路");
+  });
+  aud.addEventListener("timeupdate",()=>{
+    const t=aud.currentTime,end=P.et??aud.duration;
+    if(P.et!=null&&t>=P.et){aud.pause();aud.currentTime=P.et}
+    const span=Math.max(1,(end||t)-P.st);$("#plFill").style.width=Math.min(100,Math.max(0,(t-P.st)/span*100))+"%";
+    $("#plTime").textContent=`${mmss(t)} / ${mmss(end||0)}`;
+  });
+  const icon=()=>{$("#ppIcon").innerHTML=aud.paused?'<path d="M3 1.5v9l7.5-4.5z"/>':'<path d="M2.5 1.5h2.6v9H2.5zM6.9 1.5h2.6v9H6.9z"/>'};
+  aud.addEventListener("play",icon);aud.addEventListener("pause",icon);
+  $("#ppBtn").onclick=()=>{if(aud.paused){if(P.et!=null&&aud.currentTime>=P.et-0.3)aud.currentTime=P.st;aud.play().catch(()=>{})}else aud.pause()};
+  $("#plClose").onclick=()=>{aud.pause();$("#player").hidden=true};
+  $("#plBar").onclick=e=>{const r=e.currentTarget.getBoundingClientRect(),end=P.et??aud.duration;if(!end)return;aud.currentTime=P.st+(e.clientX-r.left)/r.width*(end-P.st);if(aud.paused)aud.play().catch(()=>{})};
+  document.addEventListener("click",e=>{const t=e.target.closest("button.play-ts");if(t){playSeg(t.dataset.af,+t.dataset.st,t.dataset.et,"逐字稿");return}const b=e.target.closest("button.play");if(!b)return;e.stopPropagation();playSeg(b.dataset.af,+b.dataset.st,b.dataset.et,b.dataset.t)});
+}
+const segRange = s=>`${s.af.toUpperCase()} ${mmss(s.st)}`+(s.et!=null?`～${mmss(s.et)}`:" 起");
+
+// ───────── 科判樹 ─────────
+const groupsOf=y=>y.組&&y.組.length?y.組:[{題:null,說:y.說||[]}];
+function chars(text){const out=[];let red=false;for(const ch of text){if(ch==="«")red=true;else if(ch==="»")red=false;else out.push([ch,red])}return out}
+function cols(cs,cap){const out=[];let i=0;while(i<cs.length){let j=Math.min(i+cap,cs.length);while(j<cs.length&&NO_HEAD.has(cs[j][0]))j++;out.push(cs.slice(i,j));i=j}return out}
+function Node(lv,text,o={}){
+  const c=LV[lv],n={lv,kids:[],...o};
+  n.size=c.size;n.pitch=c.size*c.pitch;n.cols=cols(chars(text),c.cap);
+  n.tagS=lv===3?Math.round(n.size*.7):n.size-2;
+  n.tagH=n.tag?n.tag.length*n.tagS+14:0;
+  n.bw=n.cols.length*n.pitch;n.bh=n.tagH+Math.max(...n.cols.map(c=>c.length))*n.size;
+  return n;
+}
+function width(n){if(!n.kids.length)return n.bw;const g=LV[n.kids[0].lv].gap;
+  return Math.max(n.bw,n.kids.reduce((a,k)=>a+width(k),0)+g*(n.kids.length-1))}
+function buildTree(L,{xw,from=0,to=L.段.length-1}){
+  const root=Node(1,L.根);
+  L.段.forEach((s,i)=>{
+    if(i<from||i>to)return;
+    const n2=Node(2,s.文,{s:i,time:s.時});
+    if(xw&&s.消文.length){const n3=Node(3,"消文",{kind:"xw",s:i});
+      s.消文.forEach((x,k)=>n3.kids.push(Node(5,x.文,{tag:x.類,s:i,xi:k})));n2.kids.push(n3)}
+    s.延伸.forEach((y,yi)=>{const n3=Node(3,"«"+y.題+"»",{tag:"延伸",kind:"ys",s:i,yv:yi});
+      groupsOf(y).forEach(g=>{let host=n3;
+        if(g.題){host=Node(4,g.題,{kind:"grp",s:i,yv:yi});n3.kids.push(host)}
+        g.說.forEach((x,k)=>host.kids.push(Node(5,x.文,{tag:x.類,s:i,yv:yi,k})))});
+      n2.kids.push(n3)});
+    root.kids.push(n2);
+  });
+  return root;
+}
+function layout(root){
+  const h={};(function w(n){h[n.lv]=Math.max(h[n.lv]||0,n.bh);n.kids.forEach(w)})(root);
+  const tops={};let y=MARGIN;Object.keys(h).sort().forEach(lv=>{tops[lv]=y;y+=h[lv]+ROW_GAP});
+  const W=width(root)+MARGIN*2+40,H=y-ROW_GAP+MARGIN;
+  (function place(n,right){n.x1=right;n.y=tops[n.lv];n.ax=right-n.pitch/2;
+    if(n.kids.length){const g=LV[n.kids[0].lv].gap;
+      // 最右邊的子節點對齊父節點的接線點，直線才不會拐一下
+      let r=n.ax+n.kids[0].pitch/2;for(const k of n.kids){place(k,r);r-=width(k)+g}}})(root,W-MARGIN);
+  return {root,W,H,tops};
+}
+function walk(n,f){f(n);n.kids.forEach(k=>walk(k,f))}
+function glyphs(n,f){n.cols.forEach((col,ci)=>{const cx=n.x1-n.pitch*(ci+.5);col.forEach(([ch,red],i)=>f(VERT[ch]||ch,cx,n.y+n.tagH+(i+.5)*n.size,red))})}
+function lines(lay,f){
+  (function go(n){if(!n.kids.length)return;const bar=lay.tops[n.kids[0].lv]-BAR_DROP,xs=n.kids.map(k=>k.ax).concat(n.ax);
+    const fc=n.tagH+n.cols[0].length*n.size, sg=n.lv===1?null:n.s;
+    f(n.ax,n.y+fc+6,n.ax,bar,sg,n);f(Math.min(...xs),bar,Math.max(...xs),bar,sg,n);
+    n.kids.forEach(k=>{f(k.ax,bar,k.ax,k.y-6,k.lv===2?k.s:sg,k);go(k)})})(lay.root);
+}
+function tagColor(t){return t==="延伸"?"zhu":"t-"+(TAGKEY[t]||"hui")}
+
+// SVG：畫面版用 CSS 變數（跟著深淺色），匯出版寫死淺色
+function svgOf(lay,{exp=false,caption=""}={}){
+  const C=k=>exp?LIGHT[k]:`var(--${k})`;const o=[];
+  const H=lay.H+(caption?40:0);
+  o.push(`<svg xmlns="http://www.w3.org/2000/svg" ${exp?"":'id="tree" '}width="${lay.W}" height="${H}" viewBox="0 0 ${lay.W} ${H}">`);
+  if(exp)o.push(`<rect width="100%" height="100%" fill="${LIGHT.paper}"/>`);
+  o.push(`<g id="treeg" font-family='${KAI}'>`);
+  lines(lay,(x1,y1,x2,y2,sg)=>o.push(`<line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}"`+
+    (exp?` stroke="${LIGHT.line}" stroke-width="1.5"`:(sg!=null?` data-s="${sg}"`:""))+`/>`));
+  walk(lay.root,n=>{
+    const cls=["n","lv"+n.lv];if(n.lv===5)cls.push("t-"+(TAGKEY[n.tag]||"none"));
+    o.push(exp?"<g>":`<g class="${cls.join(" ")}"${n.s!=null?` data-s="${n.s}"`:""}${n.yv!=null?` data-y="${n.yv}"`:""}>`);
+    if(!exp&&n.lv>1)o.push(`<rect class="hit" x="${(n.x1-n.bw-6).toFixed(1)}" y="${(n.y-8).toFixed(1)}" width="${(n.bw+12).toFixed(1)}" height="${(n.bh+16).toFixed(1)}" rx="6"/>`);
+    if(n.kind==="xw"){const w=n.size+14;o.push(`<rect x="${(n.ax-w/2).toFixed(1)}" y="${n.y-8}" width="${w}" height="${n.bh+16}" rx="4" fill="none" stroke="${C("gold")}" stroke-width="1.6"/>`)}
+    if(n.tag){const t=n.tagS,w=t+6,h=n.tag.length*t+8;
+      o.push(`<rect x="${(n.ax-w/2).toFixed(1)}" y="${n.y}" width="${w}" height="${h}" rx="4" style="fill:${C(tagColor(n.tag))}"/>`);
+      [...n.tag].forEach((ch,i)=>o.push(`<text x="${n.ax.toFixed(1)}" y="${(n.y+4+t*(i+.5)).toFixed(1)}" font-size="${t}" text-anchor="middle" dominant-baseline="central" fill="#fff" font-family="${exp?"Noto Sans TC, Microsoft JhengHei, sans-serif":"var(--f-ui)"}">${esc(ch)}</text>`))}
+    if(n.kind==="grp")o.push(`<line x1="${(n.ax-n.size*.45).toFixed(1)}" y1="${n.y-6}" x2="${(n.ax+n.size*.45).toFixed(1)}" y2="${n.y-6}" style="stroke:${C("zhu")};stroke-width:2"/>`);
+    const base=n.kind==="xw"?C("gold"):n.kind==="grp"?C("ink-2"):C("ink");
+    o.push(`<text font-size="${n.size}" text-anchor="middle" dominant-baseline="central"${n.lv===1?' font-weight="700"':""} style="fill:${base}">`);
+    glyphs(n,(ch,x,y,red)=>o.push(`<tspan x="${x.toFixed(1)}" y="${y.toFixed(1)}"${red?` style="fill:${C("zhu")}"`:""}>${esc(ch)}</tspan>`));
+    o.push(`</text>`);
+    if(n.time)o.push(`<text x="${(n.ax-10).toFixed(1)}" y="${n.y+n.bh+16}" font-size="13" text-anchor="end" style="fill:${C("ink-3")}" font-family="Noto Sans TC, sans-serif">${esc(n.time)}</text>`);
+    o.push("</g>");
+  });
+  o.push("</g>");
+  if(caption)o.push(`<text x="${MARGIN}" y="${H-28}" font-size="18" fill="${LIGHT["ink-3"]}" font-family="Noto Sans TC, Microsoft JhengHei, sans-serif">${esc(caption)}</text>`);
+  o.push("</svg>");return o.join("");
+}
+
+// ───────── 畫主圖 ─────────
+function renderTree(keepScroll){
+  const L=S.lesson,wrap=$("#treewrap");
+  const prevRight=keepScroll?wrap.scrollWidth-wrap.scrollLeft:null;
+  const root=buildTree(L,{xw:S.xw});
+  const lay=layout(root);S.laid=lay;
+  wrap.innerHTML=svgOf(lay);
+  applyScale();
+  // 縮圖：只畫方塊（原文灰、延伸朱、引導淡），不畫字
+  const mb=[];walk(lay.root,n=>{if(n.lv<2)return;const f=n.kind==="ys"?"var(--zhu)":n.kind==="xw"?"var(--gold)":n.lv===2?"var(--ink-3)":"var(--rule)";
+    mb.push(`<rect x="${(n.x1-n.bw).toFixed(0)}" y="${n.y}" width="${Math.max(6,n.bw-4).toFixed(0)}" height="${n.bh}" rx="6" style="fill:${f}" data-s="${n.s}"/>`)});
+  $("#mini").innerHTML=`<svg viewBox="0 0 ${lay.W} ${lay.H}" preserveAspectRatio="none">${mb.join("")}</svg><div class="view" id="miniView"></div>`;
+  $("#miniCap").textContent=`${L.段.length} 段原文・延伸 ${L.段.reduce((a,s)=>a+s.延伸.length,0)} 處`;
+  if(prevRight!=null)wrap.scrollLeft=wrap.scrollWidth-prevRight;
+  paintState();updateMini();
+}
+function applyScale(){
+  const wrap=$("#treewrap"),svg=$("#tree"),lay=S.laid;if(!svg)return;
+  if(S.scale==null){const h=wrap.clientHeight||700;S.scale=Math.max(.6,Math.min(1,(h-8)/lay.H))}
+  svg.setAttribute("width",Math.round(lay.W*S.scale));svg.setAttribute("height",Math.round(lay.H*S.scale));
+  $("#zFit").textContent=Math.round(S.scale*100)+"%";
+}
+function paintState(){
+  const svg=$("#tree");if(!svg)return;
+  svg.querySelectorAll(".n").forEach(g=>{
+    const s=+g.dataset.s,isL2=g.classList.contains("lv2");
+    g.classList.toggle("sel",isL2&&s===S.seg);
+    g.classList.toggle("inrange",isL2&&S.range&&s>=S.range[0]&&s<=S.range[1]);
+  });
+  svg.querySelectorAll("line").forEach(l=>l.classList.toggle("on",l.dataset.s!=null&&+l.dataset.s===S.seg));
+  svg.classList.toggle("filt",!!S.filter);
+  if(S.filter)svg.querySelectorAll(".lv5").forEach(g=>g.classList.toggle("on",g.classList.contains("t-"+S.filter)));
+  document.querySelectorAll("#tagbar .tagbtn").forEach(b=>b.setAttribute("aria-pressed",String(!S.filter||b.dataset.k===S.filter)));
+}
+function scrollToSeg(i,smooth=true){
+  const wrap=$("#treewrap"),lay=S.laid;if(!lay||!wrap.clientWidth)return;
+  let n=null;walk(lay.root,x=>{if(x.lv===2&&x.s===i)n=x});if(!n)return;
+  const right=n.x1*S.scale,left=(n.x1-Math.max(n.bw,width(n)))*S.scale;
+  const cw=wrap.clientWidth;
+  // 整段（含延伸）放得下就置中；放不下就讓原文那一行靠右邊，往左讀
+  let target=(right-left)<cw-80?(left+right)/2-cw/2:right+40-cw;
+  target=Math.max(0,Math.min(wrap.scrollWidth-cw,target));
+  wrap.scrollTo({left:target,behavior:smooth?"smooth":"auto"});
+}
+function updateMini(){
+  const wrap=$("#treewrap"),v=$("#miniView");if(!v||!wrap.scrollWidth)return;
+  const W=wrap.scrollWidth,tw=$("#mini").clientWidth;
+  v.style.left=(wrap.scrollLeft/W*tw)+"px";v.style.width=Math.max(10,wrap.clientWidth/W*tw)+"px";
+}
+
+// ───────── 細看 ─────────
+function kpPath(){ // 根據科判焦點找路徑
+  const want=S.lesson.科判焦點;let found=null;
+  (function go(n,p){const me=p.concat(n);if(!found&&(`${n.c} ${n.t}`===want||n.t===want))found=me;(n.k||[]).forEach(k=>go(k,me))})(S.kepan.樹,[]);
+  return found||[];
+}
+function renderDetail(){
+  const L=S.lesson,s=L.段[S.seg],side=$("#side");
+  if(S.tab==="i"){renderIndex(side);return}
+  const path=kpPath().slice(1);
+  const crumb=path.slice(-4).map((n,i,a)=>i===a.length-1?`<b>${esc(n.t)}</b>`:esc(n.t)).join("　›　");
+  side.innerHTML=`
+    <div class="crumb">${crumb}</div>
+    <div class="meta-row"><span class="pill">第 ${S.seg+1}／${L.段.length} 段</span>${s.頁?`<span class="pill">課本 p${s.頁}</span>`:""}
+      <span class="pill">${segRange(s)}</span>${playLink(s.af,s.st,s.et,"播放這段",false,`第 ${S.seg+1} 段`)}</div>
+    <div class="yw">${redHtml(s.文)}</div>
+    ${kySj(s)}
+    ${detailBody(s,true)}`;
+  const hl=side.querySelector(".ycard.hl");if(hl)hl.scrollIntoView({block:"nearest"});
+}
+function yGroups(y){
+  const gs=groupsOf(y);
+  return gs.map((g,gi)=>`${g.題?`<div class="ygrp"><span class="gno">${"一二三四五六七八九十"[gi]||gi+1}</span>${esc(g.題)}</div>`:""}
+    <ul${g.題?' class="ingrp"':""}>${g.說.map(x=>`<li class="${S.filter&&TAGKEY[x.類]!==S.filter?"dim":""}">${itemBadge(x.類)}<span>${esc(x.文)}</span></li>`).join("")}</ul>`).join("");
+}
+function kySj(s,compact){
+  const ky=s.口譯?`<div class="sec"><h3><span class="badge ky">口譯</span>口譯<span class="sjkey">整段原文的白話，對著原文翻</span></h3><p class="kytext">${esc(s.口譯)}</p></div>`:"";
+  const sj=s.四家合註?`<div class="sec"><h3><span class="badge sj">四家合註</span>四家合註<span class="sjkey">灰字＝箋註　巴＝巴梭法王　語＝語王堅穩　妙＝妙音笑　札＝札帝格西</span></h3><p class="sjtext">${s.四家合註}</p></div>`
+    :(compact?"":`<div class="sec"><p class="sjnote">四家合註：中譯本目前只出到共下士道（卷十一）與止觀（卷二十六～二十九），這段還沒有。</p></div>`);
+  return ky+sj;
+}
+function itemBadge(t){if(!t)return"";const k=TAGKEY[t]||"hui";return `<span class="badge" style="background:var(--t-${k})">${esc(t)}</span>`}
+function detailBody(s,withTs){
+  const xw=s.消文.length?`<div class="sec"><h3><span class="badge xw">消文</span>消文理路<span class="meta" style="font-weight:400;color:var(--ink-3)">師父貼著原文逐句解</span></h3>
+    <ol class="xwlist">${s.消文.map(x=>`<li>${x.類?itemBadge(x.類)+" ":""}${esc(x.文)}</li>`).join("")}</ol></div>`:"";
+  const ys=s.延伸.map((y,yi)=>`<div class="ycard${S.yan===yi?" hl":""}" data-y="${yi}">
+      <div class="hd"><span class="badge ys">延伸</span><span class="kw">${esc(y.題)}</span><span class="spacer" style="flex:1"></span>${y.af?playLink(y.af,y.st,s.et,`${y.af.toUpperCase()} ${mmss(y.st)}`,true,"延伸・"+y.題):""}</div>
+      ${yGroups(y)}</div>`).join("");
+  const ysSec=s.延伸.length?`<div class="sec"><h3><span class="badge ys">延伸</span>延伸理路<span style="font-weight:400;color:var(--ink-3)">從紅字關鍵詞深入講</span></h3>${ys}</div>`:
+    `<div class="sec" style="color:var(--ink-3);font-size:13px">這段師父貼著原文解，沒有另外延伸。</div>`;
+  const ts=withTs?`<details class="ts"${S.tsOpen?" open":""}><summary>逐字稿（${s.逐字稿.length} 節）</summary>
+    ${s.逐字稿.map(t=>{const[af,mm]=t.t.split(" ");const st=mmss2s(mm);
+      return `<div class="tsec"><div class="tt"><span>${esc(t.t)}</span><button class="play-ts" data-af="${af.toLowerCase()}" data-st="${st}" data-et="${s.af===af.toLowerCase()?(s.et??""):""}">▶ 從這裡聽</button></div>
+      ${t.b.map(([k,x])=>`<p class="${k==="q"?"q":""}">${esc(x)}</p>`).join("")}</div>`}).join("")}</details>`:"";
+  return xw+ysSec+ts;
+}
+function mmss2s(m){const[a,b]=m.split(":");return(+a)*60+(+b)}
+
+function allItems(){const out=[];S.lesson.段.forEach((s,i)=>s.延伸.forEach((y,yi)=>groupsOf(y).forEach(g=>g.說.forEach(x=>out.push({s:i,yi,y,x,g:g.題})))));return out}
+function renderIndex(side){
+  const items=allItems(),f=S.filter;
+  const kws=S.lesson.段.flatMap((s,i)=>s.延伸.map((y,yi)=>({s:i,yi,y})));
+  const list=items.filter(it=>!f||TAGKEY[it.x.類]===f);
+  side.innerHTML=`
+    <h2>延伸關鍵詞（${kws.length}）</h2>
+    <div class="kwgrid">${kws.map(k=>`<button data-go="${k.s}" data-y="${k.yi}">${esc(k.y.題)}</button>`).join("")}</div>
+    <h2>師父的引導・依類別</h2>
+    <div class="idx-tags">${["",...new Set(TAGS.map(t=>t[1]))].map(k=>{const t=k?TAGS.find(x=>x[1]===k):null;const n=items.filter(it=>!k||TAGKEY[it.x.類]===k).length;
+      return `<button class="chip${k?"":""}" data-f="${k}" aria-pressed="${(f||"")===k}">${k?(k==="yu"?"喻・例":t[0]):"全部"}　${n}</button>`}).join("")}</div>
+    ${list.map(it=>`<button class="idx-item" data-go="${it.s}" data-y="${it.yi}"><div class="w">${itemBadge(it.x.類)} ${esc(it.x.文)}</div>
+      <div class="m">延伸・${esc(it.y.題)}${it.g?"・"+esc(it.g):""}　｜　第 ${it.s+1} 段${S.lesson.段[it.s].頁?"・p"+S.lesson.段[it.s].頁:""}</div></button>`).join("")||'<p style="color:var(--ink-3)">這個類別在本課沒有。</p>'}`;
+}
+
+// ───────── 大綱（手機） ─────────
+function renderOutline(){
+  const L=S.lesson;
+  $("#outline").innerHTML=`<div class="crumb" style="padding:10px 0 2px">${kpPath().slice(1).slice(-3).map(n=>esc(n.t)).join("　›　")}</div>`+
+  L.段.map((s,i)=>`<div class="oc${i===S.seg?" sel":""}" id="oc${i}">
+    <div class="meta-row" style="margin:0"><span class="pill">${i+1}</span>${s.頁?`<span class="pill">p${s.頁}</span>`:""}<span class="pill">${segRange(s)}</span>${playLink(s.af,s.st,s.et,"播放")}</div>
+    <div class="yw">${redHtml(s.文)}</div>
+    ${s.口譯?`<details open><summary style="color:var(--t-li)">口譯</summary><p class="kytext" style="margin-top:6px">${esc(s.口譯)}</p></details>`:""}
+    ${s.四家合註?`<details><summary style="color:var(--ink-2)">四家合註</summary><p class="sjtext" style="margin-top:6px">${s.四家合註}</p></details>`:""}
+    ${s.消文.length?`<details${S.xw?" open":""}><summary>消文理路（${s.消文.length}）</summary><ol class="xwlist" style="margin-top:6px">${s.消文.map(x=>`<li>${x.類?itemBadge(x.類)+" ":""}${esc(x.文)}</li>`).join("")}</ol></details>`:""}
+    ${s.延伸.map((y,yi)=>`<div class="ycard" data-y="${yi}"><div class="hd"><span class="badge ys">延伸</span><span class="kw">${esc(y.題)}</span><span style="flex:1"></span>${y.af?playLink(y.af,y.st,s.et,`${y.af.toUpperCase()} ${mmss(y.st)}`,true):""}</div>
+      ${yGroups(y)}</div>`).join("")}
+    <details><summary style="color:var(--ink-2)">逐字稿（${s.逐字稿.length} 節）</summary>${s.逐字稿.map(t=>`<div class="tsec"><div class="tt">${esc(t.t)}</div>${t.b.map(([k,x])=>`<p class="${k==="q"?"q":""}">${esc(x)}</p>`).join("")}</div>`).join("")}</details>
+  </div>`).join("");
+}
+
+// ───────── 地圖 ─────────
+function renderMap(){
+  const has=new Set(S.index.map(x=>x.科判焦點)),path=new Set(kpPath());
+  const keep=new Set();(function go(n,p){const me=p.concat(n),key=`${n.c} ${n.t}`;if(has.has(key)||has.has(n.t))me.forEach(x=>keep.add(x));(n.k||[]).forEach(k=>go(k,me))})(S.kepan.樹,[]);
+  const mine=!S.mapAll;
+  const lessonsOf=n=>S.index.filter(x=>x.科判焦點===`${n.c} ${n.t}`||x.科判焦點===n.t);
+  function li(n,depth){
+    if(mine&&!keep.has(n))return "";
+    const key=`${n.c} ${n.t}`,ls=lessonsOf(n),isHas=ls.length>0,kids=n.k||[];
+    const isOpen=mine||path.has(n)||depth<1;
+    const lessonBtns=isHas?`<div class="lessons" style="--d:${depth}">${ls.map(x=>`<button data-lesson="${esc(x.id)}" class="${S.lesson&&S.lesson.id===x.id?"cur":""}"><b>${esc(x.標題)}</b>第${x.堂數}堂・${esc(x.課本範圍.replace(" ~ ","～"))}</button>`).join("")}</div>`:"";
+    return `<li><div class="row${path.has(n)?" path":""}${isHas?" has":""}${isHas&&S.lesson&&lessonsOf(n).some(x=>x.id===S.lesson.id)?" cur":""}" style="--d:${depth}" ${isHas?`data-has="${esc(key)}" tabindex="0"`:""}>
+      ${kids.length?`<button class="tw" aria-expanded="${isOpen}" aria-label="展開">${isOpen?"▾":"▸"}</button>`:'<span class="tw"></span>'}
+      ${n.c?`<span class="c">${esc(n.c)}</span>`:""}<span class="t">${esc(n.t)}</span></div>${lessonBtns}
+      ${kids.length?`<ul${isOpen?"":" hidden"}>${kids.map(k=>li(k,depth+1)).join("")}</ul>`:""}</li>`;
+  }
+  const kp=$("#kp");kp.classList.toggle("mine",mine);
+  kp.innerHTML=`<ul>${li(S.kepan.樹,0)}</ul>`;
+  $("#mapMine").setAttribute("aria-pressed",String(mine));$("#mapAll").setAttribute("aria-pressed",String(!mine));
+  $("#mapNote").textContent=mine?`目前整理了 ${S.index.length} 課。按「全部」看整部廣論科判，可以從那裡搜尋或定位。`:"朱點＝已整理師父講解的節點；其他節點之後一課一課補上。";
+  const cur=$("#kp .row.cur");if(cur&&!mine)setTimeout(()=>{const m=$(".map");m.scrollTop=cur.offsetTop-m.clientHeight/2;m.scrollLeft=0},50);
+}
+
+// ───────── 選取 ─────────
+function selectSeg(i,{yan=null,scroll=true,from}={}){
+  S.seg=i;S.yan=yan;
+  if(S.tab==="i"&&from!=="index"){}
+  paintState();renderDetail();
+  document.querySelectorAll("#outline .oc").forEach((el,k)=>el.classList.toggle("sel",k===i));
+  if(scroll)scrollToSeg(i);
+  if(isMobile()&&$("#main").dataset.m==="outline"&&scroll){const el=$("#oc"+i);if(el)el.scrollIntoView({behavior:"smooth",block:"start"})}
+  try{history.replaceState(null,"","#seg-"+(i+1))}catch(e){}
+}
+const isMobile=()=>matchMedia("(max-width:980px)").matches;
+
+// ───────── 搜尋 ─────────
+const TIME_RE=/^\s*(\d{1,3})\s*([AaBb])(?:\s*(\d{1,2})(?:\s*[:：]?\s*(\d{2}))?)?\s*$/;
+function hl(text,q){const i=text.indexOf(q);if(i<0)return esc(text.slice(0,60));const a=Math.max(0,i-18);
+  return(a?"…":"")+esc(text.slice(a,i))+"<mark>"+esc(q)+"</mark>"+esc(text.slice(i+q.length,i+q.length+40))+"…"}
+function doSearch(q){
+  q=q.trim();const box=$("#results");if(!q){box.hidden=true;return}
+  const L=S.lesson,groups=[];
+  // 音檔：「69A」列出這一卷的所有段；「69A 12」「69a1230」「69A 12:30」跳到那個時間；「12:30」兩卷都找
+  const tm=q.match(TIME_RE),tm2=!tm&&q.match(/^\s*(\d{1,2})\s*[:：]\s*(\d{2})\s*$/);
+  const segAt=(af,sec)=>{let hit=-1;L.段.forEach((s,i)=>{if(s.af===af&&s.st<=sec)hit=i});return hit};
+  if(tm){const af=(String(+tm[1]).padStart(3,"0")+tm[2]).toLowerCase().replace(/^0+/,"").padStart(3,"0");
+    const afk=L.段.find(s=>s.af.replace(/^0+/,"")===af.replace(/^0+/,""))?.af||af;
+    if(tm[3]==null){
+      const list=L.段.map((s,i)=>({s,i})).filter(x=>x.s.af===afk);
+      groups.push(["音檔 "+afk.toUpperCase(),list.map(x=>({go:x.i,h:`${segRange(x.s)}　第 ${x.i+1} 段`,m:plain(x.s.文).slice(0,36)+"…"})),
+        list.length?null:`本課沒有 ${afk.toUpperCase()}（本課是 ${[...new Set(L.段.map(s=>s.af.toUpperCase()))].join("、")}）`]);
+    }else{
+      const sec=(+tm[3])*60+(tm[4]!=null?+tm[4]:0),hit=segAt(afk,sec);
+      groups.push(["音檔",hit>=0?[{go:hit,h:`${afk.toUpperCase()} ${mmss(sec)} → 第 ${hit+1} 段（${segRange(L.段[hit])}）`,m:plain(L.段[hit].文).slice(0,40)+"…"}]:[],
+        hit<0?`${afk.toUpperCase()} ${mmss(sec)} 不在本課範圍`:null]);
+    }
+  }else if(tm2){const sec=(+tm2[1])*60+(+tm2[2]);const res=[];
+    [...new Set(L.段.map(s=>s.af))].forEach(af=>{const h=segAt(af,sec);if(h>=0)res.push({go:h,h:`${af.toUpperCase()} ${mmss(sec)} → 第 ${h+1} 段`,m:plain(L.段[h].文).slice(0,40)+"…"})});
+    if(res.length)groups.push(["音檔",res]);
+  }
+  const kp=[];(function go(n,p){const me=p.concat(n);if(n.t&&(n.t.includes(q)||(n.c&&n.c===q)))kp.push(me);(n.k||[]).forEach(k=>go(k,me))})(S.kepan.樹,[]);
+  if(kp.length)groups.push(["科判",kp.slice(0,8).map(p=>{const n=p.at(-1),key=`${n.c} ${n.t}`,has=S.index.some(x=>x.科判焦點===key||x.科判焦點===n.t);
+    return {kp:key,h:`${esc(n.c)} ${hl(n.t,q)}`,m:(has?"已整理・":"尚未整理・")+p.slice(1,-1).slice(-2).map(x=>x.t).join(" › "),raw:true}})]);
+  const yw=[],ys=[],xw=[],ts=[];
+  L.段.forEach((s,i)=>{
+    if(plain(s.文).includes(q))yw.push({go:i,h:hl(plain(s.文),q),m:`第 ${i+1} 段${s.頁?"・p"+s.頁:""}`,raw:true});
+    s.延伸.forEach((y,yi)=>{if(y.題.includes(q))ys.push({go:i,y:yi,h:"延伸・"+hl(y.題,q),m:`第 ${i+1} 段`,raw:true});
+      y.說.forEach(x=>{if(x.文.includes(q))ys.push({go:i,y:yi,h:`<span class="badge" style="background:var(--t-${TAGKEY[x.類]||"hui"})">${esc(x.類)}</span> `+hl(x.文,q),m:`延伸・${y.題}・第 ${i+1} 段`,raw:true})})});
+    if(s.口譯&&s.口譯.includes(q))xw.push({go:i,h:hl(s.口譯,q),m:`口譯・第 ${i+1} 段`,raw:true});
+    s.消文.forEach(x=>{if(x.文.includes(q))xw.push({go:i,h:hl(x.文,q),m:`消文・第 ${i+1} 段`,raw:true})});
+    s.逐字稿.forEach(t=>t.b.forEach(([k,x])=>{if(k==="s"&&x.includes(q))ts.push({go:i,h:hl(x,q),m:`${t.t}・第 ${i+1} 段`,raw:true})}));
+  });
+  if(yw.length)groups.push(["原文",yw]);if(ys.length)groups.push(["延伸理路",ys]);if(xw.length)groups.push(["口譯・消文理路",xw]);if(ts.length)groups.push(["逐字稿（師父）",ts.slice(0,12)]);
+  S.results=[];let html="";
+  for(const [g,arr,note] of groups){html+=`<div class="grp">${g}</div>`;if(note)html+=`<div class="empty">${esc(note)}</div>`;
+    arr.forEach(r=>{S.results.push(r);html+=`<button data-r="${S.results.length-1}"><div>${r.raw?r.h:esc(r.h)}</div><div class="meta">${esc(r.m)}</div></button>`})}
+  box.innerHTML=html||`<div class="empty">找不到「${esc(q)}」。可以試試原文裡的詞、科判名稱，或「69A 12:30」這種音檔時間。</div>`;
+  box.hidden=false;
+}
+function goResult(r){
+  $("#results").hidden=true;
+  if(r.kp){const row=[...document.querySelectorAll("#kp .row")].find(x=>x.querySelector(".t")&&(`${x.querySelector(".c")?.textContent||""} ${x.querySelector(".t").textContent}`.trim()===r.kp.trim()));
+    openMapTo(r.kp);
+    if(S.index.some(x=>x.科判焦點===r.kp||x.科判焦點===r.kp.split(" ").pop())){selectSeg(0)}
+    else toast("這一節還沒整理師父講解；地圖上已標出位置。");
+    if(isMobile())setM("map");return}
+  if(isMobile()&&$("#main").dataset.m==="map")setM("outline");
+  selectSeg(r.go,{yan:r.y??null});
+}
+function openMapTo(key){
+  if(!S.mapAll){S.mapAll=true;renderMap()}
+  let target=null;const p=[];(function go(n,path){const me=path.concat(n);if(!target&&`${n.c} ${n.t}`.trim()===key.trim())target=me;(n.k||[]).forEach(k=>go(k,me))})(S.kepan.樹,[]);
+  if(!target)return;
+  // 依序展開
+  const rows=[...document.querySelectorAll("#kp .row")];
+  const keyOf=row=>`${row.querySelector(".c")?.textContent||""} ${row.querySelector(".t").textContent}`.trim();
+  target.forEach(n=>{const r=rows.find(x=>keyOf(x)===`${n.c} ${n.t}`.trim());if(r){const ul=r.nextElementSibling;if(ul){ul.hidden=false;const b=r.querySelector(".tw");if(b){b.textContent="▾";b.setAttribute("aria-expanded","true")}}}});
+  const last=rows.find(x=>keyOf(x)===key.trim());if(last){last.scrollIntoView({block:"center",behavior:"smooth"});last.classList.remove("flash");void last.offsetWidth;last.classList.add("flash")}
+}
+
+// ───────── 下載 ─────────
+let downloads=null;
+function openPop(){
+  const L=S.lesson,parts=L.分圖||[];
+  $("#rangeOpts").innerHTML=`<div class="sub">範圍</div>
+    <label><input type="radio" name="rg" value="all" checked> 整課（${L.段.length} 段）</label>
+    ${parts.map((p,i)=>`<label><input type="radio" name="rg" value="p${i}"> ${esc(p.名)}<span class="sub">　第 ${p.原文[0]+1}～${p.原文[1]+1} 段</span></label>`).join("")}
+    <label><input type="radio" name="rg" value="seg"> 目前這一段（第 ${S.seg+1} 段）</label>
+    <label><input type="radio" name="rg" value="pick"> 自選區段<span class="sub">　${S.range?`第 ${S.range[0]+1}～${S.range[1]+1} 段・`:""}在圖上點起點和終點</span></label>`;
+  $("#dlXw").checked=S.xw;$("#dlMsg").textContent="";
+  $("#pop").hidden=false;
+}
+function rangeFromPop(){
+  const v=document.querySelector('input[name="rg"]:checked').value,L=S.lesson;
+  if(v==="all")return[0,L.段.length-1,"整課"];
+  if(v==="seg")return[S.seg,S.seg,`第${S.seg+1}段`];
+  if(v==="pick")return S.range?[S.range[0],S.range[1],`第${S.range[0]+1}-${S.range[1]+1}段`]:null;
+  const p=L.分圖[+v.slice(1)];return[p.原文[0],p.原文[1],p.名];
+}
+async function doDownload(){
+  const v=document.querySelector('input[name="rg"]:checked').value;
+  if(v==="pick"&&!S.range){startPick();return}
+  const [a,b,name]=rangeFromPop(),xw=$("#dlXw").checked,fmt=document.querySelector('input[name="fmt"]:checked').value;
+  const L=S.lesson,lay=layout(buildTree(L,{xw,from:a,to:b}));
+  const cap=`${L.標題}　師父講解科判${xw?"":"（延伸理路）"}　${name}　｜　${L.課本範圍}　｜　紅字＝延伸關鍵詞　立＝所立　破＝所破　下手＝下手處　回扣＝回扣原文`;
+  const fname=`${L.標題}_師父科判${xw?"":"_延伸"}_${name}.${fmt}`;
+  $("#dlMsg").textContent="產生中…";
+  try{
+    let data;
+    if(fmt==="svg")data=svgOf(lay,{exp:true,caption:cap});
+    else data=await toPng(lay,cap);
+    if(downloads)await downloads.save({filename:fname,data});
+    else{const blob=data instanceof Blob?data:new Blob([data],{type:"image/svg+xml"});const a=document.createElement("a");
+      a.href=URL.createObjectURL(blob);a.download=fname;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1000)}
+    $("#pop").hidden=true;toast("已下載："+fname);
+  }catch(e){
+    const c=e&&e.code;$("#dlMsg").textContent=c==="declined"?"已取消。":c==="rate_limited"?"已經有一個存檔視窗開著，等一下再試。":"沒有存成："+(e&&e.message||e);
+  }
+}
+async function toPng(lay,cap){
+  const sc=2,H=lay.H+40,cv=document.createElement("canvas");cv.width=lay.W*sc;cv.height=H*sc;
+  const ctx=cv.getContext("2d");ctx.scale(sc,sc);
+  let all="";walk(lay.root,n=>n.cols.forEach(c=>c.forEach(([ch])=>all+=VERT[ch]||ch)));
+  try{await Promise.all([26,21,30,46].map(z=>document.fonts.load(`${z}px "LXGW WenKai TC"`,all)))}catch(e){}
+  ctx.fillStyle=LIGHT.paper;ctx.fillRect(0,0,lay.W,H);
+  ctx.strokeStyle=LIGHT.line;ctx.lineWidth=1.5;
+  lines(lay,(x1,y1,x2,y2)=>{ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke()});
+  ctx.textAlign="center";ctx.textBaseline="middle";
+  walk(lay.root,n=>{
+    if(n.kind==="xw"){const w=n.size+14;ctx.strokeStyle=LIGHT.gold;ctx.lineWidth=1.6;rr(ctx,n.ax-w/2,n.y-8,w,n.bh+16,4);ctx.stroke()}
+    if(n.tag){const t=n.tagS,w=t+6,h=n.tag.length*t+8;ctx.fillStyle=LIGHT[tagColor(n.tag)];rr(ctx,n.ax-w/2,n.y,w,h,4);ctx.fill();
+      ctx.fillStyle="#fff";ctx.font=`500 ${t}px "Noto Sans TC","Microsoft JhengHei",sans-serif`;[...n.tag].forEach((ch,i)=>ctx.fillText(ch,n.ax,n.y+4+t*(i+.5)))}
+    if(n.kind==="grp"){ctx.strokeStyle=LIGHT.zhu;ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(n.ax-n.size*.45,n.y-6);ctx.lineTo(n.ax+n.size*.45,n.y-6);ctx.stroke();ctx.strokeStyle=LIGHT.line;ctx.lineWidth=1.5}
+    ctx.font=`${n.lv===1?"700 ":""}${n.size}px ${KAI}`;
+    glyphs(n,(ch,x,y,red)=>{ctx.fillStyle=red?LIGHT.zhu:(n.kind==="xw"?LIGHT.gold:n.kind==="grp"?LIGHT["ink-2"]:LIGHT.ink);ctx.fillText(ch,x,y)});
+    if(n.time){ctx.font='13px "Noto Sans TC",sans-serif';ctx.fillStyle=LIGHT["ink-3"];ctx.textAlign="right";ctx.fillText(n.time,n.ax-10,n.y+n.bh+12);ctx.textAlign="center"}
+  });
+  ctx.textAlign="left";ctx.font='18px "Noto Sans TC","Microsoft JhengHei",sans-serif';ctx.fillStyle=LIGHT["ink-3"];ctx.fillText(cap,MARGIN,H-34);
+  return await new Promise((res,rej)=>cv.toBlob(b=>b?res(b):rej(new Error("圖太大，請改選較小的區段")),"image/png"));
+}
+function rr(c,x,y,w,h,r){c.beginPath();c.moveTo(x+r,y);c.arcTo(x+w,y,x+w,y+h,r);c.arcTo(x+w,y+h,x,y+h,r);c.arcTo(x,y+h,x,y,r);c.arcTo(x,y,x+w,y,r);c.closePath()}
+function startPick(){
+  $("#pop").hidden=true;S.pick={a:null};
+  let h=$("#pickhint");if(!h){h=document.createElement("div");h.id="pickhint";h.className="pickhint";$("#treewrap").appendChild(h)}
+  h.textContent="自選區段：點起點那段原文";h.hidden=false;
+  if(isMobile())setM("tree");
+}
+function pickClick(i){
+  const h=$("#pickhint");
+  if(S.pick.a==null){S.pick.a=i;S.range=[i,i];h.textContent=`起點：第 ${i+1} 段。再點終點那段原文`;paintState();return}
+  const a=Math.min(S.pick.a,i),b=Math.max(S.pick.a,i);S.range=[a,b];S.pick=null;h.hidden=true;paintState();
+  openPop();document.querySelector('input[name="rg"][value="pick"]').checked=true;
+}
+
+function toast(m){const t=document.createElement("div");t.className="toast";t.textContent=m;document.body.appendChild(t);setTimeout(()=>t.remove(),2600)}
+function setM(m){$("#main").dataset.m=m;document.querySelectorAll(".mtabs button").forEach(b=>b.setAttribute("aria-selected",String(b.dataset.m===m)));
+  if(m==="tree"){S.scale=null;requestAnimationFrame(()=>{applyScale();scrollToSeg(S.seg,false);updateMini()})}
+  if(m==="index"){S.tab="i";renderDetail()}else if(S.tab==="i"&&isMobile()){S.tab="d"}
+}
+
+// ───────── 事件 ─────────
+function bind(){
+  const wrap=$("#treewrap");
+  // 按住拖曳平移（滑鼠）；移動超過 5px 才算拖曳，不會誤觸點選
+  let dg=null;
+  wrap.addEventListener("pointerdown",e=>{if(e.pointerType!=="mouse"||e.button!==0)return;
+    dg={x:e.clientX,y:e.clientY,l:wrap.scrollLeft,t:wrap.scrollTop,moved:false,id:e.pointerId}});
+  wrap.addEventListener("pointermove",e=>{if(!dg)return;const dx=e.clientX-dg.x,dy=e.clientY-dg.y;
+    if(!dg.moved&&Math.hypot(dx,dy)>5){dg.moved=true;wrap.classList.add("dragging");try{wrap.setPointerCapture(dg.id)}catch(_){}}
+    if(dg.moved){wrap.scrollLeft=dg.l-dx;wrap.scrollTop=dg.t-dy}});
+  const endDrag=()=>{if(!dg)return;if(dg.moved){wrap.dataset.justDragged="1";setTimeout(()=>delete wrap.dataset.justDragged,0)}
+    wrap.classList.remove("dragging");dg=null};
+  wrap.addEventListener("pointerup",endDrag);wrap.addEventListener("pointercancel",endDrag);
+  // 滾輪：圖不需要上下捲的時候，直接變左右捲
+  wrap.addEventListener("wheel",e=>{if(e.shiftKey||e.ctrlKey||Math.abs(e.deltaX)>Math.abs(e.deltaY))return;
+    if(wrap.scrollHeight<=wrap.clientHeight+2){wrap.scrollLeft-=e.deltaY;e.preventDefault()}},{passive:false});
+  wrap.addEventListener("click",e=>{
+    if(wrap.dataset.justDragged)return;
+    const g=e.target.closest(".n");if(!g||g.dataset.s==null)return;const i=+g.dataset.s;
+    if(S.pick){if(g.classList.contains("lv2")||true)pickClick(i);return}
+    const y=g.dataset.y!=null?+g.dataset.y:null;
+    S.tab="d";syncTabs();selectSeg(i,{yan:y,scroll:false});
+    if(isMobile()){}
+  });
+  wrap.addEventListener("scroll",updateMini,{passive:true});
+  const mini=$("#mini");let drag=false;
+  const jump=e=>{const r=mini.getBoundingClientRect(),x=(e.clientX-r.left)/r.width;wrap.scrollLeft=x*wrap.scrollWidth-wrap.clientWidth/2};
+  mini.addEventListener("pointerdown",e=>{drag=true;mini.setPointerCapture(e.pointerId);jump(e)});
+  mini.addEventListener("pointermove",e=>{if(drag)jump(e)});
+  mini.addEventListener("pointerup",()=>drag=false);
+  $("#lyBoth").onclick=()=>{S.xw=true;store("kp.xw","1");syncLayer();renderTree();scrollToSeg(S.seg,false)};
+  $("#lyYan").onclick=()=>{S.xw=false;store("kp.xw","0");syncLayer();renderTree();scrollToSeg(S.seg,false)};
+  $("#zIn").onclick=()=>{S.scale=Math.min(1.6,(S.scale||1)*1.2);zoomKeep()};
+  $("#zOut").onclick=()=>{S.scale=Math.max(.25,(S.scale||1)/1.2);zoomKeep()};
+  $("#zFit").onclick=()=>{S.scale=null;zoomKeep()};
+  $("#tagbar").innerHTML=TAGS.filter((t,i,a)=>a.findIndex(x=>x[1]===t[1])===i).map(t=>`<button class="tagbtn" data-k="${t[1]}" style="background:var(--t-${t[1]})" aria-pressed="true" title="${t[2]}">${t[1]==="yu"?"喻例":t[0]}</button>`).join("");
+  $("#tagbar").addEventListener("click",e=>{const b=e.target.closest(".tagbtn");if(!b)return;S.filter=S.filter===b.dataset.k?null:b.dataset.k;paintState();renderDetail();renderOutline()});
+  $("#tabD").onclick=()=>{S.tab="d";syncTabs();renderDetail()};
+  $("#tabI").onclick=()=>{S.tab="i";syncTabs();renderDetail()};
+  $("#side").addEventListener("click",e=>{
+    const f=e.target.closest("[data-f]");if(f){S.filter=f.dataset.f||null;paintState();renderDetail();return}
+    const go=e.target.closest("[data-go]");if(go){S.tab="d";syncTabs();if(isMobile())setM("outline");selectSeg(+go.dataset.go,{yan:go.dataset.y!=null?+go.dataset.y:null})}
+  });
+  $("#side").addEventListener("toggle",e=>{if(e.target.matches("details.ts"))S.tsOpen=e.target.open},true);
+  const q=$("#q");let act=-1;
+  q.addEventListener("input",()=>{act=-1;doSearch(q.value)});
+  q.addEventListener("focus",()=>{if(q.value.trim())doSearch(q.value)});
+  q.addEventListener("keydown",e=>{const bs=[...$("#results").querySelectorAll("button")];
+    if(e.key==="ArrowDown"||e.key==="ArrowUp"){e.preventDefault();act=(act+(e.key==="ArrowDown"?1:-1)+bs.length)%bs.length;bs.forEach((b,i)=>b.classList.toggle("act",i===act));bs[act]?.scrollIntoView({block:"nearest"})}
+    else if(e.key==="Enter"){const b=bs[act>=0?act:0];if(b)goResult(S.results[+b.dataset.r])}
+    else if(e.key==="Escape"){$("#results").hidden=true;q.blur()}});
+  $("#results").addEventListener("click",e=>{const b=e.target.closest("button[data-r]");if(b)goResult(S.results[+b.dataset.r])});
+  document.addEventListener("click",e=>{if(!e.target.closest(".search"))$("#results").hidden=true;
+    if(!e.target.closest("#pop")&&!e.target.closest("#dlBtn")&&!$("#pop").hidden&&!S.pick)$("#pop").hidden=true});
+  $("#mapMine").onclick=()=>{S.mapAll=false;store("kp.mapAll","0");renderMap()};
+  $("#mapAll").onclick=()=>{S.mapAll=true;store("kp.mapAll","1");renderMap()};
+  $("#kp").addEventListener("click",e=>{
+    const lb=e.target.closest("[data-lesson]");if(lb){selectSeg(0);if(isMobile())setM("outline");return}
+    const tw=e.target.closest(".tw");if(tw&&tw.tagName==="BUTTON"){const ul=tw.closest(".row").nextElementSibling;if(ul){ul.hidden=!ul.hidden;tw.textContent=ul.hidden?"▸":"▾";tw.setAttribute("aria-expanded",String(!ul.hidden))}return}
+    const r=e.target.closest(".row.has");if(r){selectSeg(0);if(isMobile())setM("outline")}
+  });
+  $("#dlBtn").onclick=e=>{e.stopPropagation();$("#pop").hidden?openPop():($("#pop").hidden=true)};
+  $("#dlCancel").onclick=()=>$("#pop").hidden=true;
+  $("#dlGo").onclick=doDownload;
+  $("#outline").addEventListener("click",e=>{const oc=e.target.closest(".oc");if(!oc||e.target.closest("a,summary,button"))return;const i=+oc.id.slice(2);if(i!==S.seg){S.seg=i;document.querySelectorAll("#outline .oc").forEach((el,k)=>el.classList.toggle("sel",k===i));paintState()}});
+  document.querySelectorAll(".mtabs button").forEach(b=>b.onclick=()=>setM(b.dataset.m));
+  addEventListener("resize",()=>{applyScale();updateMini()});
+  addEventListener("hashchange",fromHash);
+}
+// ───────── 分隔線：寬度存在本機 ─────────
+const SPLIT={map:[270,0,520],det:[380,280,720]};
+function setW(k,w,save){const [d,mn,mx]=SPLIT[k];w=Math.round(w);
+  if(k==="map"&&w<90)w=0;else w=Math.max(mn,Math.min(mx,w));
+  $("#main").style.setProperty(k==="map"?"--mapw":"--detw",w+"px");S[k+"W"]=w;
+  if(save)store("kp."+k+"W",String(w));updateMini()}
+function bindSplit(){
+  [["gutL","map",1],["gutR","det",-1]].forEach(([id,k,sign])=>{
+    const g=$("#"+id);let st=null;
+    g.addEventListener("pointerdown",e=>{st={x:e.clientX,w:S[k+"W"]};g.setPointerCapture(e.pointerId);g.classList.add("on");document.body.classList.add("resizing");e.preventDefault()});
+    g.addEventListener("pointermove",e=>{if(st)setW(k,st.w+sign*(e.clientX-st.x),false)});
+    const end=()=>{if(!st)return;st=null;g.classList.remove("on");document.body.classList.remove("resizing");setW(k,S[k+"W"],true);applyScale()};
+    g.addEventListener("pointerup",end);g.addEventListener("pointercancel",end);
+    g.addEventListener("dblclick",()=>{setW(k,SPLIT[k][0],true);store("kp."+k+"W",null)});
+    g.addEventListener("keydown",e=>{if(e.key==="ArrowLeft"||e.key==="ArrowRight"){e.preventDefault();setW(k,S[k+"W"]+(e.key==="ArrowRight"?sign:-sign)*20,true)}});
+  });
+  for(const k of ["map","det"]){const v=+store("kp."+k+"W");setW(k,v>=0&&store("kp."+k+"W")!=null?v:SPLIT[k][0],false)}
+}
+function zoomKeep(){const wrap=$("#treewrap"),fr=(wrap.scrollLeft+wrap.clientWidth/2)/wrap.scrollWidth;applyScale();wrap.scrollLeft=fr*wrap.scrollWidth-wrap.clientWidth/2;updateMini()}
+function syncLayer(){$("#lyBoth").setAttribute("aria-pressed",String(S.xw));$("#lyYan").setAttribute("aria-pressed",String(!S.xw))}
+function syncTabs(){$("#tabD").setAttribute("aria-selected",String(S.tab==="d"));$("#tabI").setAttribute("aria-selected",String(S.tab==="i"))}
+function fromHash(){const m=location.hash.match(/^#seg-(\d+)$/);if(m&&S.lesson){const i=+m[1]-1;if(i>=0&&i<S.lesson.段.length&&i!==S.seg)selectSeg(i)}}
+
+// ───────── 啟動 ─────────
+async function start(){
+  bind();bindPlayer();bindSplit();
+  try{
+    const emb=document.getElementById("kpdata");
+    if(emb){const D=JSON.parse(emb.textContent);S.kepan=D.kepan;S.index=D.index;S.lessons=D.lessons;S.lesson=D.lessons[D.index[0].id]}
+    else{
+      const [kp,idx]=await Promise.all([fetch("data/kepan.json").then(r=>r.json()),fetch("data/index.json").then(r=>r.json())]);
+      S.kepan=kp;S.index=idx;
+      S.lesson=await fetch(`data/lessons/${idx[0].id}.json`).then(r=>r.json());
+    }
+  }catch(e){$("#side").innerHTML=`<p>資料載入失敗：${esc(e.message)}。重新整理一次試試。</p>`;return}
+  const L=S.lesson;
+  $("#lessonInfo").textContent=`${L.標題}・第${L.堂數}堂・${L.課本範圍.replace(" ~ ","～")}・${L.日期}`;
+  S.mapAll=store("kp.mapAll")==="1";
+  const sx=store("kp.xw");if(sx!=null)S.xw=sx==="1";syncLayer();
+  const m=location.hash.match(/^#seg-(\d+)$/);if(m)S.seg=Math.min(L.段.length-1,Math.max(0,+m[1]-1));
+  renderMap();renderTree();renderDetail();renderOutline();
+  const firstScroll=()=>{const w=$("#treewrap");w.scrollLeft=w.scrollWidth;scrollToSeg(S.seg,false);updateMini()};
+  requestAnimationFrame(firstScroll);setTimeout(firstScroll,250);setTimeout(firstScroll,800);
+  try{document.fonts.ready.then(()=>setTimeout(firstScroll,50))}catch(e){}
+  if(m&&isMobile())setTimeout(()=>$("#oc"+S.seg)?.scrollIntoView({block:"start"}),120);
+  try{downloads=window.claude?.use?await window.claude.use("downloads"):null}catch(e){downloads=null}
+}
+start();
+</script>
