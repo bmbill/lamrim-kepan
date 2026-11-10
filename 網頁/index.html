@@ -28,7 +28,8 @@ body{background:var(--paper);color:var(--ink);font-family:var(--f-ui);font-size:
 button,input{font:inherit;color:inherit}
 button{cursor:pointer}
 :focus-visible{outline:2px solid var(--zhu);outline-offset:2px}
-.app{height:100%;display:grid;grid-template-rows:auto 1fr;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.app>*{min-width:0}
+.app{height:100%;display:grid;grid-template-rows:auto 1fr;grid-template-columns:minmax(0,1fr);padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
 
 /* 頁首 */
 header{display:flex;align-items:center;gap:14px;padding-block:10px;border-bottom:1px solid var(--rule);flex-wrap:wrap}
@@ -148,7 +149,7 @@ body.resizing iframe,body.resizing svg{pointer-events:none}
 .tabs{display:flex;border-bottom:1px solid var(--rule);padding:0 14px}
 .tabs button{border:0;background:none;padding:10px 4px;margin-right:18px;font-size:14px;color:var(--ink-3);border-bottom:2px solid transparent}
 .tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--zhu);font-weight:500}
-.side{overflow:auto;padding:16px 18px 40px;min-height:0;flex:1}
+.side{overflow:auto;padding:16px 18px 40px;min-height:0;min-width:0;width:100%;box-sizing:border-box;flex:1}
 .crumb{font-size:12px;color:var(--ink-3);font-family:var(--f-kai);line-height:1.5}
 .crumb b{color:var(--zhu);font-weight:700}
 .meta-row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:10px 0 8px;font-size:12px;color:var(--ink-2);font-variant-numeric:tabular-nums}
@@ -214,7 +215,9 @@ details.ts[open] summary::before{transform:rotate(90deg)}
 .kyles{font-family:var(--f-ui);font-size:12px;font-weight:700;color:var(--zhu);margin:14px 0 4px;letter-spacing:.1em}
 .pvhd{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap;margin-bottom:10px}
 .pvhd a.iconbtn{text-decoration:none;color:var(--ink)}
-.pvstage{position:relative;aspect-ratio:16/9;background:#111;border-radius:8px;overflow:hidden;user-select:none}
+.pvhd .kytools{flex-wrap:wrap}
+.pvhd a.dl{white-space:nowrap}
+.pvstage{position:relative;width:100%;max-width:100%;aspect-ratio:16/9;background:#111;border-radius:8px;overflow:hidden;user-select:none}
 .pvstage img{width:100%;height:100%;object-fit:contain;display:block}
 .pvnav{position:absolute;top:0;bottom:0;width:22%;border:0;background:transparent;color:#fff;font-size:34px;opacity:0;transition:opacity .15s;cursor:pointer}
 .pvnav.prev{left:0;text-align:left;padding-left:10px}.pvnav.next{right:0;text-align:right;padding-right:10px}
@@ -225,7 +228,7 @@ details.ts[open] summary::before{transform:rotate(90deg)}
 .pvstage.fakefs{position:fixed;inset:0;z-index:100;background:#000;padding:env(safe-area-inset-top,0px) env(safe-area-inset-right,0px) env(safe-area-inset-bottom,0px) env(safe-area-inset-left,0px)}
 .pvstage:fullscreen .pvexit,.pvstage.fakefs .pvexit{display:block}
 .pvstage:fullscreen .pvcount,.pvstage.fakefs .pvcount{font-size:13px;bottom:12px;right:14px}
-.pvthumbs{display:flex;gap:6px;overflow-x:auto;padding:8px 2px 4px}
+.pvthumbs{display:flex;gap:6px;overflow-x:auto;max-width:100%;padding:8px 2px 4px}
 .pvthumbs button{flex:none;width:96px;aspect-ratio:16/9;border:2px solid transparent;border-radius:5px;padding:0;background:var(--panel);position:relative;overflow:hidden}
 .pvthumbs button img{width:100%;height:100%;object-fit:cover;display:block}
 .pvthumbs button.cur{border-color:var(--zhu)}
@@ -442,12 +445,15 @@ function playSeg(af,st,et,title){
 const LOOP_GAP=5;
 function loopAgain(){
   const aud=$("#aud");if(P.waiting)return;
-  aud.pause();aud.currentTime=P.st;P.waiting=true;let n=LOOP_GAP;
-  const tm=$("#plTime"),tick=()=>{if(!P.waiting)return;if(tm)tm.textContent=`${n} 秒後重播`;
-    if(n--<=0){P.waiting=false;if(P.loop)aud.play().catch(()=>{});return}P.waitT=setTimeout(tick,1000)};
-  tick();
+  aud.pause();aud.currentTime=P.st;P.waiting=true;
+  let g=$("#gapaud");if(!g){g=document.createElement("audio");g.id="gapaud";g.preload="auto";g.src="音檔/silence-5s.mp3";document.body.appendChild(g);
+    g.addEventListener("ended",()=>{if(!P.waiting)return;P.waiting=false;clearInterval(P.waitT);if(P.loop)$("#aud").play().catch(()=>{})})}
+  g.currentTime=0;
+  g.play().then(()=>{const tm=$("#plTime");clearInterval(P.waitT);P.waitT=setInterval(()=>{if(!P.waiting){clearInterval(P.waitT);return}
+      if(tm)tm.textContent=`${Math.max(1,Math.ceil(LOOP_GAP-g.currentTime))} 秒後重播`},250)})
+   .catch(()=>{P.waiting=false;if(P.loop)setTimeout(()=>aud.play().catch(()=>{}),LOOP_GAP*1000)});   // 無聲檔播不了就退回計時
 }
-function cancelLoopWait(){if(P.waiting){P.waiting=false;clearTimeout(P.waitT)}}
+function cancelLoopWait(){if(P.waiting){P.waiting=false;clearInterval(P.waitT);const g=$("#gapaud");if(g)g.pause()}}
 function playPrevSeg(){
   const L=S.lesson;if(P.lid!==L.id||P.seg==null||P.seg<=0)return false;
   const i=P.seg-1,s=L.段[i];P.seg=i;P.switching=true;setTimeout(()=>P.switching=false,800);
@@ -743,7 +749,8 @@ function renderPpt(side){
   if(PV.lid!==L.id){PV.lid=L.id;PV.i=0}
   const pdfs=L.isNode?lessonsInNode(L.科判焦點).filter(x=>x.投影片PDF):(L.投影片PDF?[L]:[]);
   side.innerHTML=`<div class="pvhd"><div><div class="kyt">投影片</div><div class="kym">${esc(L.標題)}・第${esc(L.堂數)}堂・${ps.length} 頁</div></div>
-      <div class="kytools">${pdfs.map(x=>`<a class="iconbtn" href="${esc(x.投影片PDF)}" target="_blank" rel="noopener">${L.isNode?`第${x.堂數}堂 `:""}PDF</a>`).join("")}
+      <div class="kytools">${pdfs.map(x=>`<a class="iconbtn dl" href="${esc(x.投影片PDF)}" download="${esc(x.標題)}_投影片.pdf" title="下載整份投影片（PDF）">⬇ ${L.isNode?`第${x.堂數}堂`:"下載投影片"}</a>`).join("")}
+      <a class="iconbtn dl" id="pvDlOne" href="#" download title="下載目前這一頁（圖片）">⬇ 這一頁</a>
       <button class="iconbtn" id="pvFs" title="全螢幕播放（F）">⛶ 全螢幕</button></div></div>
     <div class="pvstage" id="pvStage"><img id="pvImg" alt="" decoding="async">
       <button class="pvnav prev" id="pvPrev" aria-label="上一頁">‹</button><button class="pvnav next" id="pvNext" aria-label="下一頁">›</button>
@@ -757,6 +764,7 @@ function pvShow(i){
   PV.i=Math.max(0,Math.min(ps.length-1,i));
   const img=$("#pvImg");if(!img)return;
   img.src=ps[PV.i].img;
+  const one=$("#pvDlOne");if(one){one.href=ps[PV.i].img;one.setAttribute("download",`${S.lesson.標題}_投影片第${PV.i+1}頁.webp`)}
   if(ps[PV.i+1]){const n=new Image();n.src=ps[PV.i+1].img}          // 預載下一頁
   $("#pvCount").textContent=`${PV.i+1} / ${ps.length}`+(ps[PV.i].堂?`　第${ps[PV.i].堂}堂`:"");
   document.querySelectorAll("#pvThumbs button").forEach((b,k)=>b.classList.toggle("cur",k===PV.i));
