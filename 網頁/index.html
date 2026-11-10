@@ -260,6 +260,17 @@ details.ts[open] summary::before{transform:rotate(90deg)}
 .pvthumbs button img{width:100%;height:100%;object-fit:cover;display:block}
 .pvthumbs button.cur{border-color:var(--zhu)}
 .pvthumbs button i{position:absolute;left:2px;top:2px;font-style:normal;font-size:10px;background:var(--zhu);color:#fff;border-radius:3px;padding:0 4px}
+.badge.jd{background:#6B5B3E}
+.jdblk{margin:6px 0 10px}
+.jdp{font-family:var(--f-kai);font-size:15.5px;line-height:1.85;margin:4px 0;text-indent:2em;color:var(--ink)}
+.jdcov{display:inline-block;font-family:var(--f-ui);font-size:11px;color:var(--ink-3);border:1px solid var(--rule);border-radius:999px;padding:0 8px;margin-left:6px;text-indent:0}
+.jdblk>.jdcov{margin:0 0 2px}
+.jdfix{display:inline-block;font-family:var(--f-ui);font-size:10.5px;color:var(--gold);margin-left:6px;text-indent:0}
+details.jdwhole{margin-top:6px}
+details.jdwhole summary{cursor:pointer;font-size:13px;color:var(--ink-2)}
+details.jdwhole .jdp{color:var(--ink-2)}
+.jdref{font-size:12px;color:var(--ink-3);margin:6px 0 0}
+.jdgo{border:1px solid var(--rule);background:var(--raised);border-radius:999px;padding:1px 9px;font-size:12px;color:var(--ink);margin-right:4px;cursor:pointer}
 .idx-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
 .idx-item{display:block;width:100%;text-align:left;border:0;border-bottom:1px solid var(--rule);background:none;padding:9px 2px}
 .idx-item:hover{background:var(--zhu-wash)}
@@ -732,7 +743,25 @@ function kySj(s,compact){
   const ky=s.口譯?`<div class="sec"><h3><span class="badge ky">口譯</span>口譯<span class="sjkey">整段原文的白話，對著原文翻</span></h3><p class="kytext">${esc(s.口譯)}</p></div>`:"";
   const sj=s.四家合註?`<div class="sec"><h3><span class="badge sj">四家合註</span>四家合註<span class="sjkey">灰字＝箋註　巴＝巴梭法王　語＝語王堅穩　妙＝妙音笑　札＝札帝格西</span></h3><p class="sjtext">${s.四家合註}</p></div>`
     :(compact?"":`<div class="sec"><p class="sjnote">四家合註：中譯本目前只出到共下士道（卷十一）與止觀（卷二十六～二十九），這段還沒有。</p></div>`);
-  return ky+sj;
+  return ky+sj+jdHtml(s);
+}
+// 《覺燈日光》（嘉瓦仁波切講授）：確定對應的直接顯示；整段解說收合
+function jdNum(s,k){return s&&s.ls!=null?k+1:k+1}
+function jdHtml(s){
+  const L=S.lesson,i=L.段.indexOf(s);
+  const own=s.覺燈日光||[];
+  // 別段的解說涵蓋到本段：只放一行連結
+  const refs=[];if(i>=0){const base=L.isNode?i-s.ls:0,local=L.isNode?s.ls:i;
+    L.段.forEach((x,j)=>{if(j===i||(L.isNode&&x.lid!==s.lid))return;(x.覺燈日光||[]).forEach(it=>{const c=it.涵蓋;if(c&&local>=c[0]&&local<=c[1])refs.push({j,類:it.類})})});}
+  if(!own.length&&!refs.length)return "";
+  const sure=own.filter(x=>x.類!=="整段"),whole=own.filter(x=>x.類==="整段");
+  const cover=x=>x.涵蓋&&x.涵蓋[1]>x.涵蓋[0]?`<span class="jdcov">涵蓋第 ${x.涵蓋[0]+1}～${x.涵蓋[1]+1} 段</span>`:"";
+  const para=x=>`<p class="jdp">${esc(x.文)}${x.校?`<span class="jdfix" title="簡轉繁錯字已校正">校：${esc(x.校)}</span>`:""}</p>`;
+  const uniq=[...new Map(refs.map(r=>[r.j,r])).values()];
+  return `<div class="sec"><h3><span class="badge jd">覺燈日光</span>覺燈日光<span class="sjkey">嘉瓦仁波切講授・第二冊</span></h3>
+    ${sure.map(x=>`<div class="jdblk">${cover(x)}${para(x)}</div>`).join("")}
+    ${whole.length?`<details class="jdwhole"><summary>這一大段的整體解說（${whole.length} 則）${cover(whole[0])}</summary>${whole.map(para).join("")}</details>`:""}
+    ${uniq.length?`<p class="jdref">${uniq.map(r=>`<button class="jdgo" data-go="${r.j}">${r.類==="整段"?"整段解說":"解說"}在${esc(segName(L,r.j))}</button>`).join("")}（涵蓋本段）</p>`:""}</div>`;
 }
 function itemBadge(t){if(!t)return"";const k=TAGKEY[t]||"hui";return `<span class="badge" style="background:var(--t-${k})">${esc(t)}</span>`}
 function detailBody(s,withTs){
@@ -919,6 +948,7 @@ function renderOutline(){
     <div class="yw">${redHtml(s.文)}</div>
     ${s.口譯?`<details open><summary style="color:var(--t-li)">口譯</summary><p class="kytext" style="margin-top:6px">${esc(s.口譯)}</p></details>`:""}
     ${s.四家合註?`<details><summary style="color:var(--ink-2)">四家合註</summary><p class="sjtext" style="margin-top:6px">${s.四家合註}</p></details>`:""}
+    ${jdHtml(s)?`<details><summary style="color:#6B5B3E">覺燈日光</summary>${jdHtml(s)}</details>`:""}
     ${s.消文.length?`<details${S.xw?" open":""}><summary>消文理路（${s.消文.length}）</summary><ol class="xwlist" style="margin-top:6px">${s.消文.map(x=>`<li>${x.類?itemBadge(x.類)+" ":""}${esc(x.文)}</li>`).join("")}</ol></details>`:""}
     ${s.延伸.map((y,yi)=>`<div class="ycard" data-y="${yi}"><div class="hd"><span class="badge ys">延伸</span><span class="kw">${esc(y.題)}</span><span style="flex:1"></span>${y.af?playLink(y.af,y.st,s.et,rangeTxt(y.af,y.st,s.et),true,"延伸・"+y.題):""}</div>
       ${yGroups(y)}</div>`).join("")}
@@ -1020,10 +1050,11 @@ function doSearch(q){
       groupsOf(y).forEach(g=>{if(g.題&&g.題.includes(q))ys.push({lid,go:i,y:yi,h:hl(g.題,q),m:`延伸・${y.題}・${at}`,raw:true})});
       y.說.forEach(x=>{if(x.文.includes(q))ys.push({lid,go:i,y:yi,h:`<span class="badge" style="background:var(--t-${TAGKEY[x.類]||"hui"})">${esc(x.類)}</span> `+hl(x.文,q),m:`延伸・${y.題}・${at}`,raw:true})})});
     if(s.口譯&&s.口譯.includes(q))xw.push({lid,go:i,h:hl(s.口譯,q),m:`口譯・${at}`,raw:true});
+    (s.覺燈日光||[]).forEach(x=>{if(x.文.includes(q))xw.push({lid,go:i,h:hl(x.文,q),m:`覺燈日光・${at}`,raw:true})});
     s.消文.forEach(x=>{if(x.文.includes(q))xw.push({lid,go:i,h:hl(x.文,q),m:`消文・${at}`,raw:true})});
     s.逐字稿.forEach(t=>t.b.forEach(([k,x])=>{if(k==="s"&&x.includes(q))ts.push({lid,go:i,h:hl(x,q),m:`${t.t}・${at}`,raw:true})}));
   }));
-  if(yw.length)groups.push(["原文",yw]);if(ys.length)groups.push(["延伸理路",ys]);if(xw.length)groups.push(["口譯・消文理路",xw]);if(ts.length)groups.push(["逐字稿（師父）",ts.slice(0,15)]);
+  if(yw.length)groups.push(["原文",yw]);if(ys.length)groups.push(["延伸理路",ys]);if(xw.length)groups.push(["口譯・消文理路・覺燈日光",xw]);if(ts.length)groups.push(["逐字稿（師父）",ts.slice(0,15)]);
   S.results=[];let html="";
   for(const [g,arr,note] of groups){html+=`<div class="grp">${g}</div>`;if(note)html+=`<div class="empty">${esc(note)}</div>`;
     arr.forEach(r=>{S.results.push(r);html+=`<button data-r="${S.results.length-1}"><div>${r.raw?r.h:esc(r.h)}</div><div class="meta">${esc(r.m)}</div></button>`})}
