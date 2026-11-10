@@ -383,7 +383,7 @@ details.ts[open] summary::before{transform:rotate(90deg)}
   <button class="pp" id="ppBtn" aria-label="播放／暫停"><svg viewBox="0 0 12 12" id="ppIcon"><path d="M3 1.5v9l7.5-4.5z"/></svg></button>
   <div class="lb" id="plLabel"></div>
   <div style="display:flex;gap:6px;align-items:center"><span class="tm" id="plTime"></span>
-    <button class="loop" id="plLoop" aria-pressed="false" aria-label="重複播放這一段" title="重複播放這一段"><svg viewBox="0 0 24 24"><path d="M17 2l4 4-4 4"/><path d="M3 11v-1a4 4 0 0 1 4-4h14"/><path d="M7 22l-4-4 4-4"/><path d="M21 13v1a4 4 0 0 1-4 4H3"/></svg></button>
+    <button class="loop" id="plLoop" aria-pressed="false" aria-label="重複播放這一段" title="重複播放這一段（每遍間隔 5 秒）"><svg viewBox="0 0 24 24"><path d="M17 2l4 4-4 4"/><path d="M3 11v-1a4 4 0 0 1 4-4h14"/><path d="M7 22l-4-4 4-4"/><path d="M21 13v1a4 4 0 0 1-4 4H3"/></svg></button>
     <button class="loop" id="plCont" aria-pressed="false" aria-label="播完接下一段" title="播完接著播下一段"><svg viewBox="0 0 24 24"><path d="M5 4l7 8-7 8"/><path d="M13 4l7 8-7 8"/></svg></button>
     <button class="x" id="plClose" aria-label="關閉播放列">✕</button></div>
   <div class="bar" id="plBar"><i id="plFill"></i></div>
@@ -426,6 +426,7 @@ function playLink(af,st,et,label,ghost,title,seg){
 const P={af:null,st:0,et:null,usingRemote:false,loop:false};
 function audioSrc(af,remote){const a=(S.lesson.音檔||{})[af];if(!a)return null;return remote?a.remote:a.local}
 function playSeg(af,st,et,title){
+  cancelLoopWait();
   const ka=$("#kyaud");if(ka&&!ka.paused)ka.pause();
   const aud=$("#aud");P.st=st;P.et=et==null||et===""?null:+et;
   const src=audioSrc(af,false);if(!src){toast("這段沒有音檔資料");return}
@@ -437,6 +438,16 @@ function playSeg(af,st,et,title){
   mediaMeta(title?`${title}（${rangeTxt(af,st,P.et)}）`:rangeTxt(af,st,P.et),S.lesson.標題);
 }
 // 連續播放：接著播下一段，畫面跟著選到那一段
+// 重複播放：每遍之間停 5 秒（播放列顯示倒數）
+const LOOP_GAP=5;
+function loopAgain(){
+  const aud=$("#aud");if(P.waiting)return;
+  aud.pause();aud.currentTime=P.st;P.waiting=true;let n=LOOP_GAP;
+  const tm=$("#plTime"),tick=()=>{if(!P.waiting)return;if(tm)tm.textContent=`${n} 秒後重播`;
+    if(n--<=0){P.waiting=false;if(P.loop)aud.play().catch(()=>{});return}P.waitT=setTimeout(tick,1000)};
+  tick();
+}
+function cancelLoopWait(){if(P.waiting){P.waiting=false;clearTimeout(P.waitT)}}
 function playPrevSeg(){
   const L=S.lesson;if(P.lid!==L.id||P.seg==null||P.seg<=0)return false;
   const i=P.seg-1,s=L.段[i];P.seg=i;P.switching=true;setTimeout(()=>P.switching=false,800);
@@ -474,20 +485,20 @@ function bindPlayer(){
   });
   aud.addEventListener("timeupdate",()=>{
     const t=aud.currentTime,end=P.et??aud.duration;
-    if(P.et!=null&&t>=P.et&&!P.switching){if(P.loop){aud.currentTime=P.st;aud.play().catch(()=>{})}else if(P.cont&&playNextSeg()){}else{aud.pause();aud.currentTime=P.et}}
+    if(P.et!=null&&t>=P.et&&!P.switching){if(P.loop)loopAgain();else if(P.cont&&playNextSeg()){}else{aud.pause();aud.currentTime=P.et}}
     const span=Math.max(1,(end||t)-P.st);$("#plFill").style.width=Math.min(100,Math.max(0,(t-P.st)/span*100))+"%";
     $("#plTime").textContent=`${mmss(t)} / ${mmss(end||0)}`;
   });
   const icon=()=>{$("#ppIcon").innerHTML=aud.paused?'<path d="M3 1.5v9l7.5-4.5z"/>':'<path d="M2.5 1.5h2.6v9H2.5zM6.9 1.5h2.6v9H6.9z"/>'};
   aud.addEventListener("play",icon);aud.addEventListener("pause",icon);
-  aud.addEventListener("ended",()=>{if(P.loop){aud.currentTime=P.st;aud.play().catch(()=>{})}else if(P.cont)playNextSeg()});   // 播到卷尾的段落
+  aud.addEventListener("ended",()=>{if(P.loop)loopAgain();else if(P.cont)playNextSeg()});   // 播到卷尾的段落
   P.loop=store("kp.loop")==="1";$("#plLoop").setAttribute("aria-pressed",String(P.loop));
   P.cont=store("kp.cont")==="1"&&!P.loop;
   const syncPM=()=>{$("#plLoop").setAttribute("aria-pressed",String(P.loop));$("#plCont").setAttribute("aria-pressed",String(P.cont));store("kp.loop",P.loop?"1":"0");store("kp.cont",P.cont?"1":"0")};syncPM();
-  $("#plLoop").onclick=()=>{P.loop=!P.loop;if(P.loop)P.cont=false;syncPM();toast(P.loop?"重複播放這一段":"重複播放：關")};
+  $("#plLoop").onclick=()=>{P.loop=!P.loop;if(P.loop)P.cont=false;syncPM();if(!P.loop)cancelLoopWait();toast(P.loop?"重複播放這一段（每遍間隔 5 秒）":"重複播放：關")};
   $("#plCont").onclick=()=>{P.cont=!P.cont;if(P.cont)P.loop=false;syncPM();toast(P.cont?"連續播放：播完接下一段":"連續播放：關")};
-  $("#ppBtn").onclick=()=>{if(aud.paused){if(P.et!=null&&aud.currentTime>=P.et-0.3)aud.currentTime=P.st;aud.play().catch(()=>{})}else aud.pause()};
-  $("#plClose").onclick=()=>{aud.pause();$("#player").hidden=true};
+  $("#ppBtn").onclick=()=>{if(P.waiting){cancelLoopWait();$("#aud").play().catch(()=>{});return}if(aud.paused){if(P.et!=null&&aud.currentTime>=P.et-0.3)aud.currentTime=P.st;aud.play().catch(()=>{})}else aud.pause()};
+  $("#plClose").onclick=()=>{cancelLoopWait();aud.pause();$("#player").hidden=true};
   $("#plBar").onclick=e=>{const r=e.currentTarget.getBoundingClientRect(),end=P.et??aud.duration;if(!end)return;aud.currentTime=P.st+(e.clientX-r.left)/r.width*(end-P.st);if(aud.paused)aud.play().catch(()=>{})};
   document.addEventListener("click",e=>{const t=e.target.closest("button.play-ts");if(t){P.seg=S.seg;P.lid=S.lesson.id;playSeg(t.dataset.af,+t.dataset.st,t.dataset.et,"逐字稿");return}const b=e.target.closest("button.play");if(!b)return;e.stopPropagation();P.seg=b.dataset.seg!=null?+b.dataset.seg:S.seg;P.lid=S.lesson.id;playSeg(b.dataset.af,+b.dataset.st,b.dataset.et,b.dataset.t)});
 }
