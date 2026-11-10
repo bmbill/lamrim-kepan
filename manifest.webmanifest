@@ -1,8 +1,8 @@
 {
- "name": "廣論科判・師父講解",
- "short_name": "廣論科判",
+ "name": "步步依師・廣論師父講解科判",
+ "short_name": "步步依師",
  "lang": "zh-Hant",
- "description": "廣論師父講解科判：消文理路、延伸理路、口譯、逐字稿與音檔段落",
+ "description": "步步依師：廣論師父講解科判——消文理路、延伸理路、口譯、逐字稿與音檔段落",
  "start_url": "./",
  "scope": "./",
  "display": "standalone",
