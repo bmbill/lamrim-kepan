@@ -226,7 +226,7 @@ details.ts[open] summary::before{transform:rotate(90deg)}
   .mtabs button[aria-selected="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
   .map,.center,.detail,.outline,.gut{display:none}
   .main[data-m="outline"] .outline{display:block}
-  .main[data-m="map"] .map{display:block;border:0;padding:12px 0}
+  .main[data-m="map"] .map{display:block;border:0;padding:12px 0;overflow:visible}
   .main[data-m="tree"] .center{display:grid;height:calc(100vh - 130px);border:0}
   .main[data-m="index"] .detail{display:flex;border:0}
   .main[data-m="index"] .detail .tabs{display:none}
@@ -254,22 +254,22 @@ details.ts[open] summary::before{transform:rotate(90deg)}
   </header>
 
   <nav class="mtabs" role="tablist" aria-label="檢視">
-    <button role="tab" data-m="outline" aria-selected="true">大綱</button>
-    <button role="tab" data-m="tree" aria-selected="false">科判圖</button>
-    <button role="tab" data-m="map" aria-selected="false">地圖</button>
+    <button role="tab" data-m="map" aria-selected="true">科判</button>
+    <button role="tab" data-m="tree" aria-selected="false">音檔科判</button>
+    <button role="tab" data-m="outline" aria-selected="false">大綱</button>
     <button role="tab" data-m="index" aria-selected="false">索引</button>
   </nav>
 
-  <div class="main" id="main" data-m="outline">
-    <aside class="pane map" aria-label="廣論科判地圖">
-      <div class="maphd"><h2>地圖・廣論科判</h2>
+  <div class="main" id="main" data-m="map">
+    <aside class="pane map" aria-label="廣論科判">
+      <div class="maphd"><h2>廣論科判</h2>
         <div class="seg" role="group" aria-label="地圖範圍"><button id="mapMine" aria-pressed="true">已整理</button><button id="mapAll" aria-pressed="false">全部</button></div></div>
       <div class="kp" id="kp"></div>
       <p class="note" id="mapNote"></p>
     </aside>
 
-    <div class="gut" id="gutL" role="separator" aria-orientation="vertical" aria-label="調整地圖寬度（雙擊恢復）" tabindex="0"></div>
-    <section class="center" aria-label="師父講解科判圖">
+    <div class="gut" id="gutL" role="separator" aria-orientation="vertical" aria-label="調整科判欄寬度（雙擊恢復）" tabindex="0"></div>
+    <section class="center" aria-label="音檔科判">
       <div class="bar">
         <span class="lbl">圖層</span>
         <div class="seg" role="group" aria-label="消文圖層">
@@ -619,7 +619,7 @@ function renderMap(){
   const kp=$("#kp");kp.classList.toggle("mine",mine);
   kp.innerHTML=`<ul>${li(S.kepan.樹,0)}</ul>`;
   $("#mapMine").setAttribute("aria-pressed",String(mine));$("#mapAll").setAttribute("aria-pressed",String(!mine));
-  $("#mapNote").textContent=mine?`目前整理了 ${S.index.length} 課。按「全部」看整部廣論科判，可以從那裡搜尋或定位。`:"朱點＝已整理師父講解的節點；其他節點之後一課一課補上。";
+  $("#mapNote").textContent=mine?`目前整理了 ${S.index.length} 課。按「全部」看整部廣論科判。`:"朱點＝已整理師父講解的節點；其他節點之後一課一課補上。";
   const cur=$("#kp .row.cur");if(cur&&!mine)setTimeout(()=>{const m=$(".map");m.scrollTop=cur.offsetTop-m.clientHeight/2;m.scrollLeft=0},50);
 }
 
@@ -690,7 +690,7 @@ function goResult(r){
     openMapTo(r.kp);
     const hit=S.index.find(x=>x.科判焦點===r.kp||x.科判焦點===r.kp.split(" ").pop());
     if(hit){loadLesson(hit.id,0)}
-    else toast("這一節還沒整理師父講解；地圖上已標出位置。");
+    else toast("這一節還沒整理師父講解；科判上已標出位置。");
     if(isMobile())setM("map");return}
   if(isMobile()&&$("#main").dataset.m==="map")setM("outline");
   if(r.lid&&r.lid!==S.lesson.id){loadLesson(r.lid,r.go,r.y??null);return}
@@ -844,9 +844,9 @@ function bind(){
   $("#mapMine").onclick=()=>{S.mapAll=false;store("kp.mapAll","0");renderMap()};
   $("#mapAll").onclick=()=>{S.mapAll=true;store("kp.mapAll","1");renderMap()};
   $("#kp").addEventListener("click",e=>{
-    const lb=e.target.closest("[data-lesson]");if(lb){loadLesson(lb.dataset.lesson,0);if(isMobile())setM("outline");return}
+    const lb=e.target.closest("[data-lesson]");if(lb){loadLesson(lb.dataset.lesson,0);if(isMobile())setM("tree");return}
     const tw=e.target.closest(".tw");if(tw&&tw.tagName==="BUTTON"){const ul=tw.closest(".row").nextElementSibling;if(ul){ul.hidden=!ul.hidden;tw.textContent=ul.hidden?"▸":"▾";tw.setAttribute("aria-expanded",String(!ul.hidden))}return}
-    const r=e.target.closest(".row.has");if(r){const k=r.dataset.has,x=S.index.find(x=>x.科判焦點===k||x.科判焦點===k.split(" ").pop());if(x&&x.id!==S.lesson.id)loadLesson(x.id,0);if(isMobile())setM("outline")}
+    const r=e.target.closest(".row.has");if(r){const k=r.dataset.has,x=S.index.find(x=>x.科判焦點===k||x.科判焦點===k.split(" ").pop());if(x&&x.id!==S.lesson.id)loadLesson(x.id,0);if(isMobile())setM("tree")}
   });
   $("#dlBtn").onclick=e=>{e.stopPropagation();$("#pop").hidden?openPop():($("#pop").hidden=true)};
   $("#dlCancel").onclick=()=>$("#pop").hidden=true;
@@ -913,7 +913,7 @@ async function start(){
   const firstScroll=()=>{const w=$("#treewrap");w.scrollLeft=w.scrollWidth;scrollToSeg(S.seg,false);updateMini()};
   requestAnimationFrame(firstScroll);setTimeout(firstScroll,250);setTimeout(firstScroll,800);
   try{document.fonts.ready.then(()=>setTimeout(firstScroll,50))}catch(e){}
-  if(m&&isMobile())setTimeout(()=>$("#oc"+S.seg)?.scrollIntoView({block:"start"}),120);
+  if(m&&isMobile()){setM("outline");setTimeout(()=>$("#oc"+S.seg)?.scrollIntoView({block:"start"}),120)}
   try{downloads=window.claude?.use?await window.claude.use("downloads"):null}catch(e){downloads=null}
   if("serviceWorker" in navigator&&/^https?:$/.test(location.protocol)&&!window.claude)navigator.serviceWorker.register("sw.js").catch(()=>{});
 }
