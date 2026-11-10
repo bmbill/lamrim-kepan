@@ -628,7 +628,8 @@ function selectSeg(i,{yan=null,scroll=true,from}={}){
   document.querySelectorAll("#outline .oc").forEach((el,k)=>el.classList.toggle("sel",k===i));
   if(scroll)scrollToSeg(i);
   if(isMobile()&&$("#main").dataset.m==="outline"&&scroll){const el=$("#oc"+i);if(el)el.scrollIntoView({behavior:"smooth",block:"start"})}
-  try{history.replaceState(null,"","#seg-"+(i+1))}catch(e){}
+  try{history.replaceState(null,"","#"+S.lesson.id+"-s"+(i+1))}catch(e){}
+  store("kp.last",S.lesson.id);
 }
 const isMobile=()=>matchMedia("(max-width:980px)").matches;
 
@@ -638,38 +639,42 @@ function hl(text,q){const i=text.indexOf(q);if(i<0)return esc(text.slice(0,60));
   return(a?"…":"")+esc(text.slice(a,i))+"<mark>"+esc(q)+"</mark>"+esc(text.slice(i+q.length,i+q.length+40))+"…"}
 function doSearch(q){
   q=q.trim();const box=$("#results");if(!q){box.hidden=true;return}
-  const L=S.lesson,groups=[];
-  // 音檔：「69A」列出這一卷的所有段；「69A 12」「69a1230」「69A 12:30」跳到那個時間；「12:30」兩卷都找
+  const groups=[],LS=S.index.map(x=>S.lessons[x.id]).filter(Boolean);
+  const multi=LS.length>1,tag=L=>multi?L.標題+"・":"";
+  // 音檔：「69A」列出這一卷的所有段；「69A 12」「69a1230」「69A 12:30」跳到那個時間；「12:30」各卷都找
   const tm=q.match(TIME_RE),tm2=!tm&&q.match(/^\s*(\d{1,2})\s*[:：]\s*(\d{2})\s*$/);
-  const segAt=(af,sec)=>{let hit=-1;L.段.forEach((s,i)=>{if(s.af===af&&s.st<=sec)hit=i});return hit};
-  if(tm){const af=(String(+tm[1]).padStart(3,"0")+tm[2]).toLowerCase().replace(/^0+/,"").padStart(3,"0");
-    const afk=L.段.find(s=>s.af.replace(/^0+/,"")===af.replace(/^0+/,""))?.af||af;
+  const segAt=(L,af,sec)=>{let hit=-1;L.段.forEach((s,i)=>{if(s.af===af&&s.st<=sec&&(s.et==null||sec<s.et||i===L.段.length-1||L.段[i+1].af!==af))hit=i});return hit};
+  const allAf=[...new Set(LS.flatMap(L=>L.段.map(s=>s.af)))];
+  if(tm){const want=(+tm[1])+tm[2].toLowerCase();const afk=allAf.find(a=>a.replace(/^0+/,"")===want)||want;
     if(tm[3]==null){
-      const list=L.段.map((s,i)=>({s,i})).filter(x=>x.s.af===afk);
-      groups.push(["音檔 "+afk.toUpperCase(),list.map(x=>({go:x.i,h:`${segRange(x.s)}　第 ${x.i+1} 段`,m:plain(x.s.文).slice(0,36)+"…"})),
-        list.length?null:`本課沒有 ${afk.toUpperCase()}（本課是 ${[...new Set(L.段.map(s=>s.af.toUpperCase()))].join("、")}）`]);
+      const list=LS.flatMap(L=>L.段.map((s,i)=>({L,s,i})).filter(x=>x.s.af===afk));
+      groups.push(["音檔 "+afk.toUpperCase(),list.map(x=>({lid:x.L.id,go:x.i,h:`${segRange(x.s)}　${tag(x.L)}第 ${x.i+1} 段`,m:plain(x.s.文).slice(0,36)+"…"})),
+        list.length?null:`還沒整理到 ${afk.toUpperCase()}（目前有 ${allAf.map(a=>a.toUpperCase()).join("、")}）`]);
     }else{
-      const sec=(+tm[3])*60+(tm[4]!=null?+tm[4]:0),hit=segAt(afk,sec);
-      groups.push(["音檔",hit>=0?[{go:hit,h:`${afk.toUpperCase()} ${mmss(sec)} → 第 ${hit+1} 段（${segRange(L.段[hit])}）`,m:plain(L.段[hit].文).slice(0,40)+"…"}]:[],
-        hit<0?`${afk.toUpperCase()} ${mmss(sec)} 不在本課範圍`:null]);
+      const sec=(+tm[3])*60+(tm[4]!=null?+tm[4]:0),res=[];
+      LS.forEach(L=>{const h=segAt(L,afk,sec);if(h>=0&&L.段[h].st<=sec)res.push({lid:L.id,go:h,h:`${afk.toUpperCase()} ${mmss(sec)} → ${tag(L)}第 ${h+1} 段（${segRange(L.段[h])}）`,m:plain(L.段[h].文).slice(0,40)+"…"})});
+      groups.push(["音檔",res.slice(0,3),res.length?null:`${afk.toUpperCase()} ${mmss(sec)} 還沒整理`]);
     }
   }else if(tm2){const sec=(+tm2[1])*60+(+tm2[2]);const res=[];
-    [...new Set(L.段.map(s=>s.af))].forEach(af=>{const h=segAt(af,sec);if(h>=0)res.push({go:h,h:`${af.toUpperCase()} ${mmss(sec)} → 第 ${h+1} 段`,m:plain(L.段[h].文).slice(0,40)+"…"})});
+    LS.forEach(L=>[...new Set(L.段.map(s=>s.af))].forEach(af=>{const h=segAt(L,af,sec);if(h>=0)res.push({lid:L.id,go:h,h:`${af.toUpperCase()} ${mmss(sec)} → ${tag(L)}第 ${h+1} 段`,m:plain(L.段[h].文).slice(0,40)+"…"})}));
     if(res.length)groups.push(["音檔",res]);
   }
   const kp=[];(function go(n,p){const me=p.concat(n);if(n.t&&(n.t.includes(q)||(n.c&&n.c===q)))kp.push(me);(n.k||[]).forEach(k=>go(k,me))})(S.kepan.樹,[]);
   if(kp.length)groups.push(["科判",kp.slice(0,8).map(p=>{const n=p.at(-1),key=`${n.c} ${n.t}`,has=S.index.some(x=>x.科判焦點===key||x.科判焦點===n.t);
     return {kp:key,h:`${esc(n.c)} ${hl(n.t,q)}`,m:(has?"已整理・":"尚未整理・")+p.slice(1,-1).slice(-2).map(x=>x.t).join(" › "),raw:true}})]);
+  const ls=LS.filter(L=>L.標題.includes(q));
+  if(ls.length)groups.push(["課",ls.map(L=>({lid:L.id,go:0,h:`${esc(L.標題)}　第${L.堂數}堂`,m:L.課本範圍,raw:true}))]);
   const yw=[],ys=[],xw=[],ts=[];
-  L.段.forEach((s,i)=>{
-    if(plain(s.文).includes(q))yw.push({go:i,h:hl(plain(s.文),q),m:`第 ${i+1} 段${s.頁?"・p"+s.頁:""}`,raw:true});
-    s.延伸.forEach((y,yi)=>{if(y.題.includes(q))ys.push({go:i,y:yi,h:"延伸・"+hl(y.題,q),m:`第 ${i+1} 段`,raw:true});
-      y.說.forEach(x=>{if(x.文.includes(q))ys.push({go:i,y:yi,h:`<span class="badge" style="background:var(--t-${TAGKEY[x.類]||"hui"})">${esc(x.類)}</span> `+hl(x.文,q),m:`延伸・${y.題}・第 ${i+1} 段`,raw:true})})});
-    if(s.口譯&&s.口譯.includes(q))xw.push({go:i,h:hl(s.口譯,q),m:`口譯・第 ${i+1} 段`,raw:true});
-    s.消文.forEach(x=>{if(x.文.includes(q))xw.push({go:i,h:hl(x.文,q),m:`消文・第 ${i+1} 段`,raw:true})});
-    s.逐字稿.forEach(t=>t.b.forEach(([k,x])=>{if(k==="s"&&x.includes(q))ts.push({go:i,h:hl(x,q),m:`${t.t}・第 ${i+1} 段`,raw:true})}));
-  });
-  if(yw.length)groups.push(["原文",yw]);if(ys.length)groups.push(["延伸理路",ys]);if(xw.length)groups.push(["口譯・消文理路",xw]);if(ts.length)groups.push(["逐字稿（師父）",ts.slice(0,12)]);
+  LS.forEach(L=>L.段.forEach((s,i)=>{const at=`${tag(L)}第 ${i+1} 段`,lid=L.id;
+    if(plain(s.文).includes(q))yw.push({lid,go:i,h:hl(plain(s.文),q),m:at+(s.頁?"・p"+s.頁:""),raw:true});
+    s.延伸.forEach((y,yi)=>{if(y.題.includes(q))ys.push({lid,go:i,y:yi,h:"延伸・"+hl(y.題,q),m:at,raw:true});
+      groupsOf(y).forEach(g=>{if(g.題&&g.題.includes(q))ys.push({lid,go:i,y:yi,h:hl(g.題,q),m:`延伸・${y.題}・${at}`,raw:true})});
+      y.說.forEach(x=>{if(x.文.includes(q))ys.push({lid,go:i,y:yi,h:`<span class="badge" style="background:var(--t-${TAGKEY[x.類]||"hui"})">${esc(x.類)}</span> `+hl(x.文,q),m:`延伸・${y.題}・${at}`,raw:true})})});
+    if(s.口譯&&s.口譯.includes(q))xw.push({lid,go:i,h:hl(s.口譯,q),m:`口譯・${at}`,raw:true});
+    s.消文.forEach(x=>{if(x.文.includes(q))xw.push({lid,go:i,h:hl(x.文,q),m:`消文・${at}`,raw:true})});
+    s.逐字稿.forEach(t=>t.b.forEach(([k,x])=>{if(k==="s"&&x.includes(q))ts.push({lid,go:i,h:hl(x,q),m:`${t.t}・${at}`,raw:true})}));
+  }));
+  if(yw.length)groups.push(["原文",yw]);if(ys.length)groups.push(["延伸理路",ys]);if(xw.length)groups.push(["口譯・消文理路",xw]);if(ts.length)groups.push(["逐字稿（師父）",ts.slice(0,15)]);
   S.results=[];let html="";
   for(const [g,arr,note] of groups){html+=`<div class="grp">${g}</div>`;if(note)html+=`<div class="empty">${esc(note)}</div>`;
     arr.forEach(r=>{S.results.push(r);html+=`<button data-r="${S.results.length-1}"><div>${r.raw?r.h:esc(r.h)}</div><div class="meta">${esc(r.m)}</div></button>`})}
@@ -680,10 +685,12 @@ function goResult(r){
   $("#results").hidden=true;
   if(r.kp){const row=[...document.querySelectorAll("#kp .row")].find(x=>x.querySelector(".t")&&(`${x.querySelector(".c")?.textContent||""} ${x.querySelector(".t").textContent}`.trim()===r.kp.trim()));
     openMapTo(r.kp);
-    if(S.index.some(x=>x.科判焦點===r.kp||x.科判焦點===r.kp.split(" ").pop())){selectSeg(0)}
+    const hit=S.index.find(x=>x.科判焦點===r.kp||x.科判焦點===r.kp.split(" ").pop());
+    if(hit){loadLesson(hit.id,0)}
     else toast("這一節還沒整理師父講解；地圖上已標出位置。");
     if(isMobile())setM("map");return}
   if(isMobile()&&$("#main").dataset.m==="map")setM("outline");
+  if(r.lid&&r.lid!==S.lesson.id){loadLesson(r.lid,r.go,r.y??null);return}
   selectSeg(r.go,{yan:r.y??null});
 }
 function openMapTo(key){
@@ -834,9 +841,9 @@ function bind(){
   $("#mapMine").onclick=()=>{S.mapAll=false;store("kp.mapAll","0");renderMap()};
   $("#mapAll").onclick=()=>{S.mapAll=true;store("kp.mapAll","1");renderMap()};
   $("#kp").addEventListener("click",e=>{
-    const lb=e.target.closest("[data-lesson]");if(lb){selectSeg(0);if(isMobile())setM("outline");return}
+    const lb=e.target.closest("[data-lesson]");if(lb){loadLesson(lb.dataset.lesson,0);if(isMobile())setM("outline");return}
     const tw=e.target.closest(".tw");if(tw&&tw.tagName==="BUTTON"){const ul=tw.closest(".row").nextElementSibling;if(ul){ul.hidden=!ul.hidden;tw.textContent=ul.hidden?"▸":"▾";tw.setAttribute("aria-expanded",String(!ul.hidden))}return}
-    const r=e.target.closest(".row.has");if(r){selectSeg(0);if(isMobile())setM("outline")}
+    const r=e.target.closest(".row.has");if(r){const k=r.dataset.has,x=S.index.find(x=>x.科判焦點===k||x.科判焦點===k.split(" ").pop());if(x&&x.id!==S.lesson.id)loadLesson(x.id,0);if(isMobile())setM("outline")}
   });
   $("#dlBtn").onclick=e=>{e.stopPropagation();$("#pop").hidden?openPop():($("#pop").hidden=true)};
   $("#dlCancel").onclick=()=>$("#pop").hidden=true;
@@ -867,25 +874,38 @@ function bindSplit(){
 function zoomKeep(){const wrap=$("#treewrap"),fr=(wrap.scrollLeft+wrap.clientWidth/2)/wrap.scrollWidth;applyScale();wrap.scrollLeft=fr*wrap.scrollWidth-wrap.clientWidth/2;updateMini()}
 function syncLayer(){$("#lyBoth").setAttribute("aria-pressed",String(S.xw));$("#lyYan").setAttribute("aria-pressed",String(!S.xw))}
 function syncTabs(){$("#tabD").setAttribute("aria-selected",String(S.tab==="d"));$("#tabI").setAttribute("aria-selected",String(S.tab==="i"))}
-function fromHash(){const m=location.hash.match(/^#seg-(\d+)$/);if(m&&S.lesson){const i=+m[1]-1;if(i>=0&&i<S.lesson.段.length&&i!==S.seg)selectSeg(i)}}
+function parseHash(){const m=location.hash.match(/^#([a-z0-9-]+?)-s(\d+)$/);return m&&S.lessons[m[1]]?{id:m[1],seg:+m[2]-1}:null}
+function fromHash(){const h=parseHash();if(!h)return;if(h.id!==S.lesson.id)loadLesson(h.id,h.seg);else if(h.seg!==S.seg)selectSeg(h.seg)}
+function loadLesson(id,seg=0,yan=null){
+  const L=S.lessons[id];if(!L)return;
+  S.lesson=L;S.seg=Math.min(L.段.length-1,Math.max(0,seg));S.yan=yan;S.range=null;
+  $("#lessonInfo").textContent=`${L.標題}・第${L.堂數}堂・${L.課本範圍.replace(" ~ ","～")}・${L.日期}`;
+  document.title=`${L.標題}・師父講解科判`;
+  renderMap();renderTree();renderDetail();renderOutline();
+  requestAnimationFrame(()=>{const w=$("#treewrap");w.scrollLeft=w.scrollWidth;scrollToSeg(S.seg,false);updateMini()});
+  try{history.replaceState(null,"","#"+L.id+"-s"+(S.seg+1))}catch(e){}
+  store("kp.last",L.id);
+}
 
 // ───────── 啟動 ─────────
 async function start(){
   bind();bindPlayer();bindSplit();
   try{
     const emb=document.getElementById("kpdata");
-    if(emb){const D=JSON.parse(emb.textContent);S.kepan=D.kepan;S.index=D.index;S.lessons=D.lessons;S.lesson=D.lessons[D.index[0].id]}
+    if(emb){const D=JSON.parse(emb.textContent);S.kepan=D.kepan;S.index=D.index;S.lessons=D.lessons}
     else{
       const [kp,idx]=await Promise.all([fetch("data/kepan.json").then(r=>r.json()),fetch("data/index.json").then(r=>r.json())]);
       S.kepan=kp;S.index=idx;
-      S.lesson=await fetch(`data/lessons/${idx[0].id}.json`).then(r=>r.json());
+      S.lessons={};for(const x of idx)S.lessons[x.id]=await fetch(`data/lessons/${x.id}.json`).then(r=>r.json());
     }
   }catch(e){$("#side").innerHTML=`<p>資料載入失敗：${esc(e.message)}。重新整理一次試試。</p>`;return}
-  const L=S.lesson;
+  const hh=parseHash(),last=store("kp.last");
+  S.lesson=S.lessons[hh?hh.id:(last&&S.lessons[last]?last:S.index.at(-1).id)];
+  const L=S.lesson;document.title=`${L.標題}・師父講解科判`;
   $("#lessonInfo").textContent=`${L.標題}・第${L.堂數}堂・${L.課本範圍.replace(" ~ ","～")}・${L.日期}`;
   S.mapAll=store("kp.mapAll")==="1";
   const sx=store("kp.xw");if(sx!=null)S.xw=sx==="1";syncLayer();
-  const m=location.hash.match(/^#seg-(\d+)$/);if(m)S.seg=Math.min(L.段.length-1,Math.max(0,+m[1]-1));
+  const m=hh;if(hh)S.seg=Math.min(L.段.length-1,Math.max(0,hh.seg));else S.seg=0;
   renderMap();renderTree();renderDetail();renderOutline();
   const firstScroll=()=>{const w=$("#treewrap");w.scrollLeft=w.scrollWidth;scrollToSeg(S.seg,false);updateMini()};
   requestAnimationFrame(firstScroll);setTimeout(firstScroll,250);setTimeout(firstScroll,800);
