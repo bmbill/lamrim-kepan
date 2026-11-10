@@ -384,6 +384,7 @@ details.ts[open] summary::before{transform:rotate(90deg)}
   <div class="lb" id="plLabel"></div>
   <div style="display:flex;gap:6px;align-items:center"><span class="tm" id="plTime"></span>
     <button class="loop" id="plLoop" aria-pressed="false" aria-label="重複播放這一段" title="重複播放這一段"><svg viewBox="0 0 24 24"><path d="M17 2l4 4-4 4"/><path d="M3 11v-1a4 4 0 0 1 4-4h14"/><path d="M7 22l-4-4 4-4"/><path d="M21 13v1a4 4 0 0 1-4 4H3"/></svg></button>
+    <button class="loop" id="plCont" aria-pressed="false" aria-label="播完接下一段" title="播完接著播下一段"><svg viewBox="0 0 24 24"><path d="M5 4l7 8-7 8"/><path d="M13 4l7 8-7 8"/></svg></button>
     <button class="x" id="plClose" aria-label="關閉播放列">✕</button></div>
   <div class="bar" id="plBar"><i id="plFill"></i></div>
 </div>
@@ -417,8 +418,8 @@ function store(k,v){try{if(v===undefined)return localStorage.getItem(k);localSto
 function playUrl(af,st,et){
   const L=S.lesson; return `https://lamrim.xyz/player2/?&tch=${L.tch}&af1=${af}&st1=${st}`+(et!=null?`&et1=${et}`:"");
 }
-function playLink(af,st,et,label,ghost,title){
-  return `<button class="play${ghost?" ghost":""}" data-af="${af}" data-st="${st}" data-et="${et??""}" data-t="${esc(title||label)}">`+
+function playLink(af,st,et,label,ghost,title,seg){
+  return `<button class="play${ghost?" ghost":""}" data-af="${af}" data-st="${st}" data-et="${et??""}" data-t="${esc(title||label)}"${seg!=null?` data-seg="${seg}"`:""}>`+
     `<svg viewBox="0 0 12 12"><path d="M3 1.5v9l7.5-4.5z"/></svg>${esc(label)}</button>`;
 }
 // ───────── 播放（本機音檔優先，沒有才連線上 mp3；不開別的網頁） ─────────
@@ -433,6 +434,37 @@ function playSeg(af,st,et,title){
   else go();
   $("#plLabel").innerHTML=`${esc(rangeTxt(af,st,P.et))}<b>${esc(title||"")}</b>`;
   $("#player").hidden=false;
+  mediaMeta(title?`${title}（${rangeTxt(af,st,P.et)}）`:rangeTxt(af,st,P.et),S.lesson.標題);
+}
+// 連續播放：接著播下一段，畫面跟著選到那一段
+function playPrevSeg(){
+  const L=S.lesson;if(P.lid!==L.id||P.seg==null||P.seg<=0)return false;
+  const i=P.seg-1,s=L.段[i];P.seg=i;P.switching=true;setTimeout(()=>P.switching=false,800);
+  selectSeg(i);playSeg(s.af,s.st,s.et,segName(L,i));return true;
+}
+function mediaMeta(title,album){
+  if(!("mediaSession" in navigator))return;
+  const base={title:title||"師父音檔",artist:"師父講解科判",album:album||""};
+  try{navigator.mediaSession.metadata=new MediaMetadata({...base,artwork:[{src:new URL("icons/icon-192.png",location.href).href,sizes:"192x192",type:"image/png"},{src:new URL("icons/icon-512.png",location.href).href,sizes:"512x512",type:"image/png"}]})}
+  catch(e){try{navigator.mediaSession.metadata=new MediaMetadata(base)}catch(_){}}   // 單機開檔時圖示網址不合法，就不帶圖
+}
+// 鎖定畫面的按鈕要控制「正在播的那一個」：師父音檔或口譯朗讀
+function bindMediaSession(){
+  if(!("mediaSession" in navigator))return;
+  const ms=navigator.mediaSession,act=()=>{const k=$("#kyaud");return k&&!k.paused||(k&&K.playing)?"ky":"main"};
+  const h=(name,fn)=>{try{ms.setActionHandler(name,fn)}catch(e){}};
+  h("play",()=>{(act()==="ky"?$("#kyaud"):$("#aud")).play().catch(()=>{})});
+  h("pause",()=>{$("#aud").pause();const k=$("#kyaud");if(k)k.pause()});
+  h("nexttrack",()=>{if(act()==="ky")kyNext();else playNextSeg()});
+  h("previoustrack",()=>{if(act()==="ky"){if(K.i>0)kyStart(K.i-1)}else playPrevSeg()});
+  h("seekto",d=>{const a=act()==="ky"?$("#kyaud"):$("#aud");if(d&&d.seekTime!=null)a.currentTime=d.seekTime});
+}
+function playNextSeg(){
+  const L=S.lesson;if(P.lid!==L.id||P.seg==null)return false;
+  const i=P.seg+1;if(i>=L.段.length){toast("這堂課的音檔播完了");return false}
+  const s=L.段[i];P.seg=i;P.switching=true;setTimeout(()=>P.switching=false,800);
+  selectSeg(i);if(isMobile()&&$("#main").dataset.m==="outline")$("#oc"+i)?.scrollIntoView({behavior:"smooth",block:"start"});
+  playSeg(s.af,s.st,s.et,segName(L,i));return true;
 }
 function bindPlayer(){
   const aud=$("#aud");
@@ -442,19 +474,22 @@ function bindPlayer(){
   });
   aud.addEventListener("timeupdate",()=>{
     const t=aud.currentTime,end=P.et??aud.duration;
-    if(P.et!=null&&t>=P.et){if(P.loop){aud.currentTime=P.st;aud.play().catch(()=>{})}else{aud.pause();aud.currentTime=P.et}}
+    if(P.et!=null&&t>=P.et&&!P.switching){if(P.loop){aud.currentTime=P.st;aud.play().catch(()=>{})}else if(P.cont&&playNextSeg()){}else{aud.pause();aud.currentTime=P.et}}
     const span=Math.max(1,(end||t)-P.st);$("#plFill").style.width=Math.min(100,Math.max(0,(t-P.st)/span*100))+"%";
     $("#plTime").textContent=`${mmss(t)} / ${mmss(end||0)}`;
   });
   const icon=()=>{$("#ppIcon").innerHTML=aud.paused?'<path d="M3 1.5v9l7.5-4.5z"/>':'<path d="M2.5 1.5h2.6v9H2.5zM6.9 1.5h2.6v9H6.9z"/>'};
   aud.addEventListener("play",icon);aud.addEventListener("pause",icon);
-  aud.addEventListener("ended",()=>{if(P.loop){aud.currentTime=P.st;aud.play().catch(()=>{})}});   // 播到卷尾的段落
+  aud.addEventListener("ended",()=>{if(P.loop){aud.currentTime=P.st;aud.play().catch(()=>{})}else if(P.cont)playNextSeg()});   // 播到卷尾的段落
   P.loop=store("kp.loop")==="1";$("#plLoop").setAttribute("aria-pressed",String(P.loop));
-  $("#plLoop").onclick=()=>{P.loop=!P.loop;store("kp.loop",P.loop?"1":"0");$("#plLoop").setAttribute("aria-pressed",String(P.loop));toast(P.loop?"重複播放：開":"重複播放：關")};
+  P.cont=store("kp.cont")==="1"&&!P.loop;
+  const syncPM=()=>{$("#plLoop").setAttribute("aria-pressed",String(P.loop));$("#plCont").setAttribute("aria-pressed",String(P.cont));store("kp.loop",P.loop?"1":"0");store("kp.cont",P.cont?"1":"0")};syncPM();
+  $("#plLoop").onclick=()=>{P.loop=!P.loop;if(P.loop)P.cont=false;syncPM();toast(P.loop?"重複播放這一段":"重複播放：關")};
+  $("#plCont").onclick=()=>{P.cont=!P.cont;if(P.cont)P.loop=false;syncPM();toast(P.cont?"連續播放：播完接下一段":"連續播放：關")};
   $("#ppBtn").onclick=()=>{if(aud.paused){if(P.et!=null&&aud.currentTime>=P.et-0.3)aud.currentTime=P.st;aud.play().catch(()=>{})}else aud.pause()};
   $("#plClose").onclick=()=>{aud.pause();$("#player").hidden=true};
   $("#plBar").onclick=e=>{const r=e.currentTarget.getBoundingClientRect(),end=P.et??aud.duration;if(!end)return;aud.currentTime=P.st+(e.clientX-r.left)/r.width*(end-P.st);if(aud.paused)aud.play().catch(()=>{})};
-  document.addEventListener("click",e=>{const t=e.target.closest("button.play-ts");if(t){playSeg(t.dataset.af,+t.dataset.st,t.dataset.et,"逐字稿");return}const b=e.target.closest("button.play");if(!b)return;e.stopPropagation();playSeg(b.dataset.af,+b.dataset.st,b.dataset.et,b.dataset.t)});
+  document.addEventListener("click",e=>{const t=e.target.closest("button.play-ts");if(t){P.seg=S.seg;P.lid=S.lesson.id;playSeg(t.dataset.af,+t.dataset.st,t.dataset.et,"逐字稿");return}const b=e.target.closest("button.play");if(!b)return;e.stopPropagation();P.seg=b.dataset.seg!=null?+b.dataset.seg:S.seg;P.lid=S.lesson.id;playSeg(b.dataset.af,+b.dataset.st,b.dataset.et,b.dataset.t)});
 }
 const durTxt=(st,et)=>{if(et==null||et==="")return"";const d=Math.max(0,(+et)-st);return d>=60?`${Math.floor(d/60)}分${String(d%60).padStart(2,"0")}秒`:`${d}秒`};
 const rangeTxt=(af,st,et)=>`${af.toUpperCase()} ${mmss(st)}`+(et!=null&&et!==""?`～${mmss(+et)}・${durTxt(st,et)}`:" 起・播到卷尾");
@@ -659,7 +694,7 @@ function kyStart(i){
   const L=S.lesson,a=kyAud();let j=i;while(j<L.段.length&&!L.段[j].口譯音)j++;
   if(j>=L.段.length){K.playing=false;K.i=null;kyUI();toast("全課口譯唸完了");return}
   const main=$("#aud");if(main&&!main.paused)main.pause();     // 跟師父音檔不要同時播
-  K.lid=L.id;K.i=j;a.src=L.段[j].口譯音;a.playbackRate=K.rate;a.play().catch(e=>toast("無法播放："+e.message));
+  K.lid=L.id;K.i=j;a.src=L.段[j].口譯音;mediaMeta("口譯・"+segName(L,j),L.標題+"　全課口譯");a.playbackRate=K.rate;a.play().catch(e=>toast("無法播放："+e.message));
   kyUI(true);
 }
 function kyNext(){if(K.lid===S.lesson.id&&K.i!=null)kyStart(K.i+1)}
@@ -744,7 +779,7 @@ function renderOutline(){
   const L=S.lesson;
   $("#outline").innerHTML=`<div class="crumb" style="padding:10px 0 2px">${kpPath().slice(1).slice(-3).map(n=>esc(n.t)).join("　›　")}</div>`+
   L.段.map((s,i)=>`<div class="oc${i===S.seg?" sel":""}" id="oc${i}">
-    <div class="meta-row" style="margin:0"><span class="pill">${L.isNode?s.堂+"堂・"+(s.ls+1):i+1}</span>${s.頁?`<span class="pill">p${s.頁}</span>`:""}<span class="pill">${rangeTxt(s.af,s.st,s.et)}</span>${playLink(s.af,s.st,s.et,"播放",false,`第 ${i+1} 段`)}</div>
+    <div class="meta-row" style="margin:0"><span class="pill">${L.isNode?s.堂+"堂・"+(s.ls+1):i+1}</span>${s.頁?`<span class="pill">p${s.頁}</span>`:""}<span class="pill">${rangeTxt(s.af,s.st,s.et)}</span>${playLink(s.af,s.st,s.et,"播放",false,segName(L,i),i)}</div>
     <div class="yw">${redHtml(s.文)}</div>
     ${s.口譯?`<details open><summary style="color:var(--t-li)">口譯</summary><p class="kytext" style="margin-top:6px">${esc(s.口譯)}</p></details>`:""}
     ${s.四家合註?`<details><summary style="color:var(--ink-2)">四家合註</summary><p class="sjtext" style="margin-top:6px">${s.四家合註}</p></details>`:""}
@@ -1112,7 +1147,7 @@ function loadLesson(id,seg=0,yan=null){
 
 // ───────── 啟動 ─────────
 async function start(){
-  bind();bindPlayer();bindSplit();
+  bind();bindPlayer();bindSplit();bindMediaSession();
   try{
     const emb=document.getElementById("kpdata");
     if(emb){const D=JSON.parse(emb.textContent);S.kepan=D.kepan;S.index=D.index;S.lessons=D.lessons}
