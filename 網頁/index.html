@@ -8,7 +8,7 @@
 :root{
   --paper:#F1EEE6; --panel:#E8E3D7; --raised:#F8F6F0; --ink:#26231E; --ink-2:#5D574C; --ink-3:#8E877A;
   --line:#6F685C; --rule:#D6CFBF; --zhu:#B3352B; --zhu-wash:rgba(179,53,43,.09); --gold:#92700F;
-  --t-li:#2E6A88; --t-po:#AE3A2E; --t-yin:#7A58A3; --t-yu:#2E7A52; --t-xia:#B4701A; --t-hui:#777064;
+  --t-li:#2E6A88; --t-po:#AE3A2E; --t-yin:#7A58A3; --t-yu:#2E7A52; --t-xia:#B4701A; --t-hui:#777064;--t-rev:#6F7F8C;
   --f-kai:"LXGW WenKai TC","DFKai-SB","BiauKai","Kaiti TC",serif;
   --f-ui:"Noto Sans TC","Microsoft JhengHei","PingFang TC",system-ui,sans-serif;
   --shadow:0 6px 24px rgba(40,30,10,.12);
@@ -17,12 +17,12 @@
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
   --paper:#1B1A17; --panel:#232119; --raised:#2A2820; --ink:#E9E3D4; --ink-2:#BAB2A1; --ink-3:#878070;
   --line:#958D7E; --rule:#3B382F; --zhu:#E1715F; --zhu-wash:rgba(225,113,95,.14); --gold:#D3AA4F;
-  --t-li:#6FA8C6; --t-po:#E07A6C; --t-yin:#AC90D6; --t-yu:#6DBA8E; --t-xia:#E0A456; --t-hui:#A39C8E;
+  --t-li:#6FA8C6; --t-po:#E07A6C; --t-yin:#AC90D6; --t-yu:#6DBA8E; --t-xia:#E0A456; --t-hui:#A39C8E;--t-rev:#9AAAB6;
   --shadow:0 6px 24px rgba(0,0,0,.4); --sj-ba:#e3829f; --sj-miao:#6fb3e6; --sj-yu:#5fc48d; --sj-jha:#d9a75a; color-scheme:dark}}
 :root[data-theme="dark"]{
   --paper:#1B1A17; --panel:#232119; --raised:#2A2820; --ink:#E9E3D4; --ink-2:#BAB2A1; --ink-3:#878070;
   --line:#958D7E; --rule:#3B382F; --zhu:#E1715F; --zhu-wash:rgba(225,113,95,.14); --gold:#D3AA4F;
-  --t-li:#6FA8C6; --t-po:#E07A6C; --t-yin:#AC90D6; --t-yu:#6DBA8E; --t-xia:#E0A456; --t-hui:#A39C8E;
+  --t-li:#6FA8C6; --t-po:#E07A6C; --t-yin:#AC90D6; --t-yu:#6DBA8E; --t-xia:#E0A456; --t-hui:#A39C8E;--t-rev:#9AAAB6;
   --shadow:0 6px 24px rgba(0,0,0,.4); --sj-ba:#e3829f; --sj-miao:#6fb3e6; --sj-yu:#5fc48d; --sj-jha:#d9a75a; color-scheme:dark}
 html,body{height:100%}
 body{background:var(--paper);color:var(--ink);font-family:var(--f-ui);font-size:14px;line-height:1.6;overflow:hidden}
@@ -165,6 +165,7 @@ body.resizing iframe,body.resizing svg{pointer-events:none}
 .badge{display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;border-radius:4px;padding:0 6px;line-height:19px;color:#fff;white-space:nowrap}
 .badge.xw{background:none;color:var(--gold);box-shadow:inset 0 0 0 1.4px var(--gold)}
 .badge.ys{background:var(--zhu)}
+.badge.ys.rev{background:var(--t-rev)}
 .xwlist{margin:0;padding-left:0;list-style:none;counter-reset:x;font-family:var(--f-kai);font-size:16px;line-height:1.7}
 .xwlist li{position:relative;padding-left:24px;margin:4px 0;counter-increment:x}
 .xwlist li::before{content:counter(x);position:absolute;left:0;top:3px;font-family:var(--f-ui);font-size:11px;color:var(--gold);width:17px;height:17px;border-radius:50%;box-shadow:inset 0 0 0 1px var(--gold);text-align:center;line-height:17px}
@@ -454,7 +455,7 @@ const TAGS = [ // 第四層類別：鍵、顯示、說明
   ["立","li","所立（宗）"],["破","po","所破"],["因","yin","因"],["喻","yu","喻"],
   ["例","yu","例"],["下手","xia","下手處"],["回扣","hui","回扣原文"]];
 const TAGKEY = Object.fromEntries(TAGS.map(t=>[t[0],t[1]]));
-const LIGHT = {paper:"#F1EEE6",ink:"#26231E","ink-2":"#5D574C","ink-3":"#8E877A",line:"#6F685C",zhu:"#B3352B",gold:"#92700F",
+const LIGHT = {"t-rev":"#6F7F8C",paper:"#F1EEE6",ink:"#26231E","ink-2":"#5D574C","ink-3":"#8E877A",line:"#6F685C",zhu:"#B3352B",gold:"#92700F",
   "t-li":"#2E6A88","t-po":"#AE3A2E","t-yin":"#7A58A3","t-yu":"#2E7A52","t-xia":"#B4701A","t-hui":"#777064"};
 const LV = {1:{size:46,cap:8,pitch:1.3,gap:0},2:{size:26,cap:15,pitch:1.32,gap:44},
             3:{size:30,cap:8,pitch:1.3,gap:26},4:{size:24,cap:12,pitch:1.3,gap:20},5:{size:21,cap:16,pitch:1.3,gap:10}};
@@ -596,7 +597,7 @@ function buildTree(L,{xw,from=0,to=L.段.length-1}){
     const n2=Node(2,s.文,{s:i,time:s.時});
     if(xw&&s.消文.length){const n3=Node(3,"消文",{kind:"xw",s:i});
       s.消文.forEach((x,k)=>n3.kids.push(Node(5,x.文,{tag:x.類,s:i,xi:k})));n2.kids.push(n3)}
-    s.延伸.forEach((y,yi)=>{const n3=Node(3,"«"+y.題+"»",{tag:"延伸",kind:"ys",s:i,yv:yi});
+    s.延伸.forEach((y,yi)=>{const n3=Node(3,"«"+y.題+"»",{tag:y.複習?"複習":"延伸",kind:"ys",s:i,yv:yi});
       groupsOf(y).forEach(g=>{let host=n3;
         if(g.題){host=Node(4,g.題,{kind:"grp",s:i,yv:yi});n3.kids.push(host)}
         g.說.forEach((x,k)=>host.kids.push(Node(5,x.文,{tag:x.類,s:i,yv:yi,k})))});
@@ -630,7 +631,7 @@ function lessonMarks(lay,f){
     const first=n.s===lay.root.kids[0].s;
     f(n.x1+(first?0:LV[2].gap/2),lay.tops[2]-BAR_DROP-34,lay.H-20,`第${sg.堂}堂`,first)});
 }
-function tagColor(t){return t==="延伸"?"zhu":"t-"+(TAGKEY[t]||"hui")}
+function tagColor(t){return t==="延伸"?"zhu":t==="複習"?"t-rev":"t-"+(TAGKEY[t]||"hui")}
 
 // SVG：畫面版用 CSS 變數（跟著深淺色），匯出版寫死淺色
 function svgOf(lay,{exp=false,caption=""}={}){
@@ -771,7 +772,7 @@ function detailBody(s,withTs){
   const xw=s.消文.length?`<div class="sec"><h3><span class="badge xw">消文</span>消文理路<span class="meta" style="font-weight:400;color:var(--ink-3)">師父貼著原文逐句解</span></h3>
     <ol class="xwlist">${s.消文.map(x=>`<li>${x.類?itemBadge(x.類)+" ":""}${esc(x.文)}</li>`).join("")}</ol></div>`:"";
   const ys=s.延伸.map((y,yi)=>`<div class="ycard${S.yan===yi?" hl":""}" data-y="${yi}">
-      <div class="hd"><span class="badge ys">延伸</span><span class="kw">${esc(y.題)}</span><span class="spacer" style="flex:1"></span>${y.af?playLink(y.af,y.st,s.et,rangeTxt(y.af,y.st,s.et),true,"延伸・"+y.題):""}</div>
+      <div class="hd"><span class="badge ys${y.複習?" rev":""}">${y.複習?"複習":"延伸"}</span><span class="kw">${esc(y.題)}</span><span class="spacer" style="flex:1"></span>${y.af?playLink(y.af,y.st,s.et,rangeTxt(y.af,y.st,s.et),true,"延伸・"+y.題):""}</div>
       ${yGroups(y)}</div>`).join("");
   const ysSec=s.延伸.length?`<div class="sec"><h3><span class="badge ys">延伸</span>延伸理路<span style="font-weight:400;color:var(--ink-3)">從紅字關鍵詞深入講</span></h3>${ys}</div>`:
     `<div class="sec" style="color:var(--ink-3);font-size:13px">這段師父貼著原文解，沒有另外延伸。</div>`;
@@ -953,7 +954,7 @@ function renderOutline(){
     ${s.四家合註?`<details><summary style="color:var(--ink-2)">四家合註</summary><p class="sjtext" style="margin-top:6px">${s.四家合註}</p></details>`:""}
     ${jdHtml(s)?`<details><summary style="color:#6B5B3E">覺燈日光</summary>${jdHtml(s)}</details>`:""}
     ${s.消文.length?`<details${S.xw?" open":""}><summary>消文理路（${s.消文.length}）</summary><ol class="xwlist" style="margin-top:6px">${s.消文.map(x=>`<li>${x.類?itemBadge(x.類)+" ":""}${esc(x.文)}</li>`).join("")}</ol></details>`:""}
-    ${s.延伸.map((y,yi)=>`<div class="ycard" data-y="${yi}"><div class="hd"><span class="badge ys">延伸</span><span class="kw">${esc(y.題)}</span><span style="flex:1"></span>${y.af?playLink(y.af,y.st,s.et,rangeTxt(y.af,y.st,s.et),true,"延伸・"+y.題):""}</div>
+    ${s.延伸.map((y,yi)=>`<div class="ycard" data-y="${yi}"><div class="hd"><span class="badge ys${y.複習?" rev":""}">${y.複習?"複習":"延伸"}</span><span class="kw">${esc(y.題)}</span><span style="flex:1"></span>${y.af?playLink(y.af,y.st,s.et,rangeTxt(y.af,y.st,s.et),true,"延伸・"+y.題):""}</div>
       ${yGroups(y)}</div>`).join("")}
     <details><summary style="color:var(--ink-2)">逐字稿（${s.逐字稿.length} 節）</summary>${s.逐字稿.map(t=>`<div class="tsec"><div class="tt">${esc(t.t)}</div>${t.b.map(([k,x])=>`<p class="${k==="q"?"q":""}">${esc(x)}</p>`).join("")}</div>`).join("")}</details>
   </div>`).join("");
@@ -983,7 +984,7 @@ function renderMap(){
     if(mine&&!keep.has(n))return "";
     const key=`${n.c} ${n.t}`,isHas=lessonsOf(n).length>0,kids=(n.k||[]).filter(k=>!mine||keep.has(k));
     const isOpen=n===start||path.has(n)||(!mine&&depth<1)||(mine&&S.mapOpen&&S.mapOpen.has(n));
-    const c=cnt.get(n)||0,badge=mine&&!isOpen&&kids.length&&c?`<span class="kcnt">${c} 堂</span>`:"";
+    const c=cnt.get(n)||0,badge=mine&&kids.length&&c?`<span class="kcnt" title="展開到有課的那一層"${isOpen?' style="visibility:hidden"':""}>${c} 堂</span>`:"";
     return `<li><div class="row${path.has(n)?" path":""}${isHas?" has":""}${isHas&&(lessonsOf(n).some(x=>S.lesson&&x.id===S.lesson.id)||(S.lesson&&S.lesson.isNode&&S.lesson.科判焦點===key))?" cur":""}" style="--d:${depth}" ${isHas?`data-has="${esc(key)}" tabindex="0"`:""}>
       ${kids.length?`<button class="tw" aria-expanded="${isOpen}" aria-label="展開">${isOpen?"▾":"▸"}</button>`:'<span class="tw"></span>'}
       ${n.c?`<span class="c">${esc(n.c)}</span>`:""}<span class="t">${esc(n.t)}</span>${badge}</div>${lessonBlock(n,depth)}
@@ -1254,7 +1255,14 @@ function bind(){
     const lb=e.target.closest("[data-lesson]");if(lb){loadLesson(lb.dataset.lesson,0);if(isMobile())setM("tree");return}
     // 展開／收起：點箭頭、點「n 堂」標籤，或點沒有課的節點整行都可以
     const row0=e.target.closest(".row");
-    const tw=e.target.closest(".tw")||(e.target.closest(".kcnt")&&row0?.querySelector("button.tw"))||(row0&&!row0.classList.contains("has")?row0.querySelector("button.tw"):null);
+    // 點「n 堂」：整支一路展開到有課的那一層
+    if(e.target.closest(".kcnt")&&row0){const liEl=row0.closest("li");
+      liEl.querySelectorAll("ul").forEach(u=>u.hidden=false);
+      liEl.querySelectorAll("button.tw").forEach(b=>{b.textContent="▾";b.setAttribute("aria-expanded","true")});
+      liEl.querySelectorAll(".kcnt").forEach(k=>k.style.visibility="hidden");
+      const last=[...liEl.querySelectorAll(".row.has")].pop();if(last){const m=$(".map");setTimeout(()=>{if(last.offsetTop>m.scrollTop+m.clientHeight-60)m.scrollTop=last.offsetTop-m.clientHeight/2},30)}
+      return}
+    const tw=e.target.closest(".tw")||(row0&&!row0.classList.contains("has")?row0.querySelector("button.tw"):null);
     if(tw&&tw.tagName==="BUTTON"){let ul=tw.closest(".row").nextElementSibling;if(ul&&ul.classList.contains("lessons"))ul=ul.nextElementSibling;if(ul){ul.hidden=!ul.hidden;tw.textContent=ul.hidden?"▸":"▾";tw.setAttribute("aria-expanded",String(!ul.hidden));const k=tw.closest(".row").querySelector(".kcnt");if(k)k.style.visibility=ul.hidden?"":"hidden"}return}
     const r=e.target.closest(".row.has");if(r){const k=r.dataset.has,xs=S.index.filter(x=>x.科判焦點===k||x.科判焦點===k.split(" ").pop());
       if(xs.length>1)loadLesson("n-"+xs[0].id,0);else if(xs.length&&xs[0].id!==S.lesson.id)loadLesson(xs[0].id,0);if(isMobile())setM("tree")}
