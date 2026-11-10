@@ -343,7 +343,7 @@ details.ts[open] summary::before{transform:rotate(90deg)}
     <div class="brand"><h1>師父講解科判</h1><span class="lesson" id="lessonInfo">載入中…</span></div>
     <div class="search" role="search">
       <svg viewBox="0 0 24 24" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
-      <input id="q" type="search" autocomplete="off" placeholder="搜原文、科判、延伸，堂數「110」，或音檔「69A 12」" aria-label="搜尋">
+      <input id="q" type="search" autocomplete="off" placeholder="搜原文、科判、延伸，堂數「86」、週「110週」，或音檔「69A 12」" aria-label="搜尋">
       <div class="results" id="results" hidden></div>
     </div>
   </header>
@@ -941,9 +941,9 @@ function renderMap(){
     const ls=lessonsOf(n);if(!ls.length)return "";
     const cur=ls.find(x=>S.lesson&&S.lesson.id===x.id),key=`${n.c} ${n.t}`,nodeCur=S.lesson&&S.lesson.isNode&&S.lesson.科判焦點===key;
     const whole=ls.length>1?`<button data-node="${esc(ls[0].id)}" class="lpill whole${nodeCur?" cur":""}" title="把這一節的 ${ls.length} 堂接成一張圖">整節 ${ls.length} 堂</button>`:"";
-    return `<div class="lessons" style="--d:${depth}"><div class="lpills">${whole}${ls.map(x=>`<button data-lesson="${esc(x.id)}" class="lpill${cur===x?" cur":""}" title="${esc(x.標題)}　${esc(x.課本範圍)}">第${x.堂數}堂</button>`).join("")}</div>
+    return `<div class="lessons" style="--d:${depth}"><div class="lpills">${whole}${ls.map(x=>`<button data-lesson="${esc(x.id)}" class="lpill${cur===x?" cur":""}" title="${esc(x.標題)}　第${x.週}週　${esc(x.課本範圍)}">第${x.堂數}堂</button>`).join("")}</div>
       ${nodeCur?`<div class="lcard cur"><div class="lrange">${esc(S.lesson.課本範圍.replace(" ~ ","～"))}</div><div class="lplay" style="color:var(--ink-3)">第${esc(S.lesson.堂數)}堂接成一張圖，點單堂只看那一堂</div></div>`:""}
-      ${cur?`<div class="lcard cur"><div class="lrange">${esc(cur.課本範圍.replace(" ~ ","～"))}</div>
+      ${cur?`<div class="lcard cur"><div class="lrange">${esc(cur.課本範圍.replace(" ~ ","～"))}</div><div class="lplay" style="color:var(--ink-3)">第${cur.週}週・${esc(cur.日期)}</div>
         ${cur.音檔網址?`<a class="lplay" href="${esc(cur.音檔網址)}" target="_blank" rel="noopener" title="在廣論時時聽播放整堂課">▶ 全堂音檔　${esc(cur.音檔範圍||"")}</a>`:""}</div>`:""}</div>`;
   }
   function li(n,depth){
@@ -1006,9 +1006,12 @@ function doSearch(q){
   const kp=[];(function go(n,p){const me=p.concat(n);if(n.t&&(n.t.includes(q)||(n.c&&n.c===q)))kp.push(me);(n.k||[]).forEach(k=>go(k,me))})(S.kepan.樹,[]);
   if(kp.length)groups.push(["科判",kp.slice(0,8).map(p=>{const n=p.at(-1),key=`${n.c} ${n.t}`,has=S.index.some(x=>x.科判焦點===key||x.科判焦點===n.t);
     return {kp:key,h:`${esc(n.c)} ${hl(n.t,q)}`,m:(has?"已整理・":"尚未整理・")+p.slice(1,-1).slice(-2).map(x=>x.t).join(" › "),raw:true}})]);
-  const nm=q.match(/^第?\s*(\d{1,3})\s*堂?$/);
+  const nm=q.match(/^第?\s*(\d{1,3})\s*堂?$/),wm=q.match(/^第?\s*(\d{1,3})\s*[週周]$/);
+  if(wm){const w=+wm[1],L0=LS.find(L=>L.週===w),row=(S.課表&&S.課表[S.lesson.班級||"24秋007"]||[]).find(r=>r[0]===w);
+    groups.unshift(["週",L0?[{lid:L0.id,go:0,h:`第${w}週＝第${L0.堂數}堂　${esc(L0.課本範圍.replace(" ~ ","～"))}`,m:`${L0.標題}・${L0.日期}`,raw:true}]:[],
+      L0?null:row?`第 ${w} 週（${row[1]}）：${row[2]}${row[3]?`，第 ${row[3]} 堂，這堂還沒整理`:"，不是廣論正課"}`:`課表沒有第 ${w} 週`])}
   const ls=LS.filter(L=>L.標題.includes(q)||(nm&&String(L.堂數)===String(+nm[1])));
-  if(ls.length)groups.unshift(["課",ls.map(L=>({lid:L.id,go:0,h:`第${L.堂數}堂　${esc(L.課本範圍.replace(" ~ ","～"))}`,m:`${L.標題}・${L.日期}・全堂音檔 ${L.音檔範圍||""}`,raw:true}))]);
+  if(ls.length)groups.unshift(["課",ls.map(L=>({lid:L.id,go:0,h:`第${L.堂數}堂　${esc(L.課本範圍.replace(" ~ ","～"))}`,m:`${L.標題}・第${L.週}週・${L.日期}・全堂音檔 ${L.音檔範圍||""}`,raw:true}))]);
   else if(nm)groups.unshift(["課",[],`還沒整理第 ${+nm[1]} 堂（目前有第 ${S.index.map(x=>x.堂數).join("、")} 堂）`]);
   const yw=[],ys=[],xw=[],ts=[];
   LS.forEach(L=>L.段.forEach((s,i)=>{const at=`${tag(L)}第 ${i+1} 段`,lid=L.id;
@@ -1279,7 +1282,7 @@ function getLesson(id){if(S.lessons[id]&&!S.lessons[id].isNode)return S.lessons[
   if(id&&id.startsWith("n-")){const b=S.lessons[id.slice(2)];return b?buildNode(b.科判焦點):null}return S.lessons[id]||null}
 // 段的稱呼：整節時加上堂數
 function segName(L,i){const s=L.段[i];return L.isNode?`第${s.堂}堂・第 ${s.ls+1} 段`:`第 ${i+1} 段`}
-function lessonInfoTxt(L){return L.isNode?`${L.根}・整節・第${L.堂數}堂・${L.課本範圍.replace(" ~ ","～")}`:`${L.標題}・第${L.堂數}堂・${L.課本範圍.replace(" ~ ","～")}・${L.日期}`}
+function lessonInfoTxt(L){return L.isNode?`${L.根}・整節・第${L.堂數}堂・${L.課本範圍.replace(" ~ ","～")}`:`${L.標題}・第${L.堂數}堂（第${L.週}週）・${L.課本範圍.replace(" ~ ","～")}・${L.日期}`}
 function parseHash(){const m=location.hash.match(/^#([a-z0-9-]+?)-s(\d+)$/);return m&&getLesson(m[1])?{id:m[1],seg:+m[2]-1}:null}
 function fromHash(){const h=parseHash();if(!h)return;if(h.id!==S.lesson.id)loadLesson(h.id,h.seg);else if(h.seg!==S.seg)selectSeg(h.seg)}
 function loadLesson(id,seg=0,yan=null){
@@ -1298,7 +1301,7 @@ async function start(){
   bind();bindPlayer();bindSplit();bindMediaSession();
   try{
     const emb=document.getElementById("kpdata");
-    if(emb){const D=JSON.parse(emb.textContent);S.kepan=D.kepan;S.index=D.index;S.lessons=D.lessons}
+    if(emb){const D=JSON.parse(emb.textContent);S.kepan=D.kepan;S.index=D.index;S.lessons=D.lessons;S.課表=D.課表||{}}
     else{
       const [kp,idx]=await Promise.all([fetch("data/kepan.json").then(r=>r.json()),fetch("data/index.json").then(r=>r.json())]);
       S.kepan=kp;S.index=idx;
