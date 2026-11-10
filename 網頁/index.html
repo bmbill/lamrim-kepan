@@ -212,6 +212,24 @@ details.ts[open] summary::before{transform:rotate(90deg)}
 .kyo{font-size:13.5px;line-height:1.7;color:var(--ink-3);margin-bottom:2px}
 .kpg{font-family:var(--f-ui);font-size:10.5px;color:var(--gold);border:1px solid var(--gold);border-radius:3px;padding:0 3px;margin-right:6px;vertical-align:2px;text-indent:0;display:inline-block}
 .kyles{font-family:var(--f-ui);font-size:12px;font-weight:700;color:var(--zhu);margin:14px 0 4px;letter-spacing:.1em}
+.pvhd{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.pvhd a.iconbtn{text-decoration:none;color:var(--ink)}
+.pvstage{position:relative;aspect-ratio:16/9;background:#111;border-radius:8px;overflow:hidden;user-select:none}
+.pvstage img{width:100%;height:100%;object-fit:contain;display:block}
+.pvnav{position:absolute;top:0;bottom:0;width:22%;border:0;background:transparent;color:#fff;font-size:34px;opacity:0;transition:opacity .15s;cursor:pointer}
+.pvnav.prev{left:0;text-align:left;padding-left:10px}.pvnav.next{right:0;text-align:right;padding-right:10px}
+.pvstage:hover .pvnav{opacity:.7}
+.pvcount{position:absolute;right:8px;bottom:6px;font-size:11px;color:#fff;background:rgba(0,0,0,.45);border-radius:999px;padding:1px 8px;font-variant-numeric:tabular-nums}
+.pvexit{display:none;position:absolute;right:14px;top:12px;border:0;background:rgba(0,0,0,.5);color:#fff;border-radius:50%;width:36px;height:36px;font-size:16px;z-index:2}
+.pvstage:fullscreen,.pvstage.fakefs{border-radius:0;aspect-ratio:auto}
+.pvstage.fakefs{position:fixed;inset:0;z-index:100;background:#000;padding:env(safe-area-inset-top,0px) env(safe-area-inset-right,0px) env(safe-area-inset-bottom,0px) env(safe-area-inset-left,0px)}
+.pvstage:fullscreen .pvexit,.pvstage.fakefs .pvexit{display:block}
+.pvstage:fullscreen .pvcount,.pvstage.fakefs .pvcount{font-size:13px;bottom:12px;right:14px}
+.pvthumbs{display:flex;gap:6px;overflow-x:auto;padding:8px 2px 4px}
+.pvthumbs button{flex:none;width:96px;aspect-ratio:16/9;border:2px solid transparent;border-radius:5px;padding:0;background:var(--panel);position:relative;overflow:hidden}
+.pvthumbs button img{width:100%;height:100%;object-fit:cover;display:block}
+.pvthumbs button.cur{border-color:var(--zhu)}
+.pvthumbs button i{position:absolute;left:2px;top:2px;font-style:normal;font-size:10px;background:var(--zhu);color:#fff;border-radius:3px;padding:0 4px}
 .idx-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
 .idx-item{display:block;width:100%;text-align:left;border:0;border-bottom:1px solid var(--rule);background:none;padding:9px 2px}
 .idx-item:hover{background:var(--zhu-wash)}
@@ -269,8 +287,10 @@ details.ts[open] summary::before{transform:rotate(90deg)}
   .main[data-m="outline"] .outline{display:block}
   .main[data-m="map"] .map{display:block;border:0;padding:12px 0;overflow:visible}
   .main[data-m="tree"] .center{display:grid;height:calc(100vh - 130px);border:0}
-  .main[data-m="index"] .detail,.main[data-m="ky"] .detail{display:flex;border:0}
-  .main[data-m="index"] .detail .tabs,.main[data-m="ky"] .detail .tabs{display:none}
+  .main[data-m="index"] .detail,.main[data-m="ky"] .detail,.main[data-m="ppt"] .detail{display:flex;border:0}
+  .main[data-m="index"] .detail .tabs,.main[data-m="ky"] .detail .tabs,.main[data-m="ppt"] .detail .tabs{display:none}
+  .mtabs{overflow-x:auto;scrollbar-width:none}
+  .mtabs button{flex:1 0 auto;padding:6px 10px;font-size:13.5px}
   .side{padding:12px 0 40px}
   .brand .lesson{display:none}
   .search{flex-basis:100%;max-width:none;margin-left:0;order:3}
@@ -299,6 +319,7 @@ details.ts[open] summary::before{transform:rotate(90deg)}
     <button role="tab" data-m="tree" aria-selected="false">音檔科判</button>
     <button role="tab" data-m="outline" aria-selected="false">大綱</button>
     <button role="tab" data-m="ky" aria-selected="false">口譯</button>
+    <button role="tab" data-m="ppt" aria-selected="false">投影片</button>
     <button role="tab" data-m="index" aria-selected="false">索引</button>
   </nav>
 
@@ -348,6 +369,7 @@ details.ts[open] summary::before{transform:rotate(90deg)}
       <div class="tabs" role="tablist">
         <button role="tab" id="tabD" aria-selected="true">細看</button>
         <button role="tab" id="tabK" aria-selected="false">全課口譯</button>
+        <button role="tab" id="tabP" aria-selected="false">投影片</button>
         <button role="tab" id="tabI" aria-selected="false">索引</button>
       </div>
       <div class="side" id="side"></div>
@@ -588,6 +610,7 @@ function renderDetail(){
   const L=S.lesson,s=L.段[S.seg],side=$("#side");
   if(S.tab==="i"){renderIndex(side);return}
   if(S.tab==="k"){renderKy(side);return}
+  if(S.tab==="p"){renderPpt(side);return}
   const path=kpPath().slice(1);
   const crumb=path.slice(-4).map((n,i,a)=>i===a.length-1?`<b>${esc(n.t)}</b>`:esc(n.t)).join("　›　");
   side.innerHTML=`
@@ -662,6 +685,45 @@ function renderKy(side){
         ${S.kyOrig?`<div class="kyo">${s.頁?`<span class="kpg">p${s.頁}</span>`:""}${redHtml(s.文)}</div>`:""}
         <p>${!S.kyOrig&&s.頁&&(i===0||L.段[i-1].頁!==s.頁)?`<span class="kpg">p${s.頁}</span>`:""}${esc(s.口譯||"（這段還沒寫口譯）")}</p></div>`}).join("")}</div>`;
   const cur=side.querySelector(".kyp.cur");if(cur)cur.scrollIntoView({block:"nearest"});
+}
+function slidesOf(L){
+  if(L.isNode){const out=[];lessonsInNode(L.科判焦點).forEach(x=>(x.投影片||[]).forEach(p=>out.push({...p,堂:x.堂數})));return out}
+  return L.投影片||[];
+}
+const PV={i:0,lid:null};
+function renderPpt(side){
+  const L=S.lesson,ps=slidesOf(L);
+  if(!ps.length){side.innerHTML=`<p class="sjnote">這堂還沒有投影片。</p>`;return}
+  if(PV.lid!==L.id){PV.lid=L.id;PV.i=0}
+  const pdfs=L.isNode?lessonsInNode(L.科判焦點).filter(x=>x.投影片PDF):(L.投影片PDF?[L]:[]);
+  side.innerHTML=`<div class="pvhd"><div><div class="kyt">投影片</div><div class="kym">${esc(L.標題)}・第${esc(L.堂數)}堂・${ps.length} 頁</div></div>
+      <div class="kytools">${pdfs.map(x=>`<a class="iconbtn" href="${esc(x.投影片PDF)}" target="_blank" rel="noopener">${L.isNode?`第${x.堂數}堂 `:""}PDF</a>`).join("")}
+      <button class="iconbtn" id="pvFs" title="全螢幕播放（F）">⛶ 全螢幕</button></div></div>
+    <div class="pvstage" id="pvStage"><img id="pvImg" alt="" decoding="async">
+      <button class="pvnav prev" id="pvPrev" aria-label="上一頁">‹</button><button class="pvnav next" id="pvNext" aria-label="下一頁">›</button>
+      <div class="pvcount" id="pvCount"></div><button class="pvexit" id="pvExit" aria-label="離開全螢幕">✕</button></div>
+    <div class="pvthumbs" id="pvThumbs">${ps.map((p,k)=>`<button data-pv="${k}" class="${k===PV.i?"cur":""}" aria-label="第 ${k+1} 頁">${L.isNode&&(k===0||ps[k-1].堂!==p.堂)?`<i>${p.堂}堂</i>`:""}<img loading="lazy" decoding="async" src="${esc(p.img)}" alt=""></button>`).join("")}</div>
+    <p class="sjnote" style="margin-top:8px">← → 換頁；全螢幕時點畫面左右兩側也可以換頁，Esc 離開。</p>`;
+  pvShow(PV.i);
+}
+function pvShow(i){
+  const ps=slidesOf(S.lesson);if(!ps.length)return;
+  PV.i=Math.max(0,Math.min(ps.length-1,i));
+  const img=$("#pvImg");if(!img)return;
+  img.src=ps[PV.i].img;
+  if(ps[PV.i+1]){const n=new Image();n.src=ps[PV.i+1].img}          // 預載下一頁
+  $("#pvCount").textContent=`${PV.i+1} / ${ps.length}`+(ps[PV.i].堂?`　第${ps[PV.i].堂}堂`:"");
+  document.querySelectorAll("#pvThumbs button").forEach((b,k)=>b.classList.toggle("cur",k===PV.i));
+  const t=document.querySelector("#pvThumbs button.cur");if(t)t.scrollIntoView({block:"nearest",inline:"center"});
+}
+function pvFull(on){
+  const st=$("#pvStage");if(!st)return;
+  if(on){
+    if(st.requestFullscreen&&!/iP(hone|ad|od)/.test(navigator.userAgent)){
+      try{st.requestFullscreen().catch(()=>st.classList.add("fakefs"))}catch(e){st.classList.add("fakefs")}
+      setTimeout(()=>{if(!document.fullscreenElement)st.classList.add("fakefs")},400);   // 被瀏覽器擋下就改成填滿視窗
+    }else st.classList.add("fakefs")}
+  else{if(document.fullscreenElement)document.exitFullscreen().catch(()=>{});st.classList.remove("fakefs")}
 }
 function renderIndex(side){
   const items=allItems(),f=S.filter;
@@ -895,7 +957,7 @@ function pickClick(i){
 function toast(m){const t=document.createElement("div");t.className="toast";t.textContent=m;document.body.appendChild(t);setTimeout(()=>t.remove(),2600)}
 function setM(m){$("#main").dataset.m=m;document.querySelectorAll(".mtabs button").forEach(b=>b.setAttribute("aria-selected",String(b.dataset.m===m)));
   if(m==="tree"){S.scale=null;requestAnimationFrame(()=>{applyScale();scrollToSeg(S.seg,false);updateMini()})}
-  if(m==="index"){S.tab="i";renderDetail()}else if(m==="ky"){S.tab="k";renderDetail()}else if((S.tab==="i"||S.tab==="k")&&isMobile()){S.tab="d"}
+  if(m==="index"){S.tab="i";renderDetail()}else if(m==="ky"){S.tab="k";renderDetail()}else if(m==="ppt"){S.tab="p";renderDetail()}else if((S.tab==="i"||S.tab==="k"||S.tab==="p")&&isMobile()){S.tab="d"}
 }
 
 // ───────── 事件 ─────────
@@ -938,9 +1000,15 @@ function bind(){
   $("#tabD").onclick=()=>{S.tab="d";syncTabs();renderDetail()};
   $("#tabI").onclick=()=>{S.tab="i";syncTabs();renderDetail()};
   $("#tabK").onclick=()=>{S.tab="k";syncTabs();renderDetail()};
+  $("#tabP").onclick=()=>{S.tab="p";syncTabs();renderDetail()};
   $("#side").addEventListener("change",e=>{if(e.target.id==="kyRate"){K.rate=+e.target.value;store("kp.kyRate",String(K.rate));kyAud().playbackRate=K.rate;return}
     if(e.target.id==="kyOrig"){S.kyOrig=e.target.checked;store("kp.kyOrig",S.kyOrig?"1":"0");renderDetail()}});
   $("#side").addEventListener("click",e=>{
+    if(e.target.closest("#pvPrev")){pvShow(PV.i-1);return}
+    if(e.target.closest("#pvNext")){pvShow(PV.i+1);return}
+    if(e.target.closest("#pvFs")){pvFull(true);return}
+    if(e.target.closest("#pvExit")){pvFull(false);return}
+    const th=e.target.closest("[data-pv]");if(th){pvShow(+th.dataset.pv);return}
     if(e.target.closest("#kyRead")){kyToggle();return}
     const one=e.target.closest("[data-kyread]");if(one){kyStart(+one.dataset.kyread);return}
     if(e.target.closest("#kyCopy")){const t=kyAllText(S.lesson);
@@ -979,6 +1047,17 @@ function bind(){
   document.querySelectorAll(".mtabs button").forEach(b=>b.onclick=()=>setM(b.dataset.m));
   addEventListener("resize",()=>{applyScale();updateMini()});
   addEventListener("hashchange",fromHash);
+  // 投影片：方向鍵換頁、F 全螢幕、Esc 離開（假全螢幕）
+  document.addEventListener("keydown",e=>{
+    if(S.tab!=="p"||(e.target.closest&&e.target.closest("input,select,textarea")))return;
+    if(e.key==="ArrowRight"||e.key==="PageDown"||e.key===" "){e.preventDefault();pvShow(PV.i+1)}
+    else if(e.key==="ArrowLeft"||e.key==="PageUp"){e.preventDefault();pvShow(PV.i-1)}
+    else if(e.key==="f"||e.key==="F"){pvFull(!(document.fullscreenElement||$(".pvstage.fakefs")))}
+    else if(e.key==="Escape")pvFull(false);
+  });
+  // 手機：投影片左右滑動換頁
+  let sx=null;document.addEventListener("touchstart",e=>{if(e.target.closest("#pvStage"))sx=e.touches[0].clientX},{passive:true});
+  document.addEventListener("touchend",e=>{if(sx==null)return;const dx=e.changedTouches[0].clientX-sx;sx=null;if(Math.abs(dx)>40)pvShow(PV.i+(dx<0?1:-1))},{passive:true});
 }
 // ───────── 分隔線：寬度存在本機 ─────────
 const SPLIT={map:[270,0,520],det:[380,280,720]};
@@ -1000,7 +1079,7 @@ function bindSplit(){
 }
 function zoomKeep(){const wrap=$("#treewrap"),fr=(wrap.scrollLeft+wrap.clientWidth/2)/wrap.scrollWidth;applyScale();wrap.scrollLeft=fr*wrap.scrollWidth-wrap.clientWidth/2;updateMini()}
 function syncLayer(){$("#lyBoth").setAttribute("aria-pressed",String(S.xw));$("#lyYan").setAttribute("aria-pressed",String(!S.xw))}
-function syncTabs(){$("#tabD").setAttribute("aria-selected",String(S.tab==="d"));$("#tabK").setAttribute("aria-selected",String(S.tab==="k"));$("#tabI").setAttribute("aria-selected",String(S.tab==="i"))}
+function syncTabs(){$("#tabD").setAttribute("aria-selected",String(S.tab==="d"));$("#tabK").setAttribute("aria-selected",String(S.tab==="k"));$("#tabP").setAttribute("aria-selected",String(S.tab==="p"));$("#tabI").setAttribute("aria-selected",String(S.tab==="i"))}
 function nodeKeyOf(L){return L.科判焦點}
 function lessonsInNode(key){return S.index.filter(x=>x.科判焦點===key).map(x=>S.lessons[x.id]).filter(Boolean)}
 function buildNode(key){
