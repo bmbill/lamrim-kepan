@@ -1,5 +1,5 @@
-// 師父講解科判 service worker（由 師父科判網頁.py 產生，版本 5b8af09f7c）
-const CACHE = "kepan-5b8af09f7c";
+// 師父講解科判 service worker（由 師父科判網頁.py 產生，版本 3a2e5ad31f）
+const CACHE = "kepan-3a2e5ad31f";
 const SHELL = ["./", "index.html", "manifest.webmanifest", "icons/icon-192.png", "icons/icon-512.png",
                "icons/maskable-512.png", "icons/apple-touch-icon.png", "icons/favicon-32.png"];
 self.addEventListener("install", e => {
@@ -19,7 +19,17 @@ self.addEventListener("fetch", e => {
     return;
   }
   if (u.origin !== location.origin) return;
-  // 頁面與圖示：先用快取秒開，背景再更新
+  // 頁面：有網路就拿最新版（3 秒內沒回應才用快取），沒網路用快取——改了網頁手機立刻看得到
+  const isPage = e.request.mode === "navigate" || /\/$|\.html$|\.webmanifest$/.test(u.pathname);
+  if (isPage) {
+    e.respondWith(caches.open(CACHE).then(c => {
+      const net = fetch(e.request, {cache: "no-store"}).then(res => { if (res.ok) c.put(e.request, res.clone()); return res; });
+      const slow = new Promise(r => setTimeout(() => c.match(e.request, {ignoreSearch: true}).then(h => h && r(h)), 3000));
+      return Promise.race([net, slow]).catch(() => c.match(e.request, {ignoreSearch: true}));
+    }));
+    return;
+  }
+  // 圖示、投影片圖：先用快取，背景再更新
   e.respondWith(caches.open(CACHE).then(c => c.match(e.request, {ignoreSearch: true}).then(hit => {
     const net = fetch(e.request).then(res => { if (res.ok) c.put(e.request, res.clone()); return res; }).catch(() => hit);
     return hit || net;
