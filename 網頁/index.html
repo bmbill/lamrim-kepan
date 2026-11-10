@@ -540,7 +540,7 @@ function renderDetail(){
 }
 function yGroups(y){
   const gs=groupsOf(y);
-  return gs.map((g,gi)=>`${g.題?`<div class="ygrp"><span class="gno">${"一二三四五六七八九十"[gi]||gi+1}</span>${esc(g.題)}</div>`:""}
+  return gs.map((g,gi)=>`${g.題?`<div class="ygrp">${esc(g.題)}</div>`:""}
     <ul${g.題?' class="ingrp"':""}>${g.說.map(x=>`<li class="${S.filter&&TAGKEY[x.類]!==S.filter?"dim":""}">${itemBadge(x.類)}<span>${esc(x.文)}</span></li>`).join("")}</ul>`).join("");
 }
 function kySj(s,compact){
