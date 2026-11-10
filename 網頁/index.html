@@ -101,6 +101,8 @@ body.resizing iframe,body.resizing svg{pointer-events:none}
 .kpcrumb{font-size:11.5px;line-height:1.55;color:var(--ink-3);font-family:var(--f-kai);margin:0 2px 6px;padding-bottom:6px;border-bottom:1px dashed var(--rule)}
 .kcnt{flex:none;margin-left:6px;font-family:var(--f-ui);font-size:11px;color:var(--zhu);border:1px solid var(--zhu-wash);background:var(--zhu-wash);border-radius:999px;padding:0 7px;line-height:18px;align-self:center}
 .kp .lpills{display:flex;flex-wrap:wrap;gap:4px}
+.kp .lcnt{flex:none;margin-left:6px;font-family:var(--f-ui);font-size:11px;color:var(--ink-3);border:1px solid var(--rule);border-radius:999px;padding:0 7px;line-height:18px;align-self:center}
+.kp .row.has{cursor:pointer}
 .kp .lpill{border:1px solid var(--rule);background:var(--raised);border-radius:999px;padding:1px 9px;font-size:12px;color:var(--ink-2);font-variant-numeric:tabular-nums}
 .kp .lpill:hover{border-color:var(--zhu);color:var(--zhu)}
 .kp .lpill.cur{background:var(--zhu);border-color:var(--zhu);color:#fff}
@@ -976,22 +978,25 @@ function renderMap(){
   const mine=!S.mapAll,start=mine?common.at(-1):S.kepan.樹;
   function lessonBlock(n,depth){
     const ls=lessonsOf(n),cr=crossOf(n);if(!ls.length&&!cr.length)return "";
-    const tags=cr.map(({x,起})=>`<button data-lesson="${esc(x.id)}" data-seg="${起}" class="lpill cross" title="${esc(x.標題)}後半段講到這一科（從第 ${起+1} 段起）；這堂主要放在${esc(x.科判焦點)}">第${x.堂數}堂・跨</button>`).join("");
     const cur=ls.find(x=>S.lesson&&S.lesson.id===x.id),key=`${n.c} ${n.t}`,nodeCur=S.lesson&&S.lesson.isNode&&S.lesson.科判焦點===key;
+    const open=cur||nodeCur||cr.some(c=>S.lesson&&S.lesson.id===c.x.id)||(S.lessOpen&&S.lessOpen.has(key));
+    const pills=ls.map(x=>({n:x.堂數,h:`<button data-lesson="${esc(x.id)}" class="lpill${cur===x?" cur":""}" title="${esc(x.標題)}　第${x.週}週　${esc(x.課本範圍)}">第${x.堂數}堂</button>`}))
+      .concat(cr.map(({x,起})=>({n:x.堂數,h:`<button data-lesson="${esc(x.id)}" data-seg="${起}" class="lpill cross" title="${esc(x.標題)}後半段講到這一科（從第 ${起+1} 段起）；這堂主要放在${esc(x.科判焦點)}">第${x.堂數}堂・跨</button>`})))
+      .sort((a,b)=>a.n-b.n).map(o=>o.h).join("");
     const whole=ls.length>1?`<button data-node="${esc(ls[0].id)}" class="lpill whole${nodeCur?" cur":""}" title="把這一節的 ${ls.length} 堂接成一張圖">整節 ${ls.length} 堂</button>`:"";
-    return `<div class="lessons" style="--d:${depth}"><div class="lpills">${whole}${ls.map(x=>`<button data-lesson="${esc(x.id)}" class="lpill${cur===x?" cur":""}" title="${esc(x.標題)}　第${x.週}週　${esc(x.課本範圍)}">第${x.堂數}堂</button>`).join("")}${tags}</div>
+    return `<div class="lessons" style="--d:${depth}"${open?"":" hidden"}><div class="lpills">${whole}${pills}</div>
       ${nodeCur?`<div class="lcard cur"><div class="lrange">${esc(S.lesson.課本範圍.replace(" ~ ","～"))}</div><div class="lplay" style="color:var(--ink-3)">第${esc(S.lesson.堂數)}堂接成一張圖，點單堂只看那一堂</div></div>`:""}
       ${cur?`<div class="lcard cur"><div class="lrange">${esc(cur.課本範圍.replace(" ~ ","～"))}</div><div class="lplay" style="color:var(--ink-3)">第${cur.週}週・${esc(cur.日期)}</div>
         ${cur.音檔網址?`<a class="lplay" href="${esc(cur.音檔網址)}" target="_blank" rel="noopener" title="在廣論時時聽播放整堂課">▶ 全堂音檔　${esc(cur.音檔範圍||"")}</a>`:""}</div>`:""}</div>`;
   }
   function li(n,depth){
     if(mine&&!keep.has(n))return "";
-    const key=`${n.c} ${n.t}`,isHas=lessonsOf(n).length>0,kids=(n.k||[]).filter(k=>!mine||keep.has(k));
+    const key=`${n.c} ${n.t}`,nL=lessonsOf(n).length+crossOf(n).length,isHas=nL>0,kids=(n.k||[]).filter(k=>!mine||keep.has(k));
     const isOpen=n===start||path.has(n)||(!mine&&depth<1)||(mine&&S.mapOpen&&S.mapOpen.has(n));
     const c=cnt.get(n)||0,badge=mine&&kids.length&&c?`<span class="kcnt" title="展開到有課的那一層"${isOpen?' style="visibility:hidden"':""}>${c} 堂</span>`:"";
     return `<li><div class="row${path.has(n)?" path":""}${isHas?" has":""}${isHas&&(lessonsOf(n).some(x=>S.lesson&&x.id===S.lesson.id)||(S.lesson&&S.lesson.isNode&&S.lesson.科判焦點===key))?" cur":""}" style="--d:${depth}" ${isHas?`data-has="${esc(key)}" tabindex="0"`:""}>
       ${kids.length?`<button class="tw" aria-expanded="${isOpen}" aria-label="展開">${isOpen?"▾":"▸"}</button>`:'<span class="tw"></span>'}
-      ${n.c?`<span class="c">${esc(n.c)}</span>`:""}<span class="t">${esc(n.t)}</span>${badge}</div>${lessonBlock(n,depth)}
+      ${n.c?`<span class="c">${esc(n.c)}</span>`:""}<span class="t">${esc(n.t)}</span>${badge}${isHas?`<span class="lcnt" title="點科判展開堂次">${nL} 堂</span>`:""}</div>${lessonBlock(n,depth)}
       ${kids.length?`<ul${isOpen?"":" hidden"}>${kids.map(k=>li(k,depth+1)).join("")}</ul>`:""}</li>`;
   }
   const kp=$("#kp");kp.classList.toggle("mine",mine);
@@ -1268,8 +1273,8 @@ function bind(){
       return}
     const tw=e.target.closest(".tw")||(row0&&!row0.classList.contains("has")?row0.querySelector("button.tw"):null);
     if(tw&&tw.tagName==="BUTTON"){let ul=tw.closest(".row").nextElementSibling;if(ul&&ul.classList.contains("lessons"))ul=ul.nextElementSibling;if(ul){ul.hidden=!ul.hidden;tw.textContent=ul.hidden?"▸":"▾";tw.setAttribute("aria-expanded",String(!ul.hidden));const k=tw.closest(".row").querySelector(".kcnt");if(k)k.style.visibility=ul.hidden?"":"hidden"}return}
-    const r=e.target.closest(".row.has");if(r){const k=r.dataset.has,xs=S.index.filter(x=>x.科判焦點===k||x.科判焦點===k.split(" ").pop());
-      if(xs.length>1)loadLesson("n-"+xs[0].id,0);else if(xs.length&&xs[0].id!==S.lesson.id)loadLesson(xs[0].id,0);if(isMobile())setM("tree")}
+    const r=e.target.closest(".row.has");if(r){const k=r.dataset.has,bl=r.nextElementSibling;
+      if(bl&&bl.classList.contains("lessons")){bl.hidden=!bl.hidden;S.lessOpen=S.lessOpen||new Set();bl.hidden?S.lessOpen.delete(k):S.lessOpen.add(k)}}
   });
   $("#dlBtn").onclick=e=>{e.stopPropagation();$("#pop").hidden?openPop():($("#pop").hidden=true)};
   $("#dlCancel").onclick=()=>$("#pop").hidden=true;
