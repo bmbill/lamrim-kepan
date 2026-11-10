@@ -1,4 +1,4 @@
-<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style></head><body><title>師父講解科判</title>
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#B3352B"><link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png"><link rel="apple-touch-icon" href="icons/apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="廣論科判"><meta name="apple-mobile-web-app-status-bar-style" content="default"><style>:root{color-scheme:light}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style></head><body><title>師父講解科判</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -912,6 +912,7 @@ async function start(){
   try{document.fonts.ready.then(()=>setTimeout(firstScroll,50))}catch(e){}
   if(m&&isMobile())setTimeout(()=>$("#oc"+S.seg)?.scrollIntoView({block:"start"}),120);
   try{downloads=window.claude?.use?await window.claude.use("downloads"):null}catch(e){downloads=null}
+  if("serviceWorker" in navigator&&/^https?:$/.test(location.protocol)&&!window.claude)navigator.serviceWorker.register("sw.js").catch(()=>{});
 }
 start();
 </script>
