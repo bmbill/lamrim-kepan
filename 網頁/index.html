@@ -90,11 +90,12 @@ body.resizing iframe,body.resizing svg{pointer-events:none}
 .kp.mine ul{margin:0;padding:0;border:0}
 .kp.mine .row{padding-left:calc(var(--d,0) * 9px + 4px)}
 .kp.mine .row .tw{display:none}
-.kp .lessons{margin:2px 0 8px;padding-left:calc(var(--d,0) * 9px + 22px);display:flex;flex-direction:column;gap:4px}
-.kp .lessons button{text-align:left;border:1px solid var(--rule);background:var(--raised);border-radius:8px;padding:5px 9px;font-size:12px;color:var(--ink-2);white-space:normal;line-height:1.5}
-.kp .lessons button b{display:block}
-.kp .lessons button b{font-family:var(--f-kai);font-size:14px;color:var(--ink);font-weight:700;margin-right:6px}
-.kp .lessons button.cur{border-color:var(--zhu);box-shadow:0 0 0 2px var(--zhu-wash)}
+.kp .lessons{margin:2px 0 8px;padding-left:min(calc(var(--d,0) * 9px + 22px),48px);display:flex;flex-direction:column;gap:4px}
+.kp .lcard{border:1px solid var(--rule);background:var(--raised);border-radius:8px;padding:5px 9px;display:flex;flex-direction:column;gap:2px}
+.kp .lcard.cur{border-color:var(--zhu);box-shadow:0 0 0 2px var(--zhu-wash)}
+.kp .lcard button{border:0;background:none;padding:0;text-align:left;font-family:var(--f-kai);font-size:14px;color:var(--ink);font-weight:700;white-space:normal;line-height:1.45;font-variant-numeric:tabular-nums}
+.kp .lcard .lplay{font-size:11.5px;line-height:1.5;color:var(--zhu);text-decoration:none;white-space:normal;font-variant-numeric:tabular-nums}
+.kp .lcard .lplay:hover{text-decoration:underline}
 .map .note{font-size:12px;color:var(--ink-3);margin:14px 4px 0;line-height:1.6}
 
 /* 主圖 */
@@ -607,7 +608,9 @@ function renderMap(){
     if(mine&&!keep.has(n))return "";
     const key=`${n.c} ${n.t}`,ls=lessonsOf(n),isHas=ls.length>0,kids=n.k||[];
     const isOpen=mine||path.has(n)||depth<1;
-    const lessonBtns=isHas?`<div class="lessons" style="--d:${depth}">${ls.map(x=>`<button data-lesson="${esc(x.id)}" class="${S.lesson&&S.lesson.id===x.id?"cur":""}"><b>${esc(x.標題)}</b>第${x.堂數}堂・${esc(x.課本範圍.replace(" ~ ","～"))}</button>`).join("")}</div>`:"";
+    const lessonBtns=isHas?`<div class="lessons" style="--d:${depth}">${ls.map(x=>`<div class="lcard${S.lesson&&S.lesson.id===x.id?" cur":""}">
+        <button data-lesson="${esc(x.id)}" title="${esc(x.標題)}">第${x.堂數}堂　${esc(x.課本範圍.replace(" ~ ","～"))}</button>
+        ${x.音檔網址?`<a class="lplay" href="${esc(x.音檔網址)}" target="_blank" rel="noopener" title="在廣論時時聽播放整堂課">▶ 全堂音檔　${esc(x.音檔範圍||"")}</a>`:""}</div>`).join("")}</div>`:"";
     return `<li><div class="row${path.has(n)?" path":""}${isHas?" has":""}${isHas&&S.lesson&&lessonsOf(n).some(x=>x.id===S.lesson.id)?" cur":""}" style="--d:${depth}" ${isHas?`data-has="${esc(key)}" tabindex="0"`:""}>
       ${kids.length?`<button class="tw" aria-expanded="${isOpen}" aria-label="展開">${isOpen?"▾":"▸"}</button>`:'<span class="tw"></span>'}
       ${n.c?`<span class="c">${esc(n.c)}</span>`:""}<span class="t">${esc(n.t)}</span></div>${lessonBtns}
