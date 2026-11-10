@@ -815,13 +815,15 @@ function pvLayout(){
   const W=st.clientWidth,H=st.clientHeight,r=16/9;let w=W,h=W/r;if(h>H){h=H;w=H*r}
   Object.assign(box.style,{left:((W-w)/2)+"px",top:((H-h)/2)+"px",width:w+"px",height:h+"px"});
 }
+// 字幕：密集嘛預設打開中文字幕；前行緣念、迴向預設關閉
+const YT_CC={"oVynEvkuj4M":"&cc_load_policy=1&cc_lang_pref=zh-TW"};
 const isPvFull=()=>!!(document.fullscreenElement||$(".pvstage.fakefs"));
 function pvVideo(pg,force){
   const box=$("#pvYt");if(!box)return;box.innerHTML="";box.classList.remove("on");
   if(!pg||!pg.yt)return;
   if(force||isPvFull()){
     const a=$("#aud");if(a&&!a.paused)a.pause();const k=$("#kyaud");if(k&&!k.paused)k.pause();
-    box.innerHTML=`<iframe src="https://www.youtube-nocookie.com/embed/${encodeURIComponent(pg.yt)}?autoplay=1&rel=0&playsinline=1&modestbranding=1" title="YouTube 影片" allow="autoplay; encrypted-media; fullscreen; picture-in-picture" allowfullscreen></iframe>`;
+    box.innerHTML=`<iframe src="https://www.youtube-nocookie.com/embed/${encodeURIComponent(pg.yt)}?autoplay=1&rel=0&playsinline=1&modestbranding=1&hl=zh-TW${YT_CC[pg.yt]||"&cc_load_policy=0"}" title="YouTube 影片" allow="autoplay; encrypted-media; fullscreen; picture-in-picture" allowfullscreen></iframe>`;
     box.classList.add("on");
   }else{
     box.innerHTML=`<button class="pvytbtn" id="pvYtBtn"><span>▶</span>播放影片（YouTube）</button>`;
