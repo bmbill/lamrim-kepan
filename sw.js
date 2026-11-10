@@ -1,5 +1,5 @@
-// 師父講解科判 service worker（由 師父科判網頁.py 產生，版本 4612faa43e）
-const CACHE = "kepan-4612faa43e";
+// 師父講解科判 service worker（由 師父科判網頁.py 產生，版本 04e25cff4e）
+const CACHE = "kepan-04e25cff4e";
 const SHELL = ["./", "index.html", "manifest.webmanifest", "icons/icon-192.png", "icons/icon-512.png",
                "icons/maskable-512.png", "icons/apple-touch-icon.png", "icons/favicon-32.png"];
 self.addEventListener("install", e => {
