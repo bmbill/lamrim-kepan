@@ -330,7 +330,7 @@ const TAGKEY = Object.fromEntries(TAGS.map(t=>[t[0],t[1]]));
 const LIGHT = {paper:"#F1EEE6",ink:"#26231E","ink-2":"#5D574C","ink-3":"#8E877A",line:"#6F685C",zhu:"#B3352B",gold:"#92700F",
   "t-li":"#2E6A88","t-po":"#AE3A2E","t-yin":"#7A58A3","t-yu":"#2E7A52","t-xia":"#B4701A","t-hui":"#777064"};
 const LV = {1:{size:46,cap:8,pitch:1.3,gap:0},2:{size:26,cap:15,pitch:1.32,gap:44},
-            3:{size:30,cap:8,pitch:1.3,gap:26},4:{size:24,cap:9,pitch:1.3,gap:20},5:{size:21,cap:16,pitch:1.3,gap:10}};
+            3:{size:30,cap:8,pitch:1.3,gap:26},4:{size:24,cap:12,pitch:1.3,gap:20},5:{size:21,cap:16,pitch:1.3,gap:10}};
 const ROW_GAP=64, BAR_DROP=26, MARGIN=50;
 const NO_HEAD = new Set("，。、：；」』）！？…・‧");
 const VERT = {"，":"︐","。":"︒","、":"︑","：":"︓","；":"︔","！":"︕","？":"︖","「":"﹁","」":"﹂","『":"﹃","』":"﹄",
@@ -411,7 +411,7 @@ function buildTree(L,{xw,from=0,to=L.段.length-1}){
       s.消文.forEach((x,k)=>n3.kids.push(Node(5,x.文,{tag:x.類,s:i,xi:k})));n2.kids.push(n3)}
     s.延伸.forEach((y,yi)=>{const n3=Node(3,"«"+y.題+"»",{tag:"延伸",kind:"ys",s:i,yv:yi});
       groupsOf(y).forEach(g=>{let host=n3;
-        if(g.題){host=Node(4,g.題,{kind:"grp",s:i,yv:yi});n3.kids.push(host)}
+        if(g.題){host=Node(4,"「"+g.題+"」",{kind:"grp",s:i,yv:yi});n3.kids.push(host)}
         g.說.forEach((x,k)=>host.kids.push(Node(5,x.文,{tag:x.類,s:i,yv:yi,k})))});
       n2.kids.push(n3)});
     root.kids.push(n2);
@@ -540,7 +540,7 @@ function renderDetail(){
 }
 function yGroups(y){
   const gs=groupsOf(y);
-  return gs.map((g,gi)=>`${g.題?`<div class="ygrp">${esc(g.題)}</div>`:""}
+  return gs.map((g,gi)=>`${g.題?`<div class="ygrp" title="師父原話">「${esc(g.題)}」</div>`:""}
     <ul${g.題?' class="ingrp"':""}>${g.說.map(x=>`<li class="${S.filter&&TAGKEY[x.類]!==S.filter?"dim":""}">${itemBadge(x.類)}<span>${esc(x.文)}</span></li>`).join("")}</ul>`).join("");
 }
 function kySj(s,compact){
