@@ -742,7 +742,7 @@ function yGroups(y){
 function kySj(s,compact){
   const ky=s.口譯?`<div class="sec"><h3><span class="badge ky">口譯</span>口譯<span class="sjkey">整段原文的白話，對著原文翻</span></h3><p class="kytext">${esc(s.口譯)}</p></div>`:"";
   const sj=s.四家合註?`<div class="sec"><h3><span class="badge sj">四家合註</span>四家合註<span class="sjkey">灰字＝箋註　巴＝巴梭法王　語＝語王堅穩　妙＝妙音笑　札＝札帝格西</span></h3><p class="sjtext">${s.四家合註}</p></div>`
-    :(compact?"":`<div class="sec"><p class="sjnote">四家合註：中譯本目前只出到共下士道（卷十一）與止觀（卷二十六～二十九），這段還沒有。</p></div>`);
+    :"";   // 沒有四家合註就不顯示（使用者 11-10）
   return ky+sj+jdHtml(s);
 }
 // 《覺燈日光》（嘉瓦仁波切講授）：確定對應的直接顯示；整段解說收合
