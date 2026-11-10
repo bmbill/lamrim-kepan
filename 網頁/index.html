@@ -362,7 +362,7 @@ function playSeg(af,st,et,title){
   const go=()=>{aud.currentTime=st;aud.play().catch(e=>toast("無法播放："+e.message))};
   if(P.af!==af||P.usingRemote){P.af=af;P.usingRemote=false;aud.src=src;aud.onloadedmetadata=()=>{aud.onloadedmetadata=null;go()};aud.load()}
   else go();
-  $("#plLabel").innerHTML=`${esc(af.toUpperCase())} ${mmss(st)}${P.et!=null?"～"+mmss(P.et):""}<b>${esc(title||"")}</b>`;
+  $("#plLabel").innerHTML=`${esc(rangeTxt(af,st,P.et))}<b>${esc(title||"")}</b>`;
   $("#player").hidden=false;
 }
 function bindPlayer(){
@@ -384,6 +384,8 @@ function bindPlayer(){
   $("#plBar").onclick=e=>{const r=e.currentTarget.getBoundingClientRect(),end=P.et??aud.duration;if(!end)return;aud.currentTime=P.st+(e.clientX-r.left)/r.width*(end-P.st);if(aud.paused)aud.play().catch(()=>{})};
   document.addEventListener("click",e=>{const t=e.target.closest("button.play-ts");if(t){playSeg(t.dataset.af,+t.dataset.st,t.dataset.et,"逐字稿");return}const b=e.target.closest("button.play");if(!b)return;e.stopPropagation();playSeg(b.dataset.af,+b.dataset.st,b.dataset.et,b.dataset.t)});
 }
+const durTxt=(st,et)=>{if(et==null||et==="")return"";const d=Math.max(0,(+et)-st);return d>=60?`${Math.floor(d/60)}分${String(d%60).padStart(2,"0")}秒`:`${d}秒`};
+const rangeTxt=(af,st,et)=>`${af.toUpperCase()} ${mmss(st)}`+(et!=null&&et!==""?`～${mmss(+et)}・${durTxt(st,et)}`:" 起・播到卷尾");
 const segRange = s=>`${s.af.toUpperCase()} ${mmss(s.st)}`+(s.et!=null?`～${mmss(s.et)}`:" 起");
 
 // ───────── 科判樹 ─────────
@@ -530,7 +532,7 @@ function renderDetail(){
   side.innerHTML=`
     <div class="crumb">${crumb}</div>
     <div class="meta-row"><span class="pill">第 ${S.seg+1}／${L.段.length} 段</span>${s.頁?`<span class="pill">課本 p${s.頁}</span>`:""}
-      <span class="pill">${segRange(s)}</span>${playLink(s.af,s.st,s.et,"播放這段",false,`第 ${S.seg+1} 段`)}</div>
+      <span class="pill">${rangeTxt(s.af,s.st,s.et)}</span>${playLink(s.af,s.st,s.et,"播放這段",false,`第 ${S.seg+1} 段`)}</div>
     <div class="yw">${redHtml(s.文)}</div>
     ${kySj(s)}
     ${detailBody(s,true)}`;
@@ -552,7 +554,7 @@ function detailBody(s,withTs){
   const xw=s.消文.length?`<div class="sec"><h3><span class="badge xw">消文</span>消文理路<span class="meta" style="font-weight:400;color:var(--ink-3)">師父貼著原文逐句解</span></h3>
     <ol class="xwlist">${s.消文.map(x=>`<li>${x.類?itemBadge(x.類)+" ":""}${esc(x.文)}</li>`).join("")}</ol></div>`:"";
   const ys=s.延伸.map((y,yi)=>`<div class="ycard${S.yan===yi?" hl":""}" data-y="${yi}">
-      <div class="hd"><span class="badge ys">延伸</span><span class="kw">${esc(y.題)}</span><span class="spacer" style="flex:1"></span>${y.af?playLink(y.af,y.st,s.et,`${y.af.toUpperCase()} ${mmss(y.st)}`,true,"延伸・"+y.題):""}</div>
+      <div class="hd"><span class="badge ys">延伸</span><span class="kw">${esc(y.題)}</span><span class="spacer" style="flex:1"></span>${y.af?playLink(y.af,y.st,s.et,rangeTxt(y.af,y.st,s.et),true,"延伸・"+y.題):""}</div>
       ${yGroups(y)}</div>`).join("");
   const ysSec=s.延伸.length?`<div class="sec"><h3><span class="badge ys">延伸</span>延伸理路<span style="font-weight:400;color:var(--ink-3)">從紅字關鍵詞深入講</span></h3>${ys}</div>`:
     `<div class="sec" style="color:var(--ink-3);font-size:13px">這段師父貼著原文解，沒有另外延伸。</div>`;
@@ -584,12 +586,12 @@ function renderOutline(){
   const L=S.lesson;
   $("#outline").innerHTML=`<div class="crumb" style="padding:10px 0 2px">${kpPath().slice(1).slice(-3).map(n=>esc(n.t)).join("　›　")}</div>`+
   L.段.map((s,i)=>`<div class="oc${i===S.seg?" sel":""}" id="oc${i}">
-    <div class="meta-row" style="margin:0"><span class="pill">${i+1}</span>${s.頁?`<span class="pill">p${s.頁}</span>`:""}<span class="pill">${segRange(s)}</span>${playLink(s.af,s.st,s.et,"播放")}</div>
+    <div class="meta-row" style="margin:0"><span class="pill">${i+1}</span>${s.頁?`<span class="pill">p${s.頁}</span>`:""}<span class="pill">${rangeTxt(s.af,s.st,s.et)}</span>${playLink(s.af,s.st,s.et,"播放",false,`第 ${i+1} 段`)}</div>
     <div class="yw">${redHtml(s.文)}</div>
     ${s.口譯?`<details open><summary style="color:var(--t-li)">口譯</summary><p class="kytext" style="margin-top:6px">${esc(s.口譯)}</p></details>`:""}
     ${s.四家合註?`<details><summary style="color:var(--ink-2)">四家合註</summary><p class="sjtext" style="margin-top:6px">${s.四家合註}</p></details>`:""}
     ${s.消文.length?`<details${S.xw?" open":""}><summary>消文理路（${s.消文.length}）</summary><ol class="xwlist" style="margin-top:6px">${s.消文.map(x=>`<li>${x.類?itemBadge(x.類)+" ":""}${esc(x.文)}</li>`).join("")}</ol></details>`:""}
-    ${s.延伸.map((y,yi)=>`<div class="ycard" data-y="${yi}"><div class="hd"><span class="badge ys">延伸</span><span class="kw">${esc(y.題)}</span><span style="flex:1"></span>${y.af?playLink(y.af,y.st,s.et,`${y.af.toUpperCase()} ${mmss(y.st)}`,true):""}</div>
+    ${s.延伸.map((y,yi)=>`<div class="ycard" data-y="${yi}"><div class="hd"><span class="badge ys">延伸</span><span class="kw">${esc(y.題)}</span><span style="flex:1"></span>${y.af?playLink(y.af,y.st,s.et,rangeTxt(y.af,y.st,s.et),true,"延伸・"+y.題):""}</div>
       ${yGroups(y)}</div>`).join("")}
     <details><summary style="color:var(--ink-2)">逐字稿（${s.逐字稿.length} 節）</summary>${s.逐字稿.map(t=>`<div class="tsec"><div class="tt">${esc(t.t)}</div>${t.b.map(([k,x])=>`<p class="${k==="q"?"q":""}">${esc(x)}</p>`).join("")}</div>`).join("")}</details>
   </div>`).join("");
