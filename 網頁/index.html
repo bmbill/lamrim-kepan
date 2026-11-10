@@ -72,7 +72,12 @@ body.resizing iframe,body.resizing svg{pointer-events:none}
 .kp li{margin:1px 0}
 .kp{width:max-content;min-width:100%}
 .kp .row{white-space:nowrap;display:flex;align-items:flex-start;gap:4px;padding:2px 4px;border-radius:5px;font-size:13px;line-height:1.45;color:var(--ink-3)}
-.kp .row .tw{flex:none;width:14px;border:0;background:none;padding:0;color:var(--ink-3);font-size:10px;line-height:19px}
+.kp .row .tw{flex:none;width:22px;height:22px;margin:-2px 0 -2px -4px;border:0;border-radius:5px;background:none;padding:0;color:var(--ink-2);font-size:12px;line-height:22px;cursor:pointer}
+.kp .row .tw:hover{background:var(--zhu-wash);color:var(--zhu)}
+.kp .row:not(.has):has(button.tw){cursor:pointer}
+.kp .row:not(.has):has(button.tw):hover{background:var(--zhu-wash)}
+.kcnt{cursor:pointer}
+.kcnt:hover{background:var(--zhu);color:#fff}
 .kp .row .c{flex:none;font-family:var(--f-kai);color:var(--ink-3)}
 .kp .row .t{font-family:var(--f-kai);font-size:14px}
 .kp .row.path .t{color:var(--ink)}
@@ -863,7 +868,10 @@ function bind(){
   $("#mapAll").onclick=()=>{S.mapAll=true;store("kp.mapAll","1");renderMap()};
   $("#kp").addEventListener("click",e=>{
     const lb=e.target.closest("[data-lesson]");if(lb){loadLesson(lb.dataset.lesson,0);if(isMobile())setM("tree");return}
-    const tw=e.target.closest(".tw");if(tw&&tw.tagName==="BUTTON"){let ul=tw.closest(".row").nextElementSibling;if(ul&&ul.classList.contains("lessons"))ul=ul.nextElementSibling;if(ul){ul.hidden=!ul.hidden;tw.textContent=ul.hidden?"▸":"▾";tw.setAttribute("aria-expanded",String(!ul.hidden))}return}
+    // 展開／收起：點箭頭、點「n 堂」標籤，或點沒有課的節點整行都可以
+    const row0=e.target.closest(".row");
+    const tw=e.target.closest(".tw")||(e.target.closest(".kcnt")&&row0?.querySelector("button.tw"))||(row0&&!row0.classList.contains("has")?row0.querySelector("button.tw"):null);
+    if(tw&&tw.tagName==="BUTTON"){let ul=tw.closest(".row").nextElementSibling;if(ul&&ul.classList.contains("lessons"))ul=ul.nextElementSibling;if(ul){ul.hidden=!ul.hidden;tw.textContent=ul.hidden?"▸":"▾";tw.setAttribute("aria-expanded",String(!ul.hidden));const k=tw.closest(".row").querySelector(".kcnt");if(k)k.style.visibility=ul.hidden?"":"hidden"}return}
     const r=e.target.closest(".row.has");if(r){const k=r.dataset.has,x=S.index.find(x=>x.科判焦點===k||x.科判焦點===k.split(" ").pop());if(x&&x.id!==S.lesson.id)loadLesson(x.id,0);if(isMobile())setM("tree")}
   });
   $("#dlBtn").onclick=e=>{e.stopPropagation();$("#pop").hidden?openPop():($("#pop").hidden=true)};
