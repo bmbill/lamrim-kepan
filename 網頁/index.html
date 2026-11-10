@@ -12,17 +12,18 @@
   --f-kai:"LXGW WenKai TC","DFKai-SB","BiauKai","Kaiti TC",serif;
   --f-ui:"Noto Sans TC","Microsoft JhengHei","PingFang TC",system-ui,sans-serif;
   --shadow:0 6px 24px rgba(40,30,10,.12);
+  --sj-ba:#950d43; --sj-miao:#00639e; --sj-yu:#007f3c; --sj-jha:#8a5a00;
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
   --paper:#1B1A17; --panel:#232119; --raised:#2A2820; --ink:#E9E3D4; --ink-2:#BAB2A1; --ink-3:#878070;
   --line:#958D7E; --rule:#3B382F; --zhu:#E1715F; --zhu-wash:rgba(225,113,95,.14); --gold:#D3AA4F;
   --t-li:#6FA8C6; --t-po:#E07A6C; --t-yin:#AC90D6; --t-yu:#6DBA8E; --t-xia:#E0A456; --t-hui:#A39C8E;
-  --shadow:0 6px 24px rgba(0,0,0,.4); color-scheme:dark}}
+  --shadow:0 6px 24px rgba(0,0,0,.4); --sj-ba:#e3829f; --sj-miao:#6fb3e6; --sj-yu:#5fc48d; --sj-jha:#d9a75a; color-scheme:dark}}
 :root[data-theme="dark"]{
   --paper:#1B1A17; --panel:#232119; --raised:#2A2820; --ink:#E9E3D4; --ink-2:#BAB2A1; --ink-3:#878070;
   --line:#958D7E; --rule:#3B382F; --zhu:#E1715F; --zhu-wash:rgba(225,113,95,.14); --gold:#D3AA4F;
   --t-li:#6FA8C6; --t-po:#E07A6C; --t-yin:#AC90D6; --t-yu:#6DBA8E; --t-xia:#E0A456; --t-hui:#A39C8E;
-  --shadow:0 6px 24px rgba(0,0,0,.4); color-scheme:dark}
+  --shadow:0 6px 24px rgba(0,0,0,.4); --sj-ba:#e3829f; --sj-miao:#6fb3e6; --sj-yu:#5fc48d; --sj-jha:#d9a75a; color-scheme:dark}
 html,body{height:100%}
 body{background:var(--paper);color:var(--ink);font-family:var(--f-ui);font-size:14px;line-height:1.6;overflow:hidden}
 button,input{font:inherit;color:inherit}
@@ -307,7 +308,9 @@ details.jdwhole .jdp{color:var(--ink-2)}
 .badge.sj{background:none;color:var(--ink-2);box-shadow:inset 0 0 0 1.2px var(--ink-3)}
 .kytext{font-family:var(--f-kai);font-size:16px;line-height:1.8;color:var(--ink);margin:0;padding:10px 12px;border-radius:8px;background:var(--raised);border:1px solid var(--rule)}
 .sjtext{font-family:var(--f-kai);font-size:16px;line-height:1.85;margin:0}
-.sjtext .sjan{color:var(--ink-3);font-size:.9em}
+.sjtext{color:var(--ink)}
+.sjtext .sjan{font-size:.92em}
+.sjtext .sj-ba{color:var(--sj-ba)}.sjtext .sj-miao{color:var(--sj-miao)}.sjtext .sj-yu{color:var(--sj-yu)}.sjtext .sj-jha{color:var(--sj-jha)}
 .sjtext .sjlab{font-style:normal;font-family:var(--f-ui);font-size:10px;border-radius:3px;padding:0 3px;margin:0 2px;vertical-align:2px}
 .sjnote{font-size:12px;color:var(--ink-3);margin:0}
 .sjkey{font-weight:400;color:var(--ink-3);font-size:11px}
@@ -741,7 +744,7 @@ function yGroups(y){
 }
 function kySj(s,compact){
   const ky=s.口譯?`<div class="sec"><h3><span class="badge ky">口譯</span>口譯<span class="sjkey">整段原文的白話，對著原文翻</span></h3><p class="kytext">${esc(s.口譯)}</p></div>`:"";
-  const sj=s.四家合註?`<div class="sec"><h3><span class="badge sj">四家合註</span>四家合註<span class="sjkey">灰字＝箋註　巴＝巴梭法王　語＝語王堅穩　妙＝妙音笑　札＝札帝格西</span></h3><p class="sjtext">${s.四家合註}</p></div>`
+  const sj=s.四家合註?`<div class="sec"><h3><span class="badge sj">四家合註</span>四家合註<span class="sjkey">黑字＝本論　<b style="color:var(--sj-ba)">巴</b>＝巴梭法王　<b style="color:var(--sj-yu)">語</b>＝語王堅穩　<b style="color:var(--sj-miao)">妙</b>＝妙音笑　<b style="color:var(--sj-jha)">札</b>＝札帝格西</span></h3><p class="sjtext">${s.四家合註}</p></div>`
     :"";   // 沒有四家合註就不顯示（使用者 11-10）
   return ky+sj+jdHtml(s);
 }
