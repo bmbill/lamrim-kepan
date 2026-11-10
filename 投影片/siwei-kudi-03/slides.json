@@ -10,12 +10,14 @@
   {
    "img": "002.webp",
    "n": 2,
-   "links": []
+   "links": [],
+   "yt": "oVynEvkuj4M"
   },
   {
    "img": "003.webp",
    "n": 3,
-   "links": []
+   "links": [],
+   "yt": "9hFq1l8RoUM"
   },
   {
    "img": "004.webp",
@@ -287,7 +289,8 @@
   {
    "img": "042.webp",
    "n": 44,
-   "links": []
+   "links": [],
+   "yt": "E1qFpq1i0fY"
   },
   {
    "img": "043.webp",
@@ -295,5 +298,6 @@
    "links": []
   }
  ],
- "links_done": true
+ "links_done": true,
+ "yt_done": true
 }
