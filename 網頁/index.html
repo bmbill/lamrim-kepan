@@ -319,6 +319,21 @@ details.jdwhole .jdp{color:var(--ink-2)}
 .sjtext .sjlab{font-style:normal;font-family:var(--f-ui);font-size:10px;border-radius:3px;padding:0 3px;margin:0 2px;vertical-align:2px}
 .sjnote{font-size:12px;color:var(--ink-3);margin:0}
 .sjkey{font-weight:400;color:var(--ink-3);font-size:11px}
+.sjcard h3{flex-wrap:wrap}
+.sjseg{margin-left:auto;display:inline-flex;border:1px solid var(--rule);border-radius:7px;overflow:hidden;font-weight:400}
+.sjseg button{border:0;background:var(--raised);padding:1px 9px;font-size:12px;color:var(--ink-2)}
+.sjseg button+button{border-left:1px solid var(--rule)}
+.sjseg button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
+.bhtext{font-family:var(--f-kai);font-size:16px;line-height:1.85;color:var(--ink);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.bhtext.open{display:block;-webkit-line-clamp:unset}
+.bhfoot{display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px;margin-top:4px}
+.linkbtn{border:0;background:none;padding:0;color:var(--zhu);font-size:12.5px;cursor:pointer}
+.sjsrc{margin-left:auto;font-size:11px;color:var(--ink-3)}
+.bhnotes{width:100%;font-size:13px;color:var(--ink-2)}
+.bhnotes summary{cursor:pointer;color:var(--ink-3);font-size:12px}
+.bhnotes p{margin:4px 0;line-height:1.7}
+.unsure{color:var(--zhu);font-size:.8em}
+.kybh{font-size:13.5px;line-height:1.8;color:var(--ink-2);border-left:2px solid var(--rule);padding-left:10px;margin:4px 0 6px;text-indent:0}
 .toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--paper);padding:8px 14px;border-radius:8px;font-size:13px;z-index:60;box-shadow:var(--shadow)}
 
 /* 手機：大綱 */
@@ -746,10 +761,35 @@ function yGroups(y){
   return gs.map((g,gi)=>`${g.題?`<div class="ygrp">${esc(g.題)}</div>`:""}
     <ul${g.題?' class="ingrp"':""}>${g.說.map(x=>`<li class="${S.filter&&TAGKEY[x.類]!==S.filter?"dim":""}">${itemBadge(x.類)}<span>${esc(x.文)}</span></li>`).join("")}</ul>`).join("");
 }
+// 四家合註白話：同一段白話涵蓋好幾段原文時，後面幾段只記 same（本課第幾段）
+function bhOf(s){
+  const L=S.lesson,b=s.合註白話;if(!b)return null;
+  if(b.same==null)return{own:b};
+  const i=L.段.indexOf(s),base=L.isNode?i-s.ls:0,j=base+b.same;
+  return{ref:j,own:L.段[j]&&L.段[j].合註白話};
+}
+const SJ_KEY=`<span class="sjkey">黑字＝本論　<b style="color:var(--sj-ba)">巴</b>＝巴梭法王　<b style="color:var(--sj-yu)">語</b>＝語王堅穩　<b style="color:var(--sj-miao)">妙</b>＝妙音笑　<b style="color:var(--sj-jha)">札</b>＝札帝格西</span>`;
+function sjCard(s){
+  const bh=bhOf(s),hasRoot=!!s.四家合註;if(!bh&&!hasRoot)return "";   // 沒有四家合註就不顯示（使用者 11-10）
+  const i=S.lesson.段.indexOf(s),mode=bh&&(S.sjMode!=="root"||!hasRoot)?"bh":"root",open=S.sjOpen&&S.sjOpen.has(i);
+  const seg=bh&&hasRoot?`<span class="sjseg"><button data-sjmode="bh" aria-pressed="${mode==="bh"}">白話</button><button data-sjmode="root" aria-pressed="${mode==="root"}">合註原文</button></span>`:"";
+  let body="";
+  if(mode==="bh"){
+    const b=bh.own;
+    if(bh.ref!=null)body=`<p class="sjnote">這段的四家合註白話跟${esc(segName(S.lesson,bh.ref))}是同一段，<button class="linkbtn" data-go="${bh.ref}">到那一段看</button>。</p>`;
+    else{
+      const txt=esc(b.白話).replace(/〔？〕/g,'<span class="unsure" title="掃描文字看不清，可能有錯">〔？〕</span>');
+      body=`<div class="bhtext${open?" open":""}">${txt}</div>
+        <div class="bhfoot"><button class="linkbtn" data-sjopen="${i}">${open?"收合":"展開全文"} <span aria-hidden="true">${open?"▴":"▾"}</span></button>
+        ${open&&b.注釋&&b.注釋.length?`<details class="bhnotes"><summary>註解 ${b.注釋.length} 則</summary>${b.注釋.map(n=>`<p>${esc(n.replace(/^\s*[O0Q○]\s*/,""))}</p>`).join("")}</details>`:""}
+        <span class="sjsrc">白話校註集 p${b.頁}${b.已校?"・已校對掃描文字":"・掃描文字，可能有錯字"}</span></div>`;
+    }
+  }else body=`<p class="sjtext">${s.四家合註}</p>`;
+  return `<div class="sec sjcard"><h3><span class="badge sj">四家合註</span>四家合註${seg}</h3>${mode==="root"?SJ_KEY:""}${body}</div>`;
+}
 function kySj(s,compact){
   const ky=s.口譯?`<div class="sec"><h3><span class="badge ky">口譯</span>口譯<span class="sjkey">整段原文的白話，對著原文翻</span></h3><p class="kytext">${esc(s.口譯)}</p></div>`:"";
-  const sj=s.四家合註?`<div class="sec"><h3><span class="badge sj">四家合註</span>四家合註<span class="sjkey">黑字＝本論　<b style="color:var(--sj-ba)">巴</b>＝巴梭法王　<b style="color:var(--sj-yu)">語</b>＝語王堅穩　<b style="color:var(--sj-miao)">妙</b>＝妙音笑　<b style="color:var(--sj-jha)">札</b>＝札帝格西</span></h3><p class="sjtext">${s.四家合註}</p></div>`
-    :"";   // 沒有四家合註就不顯示（使用者 11-10）
+  const sj=sjCard(s);
   return ky+sj+jdHtml(s);
 }
 // 《覺燈日光》（嘉瓦仁波切講授）：確定對應的直接顯示；整段解說收合
@@ -815,7 +855,7 @@ function kyAllText(L){let out=[],last=null;L.段.forEach((s,i)=>{if(L.isNode&&s.
 function renderKy(side){
   const L=S.lesson;let last=null;
   side.innerHTML=`<div class="kyhd"><div><div class="kyt">${esc(L.標題)}　全課口譯</div><div class="kym">${esc(TN(L))}・${esc(L.課本範圍.replace(" ~ ","～"))}・${L.段.length} 段</div></div>
-      <div class="kytools"><label class="kyorig"><input type="checkbox" id="kyOrig"${S.kyOrig?" checked":""}> 對照原文</label><button class="iconbtn" id="kyCopy">複製全文</button></div></div>
+      <div class="kytools"><label class="kyorig"><input type="checkbox" id="kyOrig"${S.kyOrig?" checked":""}> 對照原文</label>${L.段.some(x=>x.合註白話)?`<label class="kyorig"><input type="checkbox" id="kyBh"${S.kyBh?" checked":""}> 附四家合註白話</label>`:""}<button class="iconbtn" id="kyCopy">複製全文</button></div></div>
     ${L.段.some(x=>x.口譯音)?`<div class="kyread"><button class="kyrbtn" id="kyRead" aria-label="朗讀">${K.playing?"❚❚ 暫停":"▶ 朗讀"}</button>
       <span class="kyrinfo" id="kyInfo">${K.i!=null&&K.lid===L.id?"正在唸："+esc(segName(L,K.i)):"AI 語音朗讀全課口譯，從目前這段開始"}</span>
       <select id="kyRate" aria-label="語速">${[0.9,1,1.2,1.4].map(r=>`<option value="${r}"${K.rate===r?" selected":""}>${r}×</option>`).join("")}</select></div>`:""}
@@ -824,6 +864,7 @@ function renderKy(side){
       return head+`<div class="kyp${i===S.seg?" cur":""}${K.lid===L.id&&K.i===i?" reading":""}" data-ky="${i}" title="${esc(segName(L,i))}">
         ${s.口譯音?`<button class="kyone" data-kyread="${i}" aria-label="從這段開始唸">▶</button>`:""}
         ${S.kyOrig?`<div class="kyo">${s.頁?`<span class="kpg">p${s.頁}</span>`:""}${redHtml(s.文)}</div>`:""}
+        ${S.kyBh&&s.合註白話&&s.合註白話.白話?`<div class="kybh">四家合註白話：${esc(s.合註白話.白話)}</div>`:""}
         <p>${!S.kyOrig&&s.頁&&(i===0||L.段[i-1].頁!==s.頁)?`<span class="kpg">p${s.頁}</span>`:""}${esc(s.口譯||"（這段還沒寫口譯）")}</p></div>`}).join("")}</div>`;
   const cur=side.querySelector(".kyp.cur");if(cur)cur.scrollIntoView({block:"nearest"});
 }
@@ -957,7 +998,9 @@ function renderOutline(){
     ${s.延伸.map((y,yi)=>`<div class="ycard" data-y="${yi}"><div class="hd"><span class="badge ys${y.複習?" rev":""}">${y.複習?"複習":"延伸"}</span><span class="kw">${esc(y.題)}</span><span style="flex:1"></span>${y.af?playLink(y.af,y.st,s.et,rangeTxt(y.af,y.st,s.et),true,"延伸・"+y.題):""}</div>
       ${yGroups(y)}</div>`).join("")}
     ${s.口譯?`<details open><summary style="color:var(--t-li)">口譯</summary><p class="kytext" style="margin-top:6px">${esc(s.口譯)}</p></details>`:""}
-    ${s.四家合註?`<details><summary style="color:var(--ink-2)">四家合註</summary><p class="sjtext" style="margin-top:6px">${s.四家合註}</p></details>`:""}
+    ${(s.四家合註||s.合註白話)?`<details><summary style="color:var(--ink-2)">四家合註</summary>${(()=>{const b=bhOf(s);
+      const bh=b?(b.ref!=null?`<p class="sjnote">白話跟${esc(segName(L,b.ref))}是同一段。</p>`:`<p class="bhtext open" style="margin-top:6px">${esc(b.own.白話)}</p>`):"";
+      return bh+(s.四家合註?(b?`<details><summary style="color:var(--ink-3);font-size:12px">合註原文</summary><p class="sjtext">${s.四家合註}</p></details>`:`<p class="sjtext" style="margin-top:6px">${s.四家合註}</p>`):"")})()}</details>`:""}
     ${jdHtml(s)?`<details><summary style="color:#6B5B3E">覺燈日光</summary>${jdHtml(s)}</details>`:""}
     <details><summary style="color:var(--ink-2)">逐字稿（${s.逐字稿.length} 節）</summary>${s.逐字稿.map(t=>`<div class="tsec"><div class="tt">${esc(t.t)}</div>${t.b.map(([k,x])=>`<p class="${k==="q"?"q":""}">${esc(x)}</p>`).join("")}</div>`).join("")}</details>
   </div>`).join("");
@@ -1062,12 +1105,13 @@ function doSearch(q){
     s.延伸.forEach((y,yi)=>{if(y.題.includes(q))ys.push({lid,go:i,y:yi,h:"延伸・"+hl(y.題,q),m:at,raw:true});
       groupsOf(y).forEach(g=>{if(g.題&&g.題.includes(q))ys.push({lid,go:i,y:yi,h:hl(g.題,q),m:`延伸・${y.題}・${at}`,raw:true})});
       y.說.forEach(x=>{if(x.文.includes(q))ys.push({lid,go:i,y:yi,h:`<span class="badge" style="background:var(--t-${TAGKEY[x.類]||"hui"})">${esc(x.類)}</span> `+hl(x.文,q),m:`延伸・${y.題}・${at}`,raw:true})})});
+    if(s.合註白話&&s.合註白話.白話&&s.合註白話.白話.includes(q))xw.push({lid,go:i,h:hl(s.合註白話.白話,q),m:`四家合註白話・${at}`,raw:true});
     if(s.口譯&&s.口譯.includes(q))xw.push({lid,go:i,h:hl(s.口譯,q),m:`口譯・${at}`,raw:true});
     (s.覺燈日光||[]).forEach(x=>{if(x.文.includes(q))xw.push({lid,go:i,h:hl(x.文,q),m:`覺燈日光・${at}`,raw:true})});
     s.消文.forEach(x=>{if(x.文.includes(q))xw.push({lid,go:i,h:hl(x.文,q),m:`消文・${at}`,raw:true})});
     s.逐字稿.forEach(t=>t.b.forEach(([k,x])=>{if(k==="s"&&x.includes(q))ts.push({lid,go:i,h:hl(x,q),m:`${t.t}・${at}`,raw:true})}));
   }));
-  if(yw.length)groups.push(["原文",yw]);if(ys.length)groups.push(["延伸理路",ys]);if(xw.length)groups.push(["口譯・消文理路・覺燈日光",xw]);if(ts.length)groups.push(["逐字稿（師父）",ts.slice(0,15)]);
+  if(yw.length)groups.push(["原文",yw]);if(ys.length)groups.push(["延伸理路",ys]);if(xw.length)groups.push(["口譯・四家合註白話・消文理路・覺燈日光",xw]);if(ts.length)groups.push(["逐字稿（師父）",ts.slice(0,15)]);
   S.results=[];let html="";
   for(const [g,arr,note] of groups){html+=`<div class="grp">${g}</div>`;if(note)html+=`<div class="empty">${esc(note)}</div>`;
     arr.forEach(r=>{S.results.push(r);html+=`<button data-r="${S.results.length-1}"><div>${r.raw?r.h:esc(r.h)}</div><div class="meta">${esc(r.m)}</div></button>`})}
@@ -1226,9 +1270,11 @@ function bind(){
   $("#kyNextB").onclick=()=>kyNext();
   $("#kyClose").onclick=()=>{const a=$("#kyaud");if(a)a.pause();K.playing=false;K.i=null;$("#kyBar").hidden=true;kyUI()};
   $("#kyBarBar").onclick=e=>{const a=$("#kyaud");if(!a||!a.duration)return;const r=e.currentTarget.getBoundingClientRect();a.currentTime=(e.clientX-r.left)/r.width*a.duration};
-  $("#side").addEventListener("change",e=>{if(e.target.id==="kyRate"){K.rate=+e.target.value;store("kp.kyRate",String(K.rate));kyAud().playbackRate=K.rate;return}
+  $("#side").addEventListener("change",e=>{if(e.target.id==="kyBh"){S.kyBh=e.target.checked;store("kp.kyBh",S.kyBh?"1":"0");renderDetail();return}if(e.target.id==="kyRate"){K.rate=+e.target.value;store("kp.kyRate",String(K.rate));kyAud().playbackRate=K.rate;return}
     if(e.target.id==="kyOrig"){S.kyOrig=e.target.checked;store("kp.kyOrig",S.kyOrig?"1":"0");renderDetail()}});
   $("#side").addEventListener("click",e=>{
+    const sm=e.target.closest("[data-sjmode]");if(sm){S.sjMode=sm.dataset.sjmode;store("kp.sjMode",S.sjMode);renderDetail();return}
+    const so=e.target.closest("[data-sjopen]");if(so){S.sjOpen=S.sjOpen||new Set();const k=+so.dataset.sjopen;S.sjOpen.has(k)?S.sjOpen.delete(k):S.sjOpen.add(k);renderDetail();return}
     if(e.target.closest("#pvEmbX")){pvEmbedClose();return}
     if(e.target.closest("#pvAud")){const a=$("#aud");if(a.paused)a.play().catch(()=>{});else a.pause();return}
     if(e.target.closest("#pvYtBtn")){pvVideo(slidesOf(S.lesson)[PV.i],true);return}
@@ -1365,7 +1411,7 @@ async function start(){
   S.lesson=getLesson(hh?hh.id:(last&&getLesson(last)?last:S.index.at(-1).id));
   const L=S.lesson;document.title=`${L.標題}・步步依師`;
   $("#lessonInfo").textContent=lessonInfoTxt(L);
-  S.mapAll=store("kp.mapAll")==="1";S.kyOrig=store("kp.kyOrig")==="1";K.rate=+(store("kp.kyRate")||1)||1;
+  S.mapAll=store("kp.mapAll")==="1";S.sjMode=store("kp.sjMode")||"bh";S.kyBh=store("kp.kyBh")==="1";S.kyOrig=store("kp.kyOrig")==="1";K.rate=+(store("kp.kyRate")||1)||1;
   const sx=store("kp.xw");if(sx!=null)S.xw=sx==="1";syncLayer();
   const m=hh;if(hh)S.seg=Math.min(L.段.length-1,Math.max(0,hh.seg));else S.seg=0;
   renderMap();renderTree();renderDetail();renderOutline();
