@@ -781,8 +781,8 @@ function sjCard(s){
       const txt=esc(b.白話).replace(/〔？〕/g,'<span class="unsure" title="掃描文字看不清，可能有錯">〔？〕</span>');
       body=`<div class="bhtext${open?" open":""}">${txt}</div>
         <div class="bhfoot"><button class="linkbtn" data-sjopen="${i}">${open?"收合":"展開全文"} <span aria-hidden="true">${open?"▴":"▾"}</span></button>
-        ${open&&b.注釋&&b.注釋.length?`<details class="bhnotes"><summary>註解 ${b.注釋.length} 則</summary>${b.注釋.map(n=>`<p>${esc(n.replace(/^\s*[O0Q○]\s*/,""))}</p>`).join("")}</details>`:""}
-        <span class="sjsrc">白話校註集 p${b.頁}${b.已校?"・已校對掃描文字":"・掃描文字，可能有錯字"}</span></div>`;
+        ${open&&b.注釋&&b.注釋.length?`<details class="bhnotes"><summary>註解 ${b.注釋.length} 則</summary>${b.注釋.map(n=>{n=n.replace(/^\s*[O0Q○＠@]\s*/,"");const c=n.indexOf("：");return `<p>${c>0&&c<40?`<b>${esc(n.slice(0,c))}</b>：${esc(n.slice(c+1))}`:esc(n)}</p>`}).join("")}</details>`:""}
+        <span class="sjsrc">白話校註集 p${b.頁}</span></div>`;
     }
   }else body=`<p class="sjtext">${s.四家合註}</p>`;
   return `<div class="sec sjcard"><h3><span class="badge sj">四家合註</span>四家合註${seg}</h3>${mode==="root"?SJ_KEY:""}${body}</div>`;
