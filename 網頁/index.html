@@ -219,6 +219,12 @@ details.ts[open] summary::before{transform:rotate(90deg)}
 .kyo{font-size:13.5px;line-height:1.7;color:var(--ink-3);margin-bottom:2px}
 .kpg{font-family:var(--f-ui);font-size:10.5px;color:var(--gold);border:1px solid var(--gold);border-radius:3px;padding:0 3px;margin-right:6px;vertical-align:2px;text-indent:0;display:inline-block}
 .kyles{font-family:var(--f-ui);font-size:12px;font-weight:700;color:var(--zhu);margin:14px 0 4px;letter-spacing:.1em}
+.vdlist{display:flex;flex-direction:column;gap:18px}
+.vditem h4{margin:0 0 4px;font-size:15px}
+.vditem p{margin:0 0 8px;font-size:13px;color:var(--ink2,#6b625a);line-height:1.6}
+.vdbox{position:relative;width:100%;aspect-ratio:16/9;background:#000;border-radius:10px;overflow:hidden}
+.vdbox iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.vditem .vdlink{display:inline-block;margin-top:6px;font-size:13px}
 .pvhd{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap;margin-bottom:10px}
 .pvhd a.iconbtn{text-decoration:none;color:var(--ink)}
 .pvhd .kytools{flex-wrap:wrap}
@@ -352,8 +358,8 @@ details.jdwhole .jdp{color:var(--ink-2)}
   .main[data-m="outline"] .outline{display:block}
   .main[data-m="map"] .map{display:block;border:0;padding:12px 0;overflow:visible}
   .main[data-m="tree"] .center{display:grid;height:calc(100vh - 130px);border:0}
-  .main[data-m="index"] .detail,.main[data-m="ky"] .detail,.main[data-m="ppt"] .detail{display:flex;border:0}
-  .main[data-m="index"] .detail .tabs,.main[data-m="ky"] .detail .tabs,.main[data-m="ppt"] .detail .tabs{display:none}
+  .main[data-m="index"] .detail,.main[data-m="ky"] .detail,.main[data-m="ppt"] .detail,.main[data-m="vid"] .detail{display:flex;border:0}
+  .main[data-m="index"] .detail .tabs,.main[data-m="ky"] .detail .tabs,.main[data-m="ppt"] .detail .tabs,.main[data-m="vid"] .detail .tabs{display:none}
   .mtabs{overflow-x:auto;scrollbar-width:none}
   .mtabs button{flex:1 0 auto;padding:6px 10px;font-size:13.5px}
   .side{padding:12px 0 40px}
@@ -388,6 +394,7 @@ details.jdwhole .jdp{color:var(--ink-2)}
     <button role="tab" data-m="outline" aria-selected="false">大綱</button>
     <button role="tab" data-m="ky" aria-selected="false">口譯</button>
     <button role="tab" data-m="ppt" aria-selected="false">投影片</button>
+    <button role="tab" data-m="vid" aria-selected="false">課程影片</button>
     <button role="tab" data-m="index" aria-selected="false">索引</button>
   </nav>
 
@@ -438,6 +445,7 @@ details.jdwhole .jdp{color:var(--ink-2)}
         <button role="tab" id="tabD" aria-selected="true">細看</button>
         <button role="tab" id="tabK" aria-selected="false">全課口譯</button>
         <button role="tab" id="tabP" aria-selected="false">投影片</button>
+        <button role="tab" id="tabV" aria-selected="false">課程影片</button>
         <button role="tab" id="tabI" aria-selected="false">索引</button>
       </div>
       <div class="side" id="side"></div>
@@ -750,6 +758,7 @@ function renderDetail(){
   if(S.tab==="i"){renderIndex(side);return}
   if(S.tab==="k"){renderKy(side);return}
   if(S.tab==="p"){if(!($("#pvStage")&&PV.lid===S.lesson.id&&side.contains($("#pvStage"))))renderPpt(side);return}
+  if(S.tab==="v"){if(!($("#vdList")&&VD.lid===S.lesson.id&&side.contains($("#vdList"))))renderVid(side);return}
   const path=kpPath().slice(1);
   const crumb=path.slice(-4).map((n,i,a)=>i===a.length-1?`<b>${esc(n.t)}</b>`:esc(n.t)).join("　›　");
   side.innerHTML=`
@@ -877,6 +886,21 @@ function slidesOf(L){
   return L.投影片||[];
 }
 const PV={i:0,lid:null};
+// 課程影片：每課 json 的「影片」[{yt, 標題, 說明}]，用 YouTube 內嵌播放（使用者 2026-11-11 加）
+const VD={lid:null};
+function vidsOf(L){
+  if(L.isNode){const out=[];lessonsInNode(L.科判焦點).forEach(x=>(x.影片||[]).forEach(v=>out.push({...v,堂:x.堂數})));return out}
+  return L.影片||[];
+}
+function renderVid(side){
+  const L=S.lesson,vs=vidsOf(L);VD.lid=L.id;
+  if(!vs.length){side.innerHTML=`<div id="vdList"><p class="sjnote">這堂還沒有課程影片。</p></div>`;return}
+  side.innerHTML=`<div class="pvhd"><div><div class="kyt">課程影片</div><div class="kym">${esc(L.標題)}・${esc(TN(L))}・${vs.length} 支</div></div></div>
+    <div class="vdlist" id="vdList">${vs.map(v=>`<div class="vditem">
+      <h4>${L.isNode&&v.堂?`<span class="pill">${v.堂}堂</span> `:""}${esc(v.標題||"影片")}</h4>${v.說明?`<p>${esc(v.說明)}</p>`:""}
+      <div class="vdbox"><iframe loading="lazy" src="https://www.youtube-nocookie.com/embed/${encodeURIComponent(v.yt)}?rel=0&playsinline=1&modestbranding=1&hl=zh-TW" title="${esc(v.標題||"YouTube 影片")}" allow="encrypted-media; fullscreen; picture-in-picture" allowfullscreen></iframe></div>
+      <a class="vdlink" href="https://youtu.be/${encodeURIComponent(v.yt)}" target="_blank" rel="noopener">在 YouTube 開啟 ↗</a></div>`).join("")}</div>`;
+}
 function renderPpt(side){
   const L=S.lesson,ps=slidesOf(L);
   if(!ps.length){side.innerHTML=`<p class="sjnote">這堂還沒有投影片。</p>`;return}
@@ -1225,7 +1249,7 @@ function pickClick(i){
 function toast(m){const t=document.createElement("div");t.className="toast";t.textContent=m;document.body.appendChild(t);setTimeout(()=>t.remove(),2600)}
 function setM(m){$("#main").dataset.m=m;document.querySelectorAll(".mtabs button").forEach(b=>b.setAttribute("aria-selected",String(b.dataset.m===m)));
   if(m==="tree"){S.scale=null;requestAnimationFrame(()=>{applyScale();scrollToSeg(S.seg,false);updateMini()})}
-  if(m==="index"){S.tab="i";renderDetail()}else if(m==="ky"){S.tab="k";renderDetail()}else if(m==="ppt"){S.tab="p";renderDetail()}else if((S.tab==="i"||S.tab==="k"||S.tab==="p")&&isMobile()){S.tab="d"}
+  if(m==="index"){S.tab="i";renderDetail()}else if(m==="ky"){S.tab="k";renderDetail()}else if(m==="ppt"){S.tab="p";renderDetail()}else if(m==="vid"){S.tab="v";renderDetail()}else if((S.tab==="i"||S.tab==="k"||S.tab==="p"||S.tab==="v")&&isMobile()){S.tab="d"}
 }
 
 // ───────── 事件 ─────────
@@ -1269,6 +1293,7 @@ function bind(){
   $("#tabI").onclick=()=>{S.tab="i";syncTabs();renderDetail()};
   $("#tabK").onclick=()=>{S.tab="k";syncTabs();renderDetail()};
   $("#tabP").onclick=()=>{S.tab="p";syncTabs();renderDetail()};
+  $("#tabV").onclick=()=>{S.tab="v";syncTabs();renderDetail()};
   $("#kyPP").onclick=()=>kyToggle();
   $("#kyPrev").onclick=()=>{if(K.i!=null&&K.i>0)kyStart(K.i-1)};
   $("#kyNextB").onclick=()=>kyNext();
@@ -1366,7 +1391,7 @@ function bindSplit(){
 }
 function zoomKeep(){const wrap=$("#treewrap"),fr=(wrap.scrollLeft+wrap.clientWidth/2)/wrap.scrollWidth;applyScale();wrap.scrollLeft=fr*wrap.scrollWidth-wrap.clientWidth/2;updateMini()}
 function syncLayer(){$("#lyBoth").setAttribute("aria-pressed",String(S.xw));$("#lyYan").setAttribute("aria-pressed",String(!S.xw))}
-function syncTabs(){$("#tabD").setAttribute("aria-selected",String(S.tab==="d"));$("#tabK").setAttribute("aria-selected",String(S.tab==="k"));$("#tabP").setAttribute("aria-selected",String(S.tab==="p"));$("#tabI").setAttribute("aria-selected",String(S.tab==="i"))}
+function syncTabs(){$("#tabD").setAttribute("aria-selected",String(S.tab==="d"));$("#tabK").setAttribute("aria-selected",String(S.tab==="k"));$("#tabP").setAttribute("aria-selected",String(S.tab==="p"));$("#tabV").setAttribute("aria-selected",String(S.tab==="v"));$("#tabI").setAttribute("aria-selected",String(S.tab==="i"))}
 function nodeKeyOf(L){return L.科判焦點}
 function lessonsInNode(key){return S.index.filter(x=>x.科判焦點===key).map(x=>S.lessons[x.id]).filter(Boolean)}
 function buildNode(key){
