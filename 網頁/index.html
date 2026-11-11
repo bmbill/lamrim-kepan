@@ -508,9 +508,13 @@ function playSeg(af,st,et,title){
   const ka=$("#kyaud");if(ka&&!ka.paused)ka.pause();
   const aud=$("#aud");P.st=st;P.et=et==null||et===""?null:+et;
   const src=audioSrc(af,false);if(!src){toast("這段沒有音檔資料");return}
-  const go=()=>{aud.currentTime=st;aud.play().catch(e=>toast("無法播放："+e.message))};
-  if(P.af!==af||P.usingRemote){P.af=af;P.usingRemote=false;aud.src=src;aud.onloadedmetadata=()=>{aud.onloadedmetadata=null;go()};aud.load()}
-  else go();
+  const fail=e=>{if(e&&e.name!=="AbortError")toast("無法播放："+e.message)};
+  // 換卷：起點寫進網址（#t=）並立刻 play()，不等 metadata 載完才播。
+  // 手機關螢幕時，若音樂先停下來等載入，系統會把網頁凍結，要打開螢幕才會接著播。
+  if(P.af!==af||P.usingRemote){P.af=af;P.usingRemote=false;aud.src=src+"#t="+st;
+    aud.onloadedmetadata=()=>{aud.onloadedmetadata=null;if(Math.abs(aud.currentTime-st)>1)aud.currentTime=st};
+    aud.play().catch(fail)}
+  else{aud.currentTime=st;aud.play().catch(fail)}
   $("#plLabel").innerHTML=`${esc(rangeTxt(af,st,P.et))}<b>${esc(title||"")}</b>`;
   $("#player").hidden=false;
   const ext=$("#plExt");if(ext)ext.href=playUrl(af,st,P.et);
@@ -568,7 +572,7 @@ function pvAudUI(){
 function bindPlayer(){
   const aud=$("#aud");
   aud.addEventListener("error",()=>{ // 本機沒下載就改連線上
-    if(!P.usingRemote&&P.af){P.usingRemote=true;const st=P.st;aud.src=audioSrc(P.af,true);aud.onloadedmetadata=()=>{aud.onloadedmetadata=null;aud.currentTime=st;aud.play().catch(()=>{})};aud.load();toast("本機沒有音檔，改從網路播放")}
+    if(!P.usingRemote&&P.af){P.usingRemote=true;const st=P.st;aud.src=audioSrc(P.af,true)+"#t="+st;aud.onloadedmetadata=()=>{aud.onloadedmetadata=null;if(Math.abs(aud.currentTime-st)>1)aud.currentTime=st};aud.play().catch(()=>{});toast("本機沒有音檔，改從網路播放")}
     else toast("音檔載入失敗，請確認網路");
   });
   aud.addEventListener("timeupdate",()=>{
